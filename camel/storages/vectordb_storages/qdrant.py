@@ -309,7 +309,9 @@ class QdrantStorage(BaseVectorStorage):
         op_info = self._client.set_payload(
             collection_name=self.collection_name,
             payload=payload,
-            points=PointIdsList(points=cast(List[Union[int, str]], points)),
+            points=PointIdsList(
+                points=cast(List[Union[int, str, Any]], points)  # type: ignore[arg-type]
+            ),  # type: ignore[arg-type]
             **kwargs,
         )
         if op_info.status != UpdateStatus.COMPLETED:

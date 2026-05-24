@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, cast
 
 import pytest
 from mock import Mock
@@ -50,6 +50,8 @@ def test_model_manager(
 
     if TYPE_CHECKING:
         assert type(models) is List[BaseModelBackend]
+
+    models = cast(BaseModelBackend | List[BaseModelBackend], models)
     messages: List = []
     for _ in range(calls_count):
         msg = "message"
