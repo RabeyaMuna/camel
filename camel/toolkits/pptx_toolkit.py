@@ -667,7 +667,6 @@ class PPTXToolkit(BaseToolkit):
             slide_width_inch (float): The width of the slide in inches.
             slide_height_inch (float): The height of the slide in inches.
         """
-        import pptx
         from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE
         from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
         from pptx.util import Inches, Pt
