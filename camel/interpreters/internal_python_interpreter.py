@@ -17,7 +17,7 @@ import importlib
 import os
 import subprocess
 import typing
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional, cast
 
 from camel.interpreters.base import BaseInterpreter
 from camel.interpreters.interpreter_error import InterpreterError
@@ -405,7 +405,7 @@ class InternalPythonInterpreter(BaseInterpreter):
             keyword.arg: self._execute_ast(keyword.value)
             for keyword in call.keywords
         }
-        return callable_func(*args, **kwargs)
+        return callable_func(*args, **cast(Dict[str, Any], kwargs))
 
     def _execute_subscript(self, subscript: ast.Subscript):
         index = self._execute_ast(subscript.slice)

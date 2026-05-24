@@ -251,7 +251,7 @@ class QdrantStorage(BaseVectorStorage):
             else None,
             "vector_count": collection_info.points_count,
             "status": collection_info.status,
-            "vectors_count": collection_info.vectors_count,
+            "vectors_count": collection_info.indexed_vectors_count,
             "config": collection_info.config,
         }
 
@@ -309,7 +309,7 @@ class QdrantStorage(BaseVectorStorage):
         op_info = self._client.set_payload(
             collection_name=self.collection_name,
             payload=payload,
-            points=PointIdsList(points=points),
+            points=PointIdsList(points=cast(List[Union[int, str]], points)),
             **kwargs,
         )
         if op_info.status != UpdateStatus.COMPLETED:
@@ -376,7 +376,7 @@ class QdrantStorage(BaseVectorStorage):
             op_info = self._client.delete(
                 collection_name=self.collection_name,
                 points_selector=PointIdsList(
-                    points=cast(List[Union[int, str]], ids)
+                    points=cast(List[Union[int, str, Any]], ids)  # type: ignore[arg-type]
                 ),
                 **kwargs,
             )
