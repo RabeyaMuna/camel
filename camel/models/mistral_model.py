@@ -194,8 +194,8 @@ class MistralModel(BaseModelBackend):
                 )
                 for tool_call in tool_calls_list:
                     mistral_function_call = FunctionCall(
-                        name=tool_call["function"].get("name"),  # type: ignore[attr-defined]
-                        arguments=tool_call["function"].get("arguments"),  # type: ignore[attr-defined]
+                        name=tool_call["function"].get("name"),  # type: ignore[index]
+                        arguments=tool_call["function"].get("arguments"),  # type: ignore[index]
                     )
 
             tool_calls = None

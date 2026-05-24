@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, cast
 
 import pytest
 from mock import Mock
@@ -42,14 +42,12 @@ def test_model_manager(
     calls_count: int,
     times_each_model_called: int,
 ):
-    models = (
-        [Mock(run=Mock()) for _ in range(models_number)]
-        if models_number > 1
-        else Mock()
-    )
-
-    if TYPE_CHECKING:
-        assert type(models) is List[BaseModelBackend]
+    mock_models = [Mock(run=Mock()) for _ in range(models_number)]
+    models: BaseModelBackend | List[BaseModelBackend]
+    if models_number == 1:
+        models = cast(BaseModelBackend, mock_models[0])
+    else:
+        models = cast(List[BaseModelBackend], mock_models)
     messages: List = []
     for _ in range(calls_count):
         msg = "message"
@@ -66,20 +64,16 @@ def test_model_manager(
 
     if strategy in ("not_existent", "round_robin"):
         assert model_manager.scheduling_strategy.__name__ == "round_robin"
-        for model in model_manager.models:
-            if TYPE_CHECKING:
-                assert isinstance(model.run, Mock)
+        for model in mock_models:
             assert model.run.call_count == times_each_model_called
     if strategy == "always_first":
         assert model_manager.scheduling_strategy.__name__ == "always_first"
-        assert models[0].run.call_count == times_each_model_called
+        assert mock_models[0].run.call_count == times_each_model_called
 
     if strategy == "random_model":
         assert model_manager.scheduling_strategy.__name__ == "random_model"
         total_calls = 0
-        for model in model_manager.models:
-            if TYPE_CHECKING:
-                assert isinstance(model.run, Mock)
+        for model in mock_models:
             total_calls += model.run.call_count
         assert total_calls == times_each_model_called
 

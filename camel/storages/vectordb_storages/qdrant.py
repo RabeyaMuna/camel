@@ -14,6 +14,7 @@
 import logging
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
+from uuid import UUID
 
 if TYPE_CHECKING:
     from qdrant_client import QdrantClient
@@ -251,7 +252,7 @@ class QdrantStorage(BaseVectorStorage):
             else None,
             "vector_count": collection_info.points_count,
             "status": collection_info.status,
-            "vectors_count": collection_info.vectors_count,
+            "vectors_count": collection_info.indexed_vectors_count,
             "config": collection_info.config,
         }
 
@@ -284,8 +285,7 @@ class QdrantStorage(BaseVectorStorage):
         )
         if op_info.status != UpdateStatus.COMPLETED:
             raise RuntimeError(
-                "Failed to add vectors in Qdrant, operation info: "
-                f"{op_info}."
+                f"Failed to add vectors in Qdrant, operation info: {op_info}."
             )
 
     def update_payload(
@@ -304,7 +304,7 @@ class QdrantStorage(BaseVectorStorage):
         """
         from qdrant_client.http.models import PointIdsList, UpdateStatus
 
-        points = cast(List[Union[str, int]], ids)
+        points = cast(List[Union[str, int, UUID]], ids)
 
         op_info = self._client.set_payload(
             collection_name=self.collection_name,
@@ -376,7 +376,7 @@ class QdrantStorage(BaseVectorStorage):
             op_info = self._client.delete(
                 collection_name=self.collection_name,
                 points_selector=PointIdsList(
-                    points=cast(List[Union[int, str]], ids)
+                    points=cast(List[Union[int, str, UUID]], ids)
                 ),
                 **kwargs,
             )
