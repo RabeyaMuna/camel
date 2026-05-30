@@ -160,9 +160,8 @@ class DataCommonsToolkit(BaseToolkit):
         Reference:
             https://docs.datacommons.org/api/python/stat_series.html
         """
-        import datacommons_pandas
-
         try:
+            import datacommons_pandas
             result = datacommons_pandas.get_stat_series(
                 place,
                 stat_var,
@@ -172,6 +171,12 @@ class DataCommonsToolkit(BaseToolkit):
                 scaling_factor,
             )
             return result
+        except ImportError:
+            logger.error(
+                "datacommons_pandas package is not installed. "
+                "Please install it with: pip install datacommons_pandas"
+            )
+            return None
         except Exception as e:
             logger.error(
                 f"An error occurred while querying Data Commons: {e!s}"
