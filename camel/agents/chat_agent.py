@@ -65,7 +65,6 @@ from camel.models import (
 from camel.prompts import TextPrompt
 from camel.responses import ChatAgentResponse
 from camel.storages import JsonStorage
-from camel.toolkits import FunctionTool
 from camel.types import (
     ChatCompletion,
     ChatCompletionChunk,

@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
+from __future__ import annotations
+
 import json
 import logging
 import re
@@ -18,7 +20,6 @@ import textwrap
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from camel.agents._types import ToolCallRequest
-from camel.toolkits import FunctionTool
 from camel.types import Choice
 from camel.types.agents import ToolCallingRecord
 
@@ -115,6 +116,7 @@ def convert_to_function_tool(
     tool: Union[FunctionTool, Callable],
 ) -> FunctionTool:
     r"""Convert a tool to a FunctionTool from Callable."""
+    from camel.toolkits import FunctionTool
     return tool if isinstance(tool, FunctionTool) else FunctionTool(tool)
 
 
@@ -122,6 +124,7 @@ def convert_to_schema(
     tool: Union[FunctionTool, Callable, Dict[str, Any]],
 ) -> Dict[str, Any]:
     r"""Convert a tool to a schema from Callable or FunctionTool."""
+    from camel.toolkits import FunctionTool
     if isinstance(tool, FunctionTool):
         return tool.get_openai_tool_schema()
     elif callable(tool):
