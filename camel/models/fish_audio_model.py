@@ -40,7 +40,7 @@ class FishAudioModel(BaseAudioModel):
         from fish_audio_sdk import Session
 
         super().__init__(api_key, url)
-        self._api_key = api_key or os.environ.get("FISHAUDIO_API_KEY")
+        self._api_key = api_key or os.environ.get("FISHAUDIO_API_KEY") or ""
         self._url = url or os.environ.get(
             "FISHAUDIO_API_BASE_URL", "https://api.fish.audio"
         )
