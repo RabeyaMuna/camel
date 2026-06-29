@@ -482,8 +482,10 @@ class TicTacToeEnv(MultiStepEnv):
         """
         # Check all win combinations.
         for a, b, c in TicTacToeEnv.WIN_COMBINATIONS:
-            if board[a] in ("X", "O") and board[a] == board[b] == board[c]:
-                return board[a]
+            if board[a] == "X" and board[b] == "X" and board[c] == "X":
+                return "X"
+            if board[a] == "O" and board[b] == "O" and board[c] == "O":
+                return "O"
         # Check for draw.
         if all(cell != " " for cell in board):
             return "draw"

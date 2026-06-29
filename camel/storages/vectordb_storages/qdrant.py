@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import logging
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, cast
 
 if TYPE_CHECKING:
     from qdrant_client import QdrantClient
@@ -304,7 +304,7 @@ class QdrantStorage(BaseVectorStorage):
         """
         from qdrant_client.http.models import PointIdsList, UpdateStatus
 
-        points = cast(List[Union[int, str]], ids)
+        points = cast(Any, ids)
 
         op_info = self._client.set_payload(
             collection_name=self.collection_name,
@@ -375,9 +375,7 @@ class QdrantStorage(BaseVectorStorage):
         if ids:
             op_info = self._client.delete(
                 collection_name=self.collection_name,
-                points_selector=PointIdsList(
-                    points=cast(List[Union[int, str]], ids)
-                ),
+                points_selector=PointIdsList(points=cast(Any, ids)),
                 **kwargs,
             )
             if op_info.status != UpdateStatus.COMPLETED:
