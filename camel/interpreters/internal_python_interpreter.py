@@ -17,7 +17,7 @@ import importlib
 import os
 import subprocess
 import typing
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Mapping, Optional
 
 from camel.interpreters.base import BaseInterpreter
 from camel.interpreters.interpreter_error import InterpreterError
@@ -401,10 +401,17 @@ class InternalPythonInterpreter(BaseInterpreter):
 
         # Todo deal with args
         args = [self._execute_ast(arg) for arg in call.args]
-        kwargs = {
-            keyword.arg: self._execute_ast(keyword.value)
-            for keyword in call.keywords
-        }
+        kwargs: Dict[str, Any] = {}
+        for keyword in call.keywords:
+            value = self._execute_ast(keyword.value)
+            if keyword.arg is None:
+                if not isinstance(value, Mapping):
+                    raise InterpreterError(
+                        "Keyword argument unpacking expects a mapping."
+                    )
+                kwargs.update(value)
+            else:
+                kwargs[keyword.arg] = value
         return callable_func(*args, **kwargs)
 
     def _execute_subscript(self, subscript: ast.Subscript):
