@@ -58,7 +58,7 @@ class DaytonaRuntime(BaseRuntime):
         self.config: Any = DaytonaConfig(
             api_key=self.api_key, api_url=self.api_url
         )
-        self.daytona: Any = Daytona(self.config)
+        self.daytona = Daytona(self.config)
         self.sandbox: Optional[Any] = None
         self.entrypoint: Dict[str, str] = dict()
 

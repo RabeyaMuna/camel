@@ -121,6 +121,7 @@ class MistralModel(BaseModelBackend):
             max_retries,
             **kwargs,
         )
+        self._token_counter: Optional[BaseTokenCounter] = token_counter
         self._client = Mistral(
             timeout_ms=int(self._timeout * 1000)
             if self._timeout is not None
@@ -215,9 +216,11 @@ class MistralModel(BaseModelBackend):
                         )
                         or {}
                     )
+                    function_name = function_data.get("name")
+                    function_arguments = function_data.get("arguments")
                     mistral_function_call = FunctionCall(
-                        name=function_data.get("name"),
-                        arguments=function_data.get("arguments"),
+                        name=function_name or "",
+                        arguments=function_arguments or {},
                     )
 
             tool_calls = None

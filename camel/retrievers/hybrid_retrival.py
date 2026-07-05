@@ -161,10 +161,7 @@ class HybridRetriever(BaseRetriever):
         vector_retriever_similarity_threshold: float = 0.5,
         bm25_retriever_top_k: int = 50,
         return_detailed_info: bool = False,
-    ) -> Union[
-        dict[str, Sequence[Collection[str]]],
-        dict[str, Sequence[Union[str, float]]],
-    ]:
+    ) -> dict[str, Any]:
         r"""Executes a hybrid retrieval query using both vector and BM25
         retrievers.
 
@@ -226,12 +223,14 @@ class HybridRetriever(BaseRetriever):
             rank_smoothing_factor,
         )
 
-        retrieved_info = {
+        retrieved_context: Any
+        if return_detailed_info:
+            retrieved_context = all_retrieved_info
+        else:
+            retrieved_context = [item['text'] for item in all_retrieved_info]
+
+        retrieved_info: dict[str, Any] = {
             "Original Query": query,
-            "Retrieved Context": (
-                all_retrieved_info
-                if return_detailed_info
-                else [item['text'] for item in all_retrieved_info]  # type: ignore[misc]
-            ),
+            "Retrieved Context": retrieved_context,
         }
         return retrieved_info
