@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import TYPE_CHECKING, List, cast
+from typing import TYPE_CHECKING, Any, List, cast
 
 import pytest
 from mock import Mock
@@ -72,10 +72,10 @@ def test_model_manager(
         for model in model_manager.models:
             if TYPE_CHECKING:
                 assert isinstance(model.run, Mock)
-            assert model.run.call_count == times_each_model_called
+            assert cast(Any, model.run).call_count == times_each_model_called
     if strategy == "always_first":
         assert model_manager.scheduling_strategy.__name__ == "always_first"
-        assert models[0].run.call_count == times_each_model_called
+        assert cast(Any, models[0].run).call_count == times_each_model_called
 
     if strategy == "random_model":
         assert model_manager.scheduling_strategy.__name__ == "random_model"
@@ -83,7 +83,7 @@ def test_model_manager(
         for model in model_manager.models:
             if TYPE_CHECKING:
                 assert isinstance(model.run, Mock)
-            total_calls += model.run.call_count
+            total_calls += cast(Any, model.run).call_count
         assert total_calls == times_each_model_called
 
 
