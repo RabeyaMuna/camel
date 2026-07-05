@@ -14,7 +14,7 @@
 import math
 import random
 import re
-from typing import Any, ClassVar, Dict, List, Literal, Optional, Tuple
+from typing import Any, ClassVar, Dict, List, Literal, Optional, Tuple, cast
 
 from camel.environments.models import Action, Observation
 from camel.environments.multi_step import MultiStepEnv
@@ -485,7 +485,7 @@ class TicTacToeEnv(MultiStepEnv):
             if board[a] != " " and board[a] == board[b] == board[c]:
                 winner = board[a]
                 if winner in ("X", "O"):
-                    return winner
+                    return cast(Literal["X", "O"], winner)
         # Check for draw.
         if all(cell != " " for cell in board):
             return "draw"
