@@ -71,7 +71,8 @@ class DaytonaRuntime(BaseRuntime):
         from daytona_sdk import CreateSandboxParams
 
         try:
-            params = CreateSandboxParams(language=self.language)
+            create_params_cls = cast(Any, CreateSandboxParams)
+            params = create_params_cls(language=self.language)
             create_result = self.daytona.create(params)
             self.sandbox = cast(Optional[Any], create_result)
             if self.sandbox is None:
