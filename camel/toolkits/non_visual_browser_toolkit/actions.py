@@ -132,8 +132,7 @@ class ActionExecutor:
         direction = action.get("direction", "down")
         amount = action.get("amount", 300)
         self.page.evaluate(
-            f"window.scrollBy(0, "
-            f"{amount if direction == 'down' else -amount})"
+            f"window.scrollBy(0, {amount if direction == 'down' else -amount})"
         )
         time.sleep(0.5)
         return f"Scrolled {direction} by {amount}px"
