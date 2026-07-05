@@ -173,7 +173,7 @@ class ChatAgent(BaseAgent):
         stop_event (Optional[threading.Event], optional): Event to signal
             termination of the agent's operation. When set, the agent will
             terminate its execution. (default: :obj:`None`)
-        mask_tool_output (Optional[bool]): Whether to return a sanitized 
+        mask_tool_output (Optional[bool]): Whether to return a sanitized
             placeholder instead of the raw tool output. (default: :obj:`False`)
     """
 
@@ -884,7 +884,7 @@ class ChatAgent(BaseAgent):
 
             # Create a prompt based on the schema
             format_instruction = (
-                "\n\nPlease respond in the following JSON format:\n" "{\n"
+                "\n\nPlease respond in the following JSON format:\n{\n"
             )
 
             properties = schema.get("properties", {})
@@ -1777,9 +1777,12 @@ class ChatAgent(BaseAgent):
         if tool_calls := response.choices[0].message.tool_calls:
             tool_call_requests = []
             for tool_call in tool_calls:
-                tool_name = tool_call.function.name
-                tool_call_id = tool_call.id
-                args = json.loads(tool_call.function.arguments)
+                function_call = getattr(tool_call, "function", None)
+                if function_call is None:
+                    continue
+                tool_name = function_call.name
+                tool_call_id = getattr(tool_call, "id", "")
+                args = json.loads(function_call.arguments)
                 tool_call_request = ToolCallRequest(
                     tool_name=tool_name, args=args, tool_call_id=tool_call_id
                 )
@@ -1966,8 +1969,10 @@ class ChatAgent(BaseAgent):
             raw_result = tool(**args)
             if self.mask_tool_output:
                 self._secure_result_store[tool_call_id] = raw_result
-                result= "[The tool has been executed successfully, but the output" \
-                        " from the tool is masked. You can move forward]"
+                result = (
+                    "[The tool has been executed successfully, but the "
+                    "output from the tool is masked. You can move forward]"
+                )
                 mask_flag = True
             else:
                 result = raw_result
@@ -1979,7 +1984,13 @@ class ChatAgent(BaseAgent):
             mask_flag = False
             logging.warning(error_msg)
 
-        return self._record_tool_calling(func_name, args, result, tool_call_id, mask_output=mask_flag)
+        return self._record_tool_calling(
+            func_name,
+            args,
+            result,
+            tool_call_id,
+            mask_output=mask_flag,
+        )
 
     async def _aexecute_tool(
         self,
@@ -2039,12 +2050,13 @@ class ChatAgent(BaseAgent):
             args (Dict[str, Any]): The arguments passed to the tool.
             result (Any): The result returned by the tool execution.
             tool_call_id (str): A unique identifier for the tool call.
-            mask_output (bool, optional): Whether to return a sanitized placeholder instead 
-                of the raw tool output.
+            mask_output (bool, optional): Whether to return a sanitized
+                placeholder instead of the raw tool output.
                 (default: :obj:`False`)
 
         Returns:
-            ToolCallingRecord: A struct containing information about this tool call.
+            ToolCallingRecord: A struct containing information about this
+                tool call.
         """
         assist_msg = FunctionCallingMessage(
             role_name=self.role_name,
