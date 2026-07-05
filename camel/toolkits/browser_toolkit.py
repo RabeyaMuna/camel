@@ -45,7 +45,6 @@ from camel.messages import BaseMessage
 from camel.models import BaseModelBackend, ModelFactory
 from camel.toolkits.base import BaseToolkit
 from camel.toolkits.function_tool import FunctionTool
-from camel.toolkits.video_analysis_toolkit import VideoAnalysisToolkit
 from camel.types import ModelPlatformType, ModelType
 from camel.utils import (
     dependencies_required,

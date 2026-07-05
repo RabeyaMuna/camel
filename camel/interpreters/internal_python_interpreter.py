@@ -348,10 +348,14 @@ class InternalPythonInterpreter(BaseInterpreter):
 
         # Todo deal with args
         args = [self._execute_ast(arg) for arg in call.args]
-        kwargs = {
-            keyword.arg: self._execute_ast(keyword.value)
-            for keyword in call.keywords
-        }
+        kwargs: Dict[str, Any] = {}
+        for keyword in call.keywords:
+            if keyword.arg is None:
+                raise InterpreterError(
+                    "Unsupported call syntax: keyword expansion is not "
+                    "supported."
+                )
+            kwargs[keyword.arg] = self._execute_ast(keyword.value)
         return callable_func(*args, **kwargs)
 
     def _execute_subscript(self, subscript: ast.Subscript):
