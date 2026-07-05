@@ -212,8 +212,7 @@ class InternalPythonInterpreter(BaseInterpreter):
                 if not keep_state:
                     self.clear_state()
                 msg = (
-                    f"Evaluation of the code stopped at node {idx}. "
-                    f"See:\n{e}"
+                    f"Evaluation of the code stopped at node {idx}. See:\n{e}"
                 )
                 # More information can be provided by `ast.unparse()`,
                 # which is new in python 3.9.
@@ -335,8 +334,7 @@ class InternalPythonInterpreter(BaseInterpreter):
                 )
             if len(target.elts) != len(value):
                 raise InterpreterError(
-                    f"Expected {len(target.elts)} values but got"
-                    f" {len(value)}."
+                    f"Expected {len(target.elts)} values but got {len(value)}."
                 )
             for t, v in zip(target.elts, value):
                 self.state[self._execute_ast(t)] = v
@@ -352,10 +350,10 @@ class InternalPythonInterpreter(BaseInterpreter):
 
         # Todo deal with args
         args = [self._execute_ast(arg) for arg in call.args]
-        kwargs = {
-            keyword.arg: self._execute_ast(keyword.value)
-            for keyword in call.keywords
-        }
+        kwargs: Dict[str, Any] = {}
+        for keyword in call.keywords:
+            if keyword.arg is not None:
+                kwargs[keyword.arg] = self._execute_ast(keyword.value)
         return callable_func(*args, **kwargs)
 
     def _execute_subscript(self, subscript: ast.Subscript):

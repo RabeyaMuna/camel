@@ -161,10 +161,7 @@ class HybridRetriever(BaseRetriever):
         vector_retriever_similarity_threshold: float = 0.5,
         bm25_retriever_top_k: int = 50,
         return_detailed_info: bool = False,
-    ) -> Union[
-        dict[str, Sequence[Collection[str]]],
-        dict[str, Sequence[Union[str, float]]],
-    ]:
+    ) -> Dict[str, Any]:
         r"""Executes a hybrid retrieval query using both vector and BM25
         retrievers.
 

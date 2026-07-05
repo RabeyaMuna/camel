@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, cast
 
 import pytest
 from mock import Mock
@@ -43,9 +43,12 @@ def test_model_manager(
     times_each_model_called: int,
 ):
     models = (
-        [Mock(run=Mock()) for _ in range(models_number)]
+        [
+            cast(BaseModelBackend, Mock(run=Mock()))
+            for _ in range(models_number)
+        ]
         if models_number > 1
-        else Mock()
+        else cast(BaseModelBackend, Mock())
     )
 
     if TYPE_CHECKING:
