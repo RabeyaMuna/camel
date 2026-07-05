@@ -16,7 +16,7 @@ import inspect
 import json
 import os
 from functools import wraps
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 from pydantic import BaseModel
 
@@ -72,7 +72,8 @@ class DaytonaRuntime(BaseRuntime):
 
         try:
             params = CreateSandboxParams(language=self.language)
-            self.sandbox = self.daytona.create(params)
+            create_result = self.daytona.create(params)
+            self.sandbox = cast(Optional[Any], create_result)
             if self.sandbox is None:
                 raise RuntimeError("Failed to create sandbox.")
             logger.info(f"Sandbox created with ID: {self.sandbox.id}")
