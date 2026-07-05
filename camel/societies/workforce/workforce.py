@@ -19,7 +19,18 @@ import time
 import uuid
 from collections import deque
 from enum import Enum
-from typing import Any, Coroutine, Deque, Dict, List, Optional, Set, Tuple
+from typing import (
+    Any,
+    Callable,
+    Coroutine,
+    Deque,
+    Dict,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
 
 from colorama import Fore
 
@@ -51,6 +62,7 @@ from camel.tasks.task import (
 )
 from camel.toolkits import (
     CodeExecutionToolkit,
+    FunctionTool,
     SearchToolkit,
     TaskPlanningToolkit,
     ThinkingToolkit,
@@ -1685,7 +1697,7 @@ class Workforce(BaseNode):
             return self.new_worker_agent
         else:
             # Default tools for a new agent
-            function_list = [
+            function_list: List[Union[FunctionTool, Callable[..., Any]]] = [
                 SearchToolkit().search_duckduckgo,
                 *CodeExecutionToolkit().get_tools(),
                 *ThinkingToolkit().get_tools(),
