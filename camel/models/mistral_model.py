@@ -209,9 +209,15 @@ class MistralModel(BaseModelBackend):
                 for tool_call in tool_calls_list:
                     tool_call_dict = cast(Dict[str, Any], tool_call)
                     function = cast(Dict[str, Any], tool_call_dict["function"])
+                    function_name = function.get("name")
+                    function_arguments = function.get("arguments", "")
+                    if not isinstance(function_name, str):
+                        continue
                     mistral_function_call = FunctionCall(
-                        name=function.get("name"),
-                        arguments=function.get("arguments"),
+                        name=function_name,
+                        arguments=cast(
+                            Union[Dict[str, Any], str], function_arguments
+                        ),
                     )
 
             tool_calls = None
