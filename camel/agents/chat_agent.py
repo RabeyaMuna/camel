@@ -42,6 +42,7 @@ from openai import (
     AsyncStream,
     Stream,
 )
+from openai.types.chat import ChatCompletionMessageFunctionToolCall
 from pydantic import BaseModel, ValidationError
 
 from camel.agents._types import ModelResponse, ToolCallRequest
@@ -1129,7 +1130,7 @@ class ChatAgent(BaseAgent):
 
             # Create a prompt based on the schema
             format_instruction = (
-                "\n\nPlease respond in the following JSON format:\n" "{\n"
+                "\n\nPlease respond in the following JSON format:\n{\n"
             )
 
             properties = schema.get("properties", {})
@@ -1271,8 +1272,7 @@ class ChatAgent(BaseAgent):
 
                     if not message.parsed:
                         logger.warning(
-                            f"Failed to parse JSON from response: "
-                            f"{content}"
+                            f"Failed to parse JSON from response: {content}"
                         )
 
                 except Exception as e:
@@ -1444,7 +1444,7 @@ class ChatAgent(BaseAgent):
             if self.stop_event and self.stop_event.is_set():
                 # Use the _step_terminate to terminate the agent with reason
                 logger.info(
-                    f"Termination triggered at iteration " f"{iteration_count}"
+                    f"Termination triggered at iteration {iteration_count}"
                 )
                 return self._step_terminate(
                     accumulated_context_tokens,
@@ -1633,7 +1633,7 @@ class ChatAgent(BaseAgent):
             if self.stop_event and self.stop_event.is_set():
                 # Use the _step_terminate to terminate the agent with reason
                 logger.info(
-                    f"Termination triggered at iteration " f"{iteration_count}"
+                    f"Termination triggered at iteration {iteration_count}"
                 )
                 return self._step_terminate(
                     accumulated_context_tokens,
@@ -2148,6 +2148,10 @@ class ChatAgent(BaseAgent):
         if tool_calls := response.choices[0].message.tool_calls:
             tool_call_requests = []
             for tool_call in tool_calls:
+                if not isinstance(
+                    tool_call, ChatCompletionMessageFunctionToolCall
+                ):
+                    continue
                 tool_name = tool_call.function.name
                 tool_call_id = tool_call.id
                 args = json.loads(tool_call.function.arguments)
@@ -2428,7 +2432,7 @@ class ChatAgent(BaseAgent):
             # Check termination condition
             if self.stop_event and self.stop_event.is_set():
                 logger.info(
-                    f"Termination triggered at iteration " f"{iteration_count}"
+                    f"Termination triggered at iteration {iteration_count}"
                 )
                 yield self._step_terminate(
                     num_tokens, tool_call_records, "termination_triggered"
@@ -3068,7 +3072,7 @@ class ChatAgent(BaseAgent):
             # Check termination condition
             if self.stop_event and self.stop_event.is_set():
                 logger.info(
-                    f"Termination triggered at iteration " f"{iteration_count}"
+                    f"Termination triggered at iteration {iteration_count}"
                 )
                 yield self._step_terminate(
                     num_tokens, tool_call_records, "termination_triggered"
