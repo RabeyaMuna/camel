@@ -79,8 +79,9 @@ class JinaRerankerToolkit(BaseToolkit):
             import torch
             from transformers import AutoModel
 
+            model_name = self.model_name or "jinaai/jina-reranker-m0"
             self.model = AutoModel.from_pretrained(
-                self.model_name,
+                model_name,
                 torch_dtype="auto",
                 trust_remote_code=True,
             )
