@@ -12,7 +12,7 @@ repos:
     hooks:
       - id: mypy
         name: Check mypy
-        entry: uv run mypy --namespace-packages -p camel -p test -p apps
+        entry: uv run --frozen mypy --namespace-packages -p camel -p test -p apps
         language: system
         types: [python]
         pass_filenames: false
