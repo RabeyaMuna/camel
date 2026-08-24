@@ -1,13 +1,8 @@
 name: Test Minimal Dependency
 
-on:
-  pull_request:
-    paths:
-      - "pyproject.toml"
-      - "camel/**"
-      - "examples/**"
-      - "test/integration_test/**"
-      - ".github/workflows/test-minimal-install.yml"
+on: push
+permissions:
+  contents: read
 
 jobs:
   minimal-dependency:
@@ -15,24 +10,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76
+      with:
+        egress-policy: audit
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
+    - name: Checkout repository
+      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
 
-      - name: Create and activate virtual environment
-        run: |
-          python -m venv .venv
-          source .venv/bin/activate
-          pip install --upgrade pip
-          pip install -e .
+    - name: Set up Python
+      uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c
+      with:
+        python-version: '3.10'
 
-      - name: Run integration test on minimal examples
-        env:
-          OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
-        run: |
-          source .venv/bin/activate
-          pip install pytest dotenv
+    - name: Create virtual environment and install dependencies
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install --upgrade pip
+        pip install -e .
+
+    - name: Run integration tests
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        source .venv/bin/activate
+        pip install pytest dotenv
+
+        if [ -z "$OPENAI_API_KEY" ]; then
+          echo "No OPENAI_API_KEY found. Running non-model_backend tests only."
+          pytest test/integration_test/test_minimal_dependency.py -m "not model_backend"
+        else
+          echo "OPENAI_API_KEY found. Running all tests."
           pytest test/integration_test/test_minimal_dependency.py
+        fi
