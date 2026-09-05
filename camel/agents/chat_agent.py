@@ -39,7 +39,7 @@ from openai import (
     AsyncStream,
     Stream,
 )
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError  # type: ignore[import-not-found]
 
 from camel.agents._types import ModelResponse, ToolCallRequest
 from camel.agents._utils import (
@@ -153,7 +153,7 @@ class ChatAgent(BaseAgent):
             (default: :obj:`None`)
         output_language (str, optional): The language to be output by the
             agent. (default: :obj:`None`)
-        tools (Optional[List[Union[FunctionTool, Callable]]], optional): List
+        tools (Optional[List[Union[FunctionTool, Callable[..., Any]]], optional): List
             of available :obj:`FunctionTool` or :obj:`Callable`. (default:
             :obj:`None`)
         external_tools (Optional[List[Union[FunctionTool, Callable,
@@ -205,9 +205,9 @@ class ChatAgent(BaseAgent):
         message_window_size: Optional[int] = None,
         token_limit: Optional[int] = None,
         output_language: Optional[str] = None,
-        tools: Optional[List[Union[FunctionTool, Callable]]] = None,
+        tools: Optional[List[Union[FunctionTool, Callable[..., Any]]]] = None,
         external_tools: Optional[
-            List[Union[FunctionTool, Callable, Dict[str, Any]]]
+            List[Union[FunctionTool, Callable[..., Any], Dict[str, Any]]]
         ] = None,
         response_terminators: Optional[List[ResponseTerminator]] = None,
         scheduling_strategy: str = "round_robin",
@@ -297,14 +297,14 @@ class ChatAgent(BaseAgent):
         # Store images to attach to next user message
         self.pause_event = pause_event
 
-    def reset(self):
+    def reset(self) -> None:
         r"""Resets the :obj:`ChatAgent` to its initial state."""
         self.terminated = False
         self.init_messages()
         self._pending_images = []
         self._image_retry_count = {}
         for terminator in self.response_terminators:
-            terminator.reset()
+            terminator.reset()  # type: ignore[no-untyped-call]
 
     def _resolve_models(
         self,
@@ -376,7 +376,7 @@ class ChatAgent(BaseAgent):
             )
 
     def _resolve_model_list(
-        self, model_list: list
+        self, model_list: list[Any]
     ) -> Union[BaseModelBackend, List[BaseModelBackend]]:
         r"""Resolves a list of model specifications into model backend
         instances.
@@ -401,7 +401,7 @@ class ChatAgent(BaseAgent):
             )
         elif isinstance(model_list[0], BaseModelBackend):
             # List of pre-instantiated models
-            return model_list  # type: ignore[return-value]
+            return model_list
         elif isinstance(model_list[0], (str, ModelType)):
             # List of strings or ModelTypes -> use default platform
             model_platform = ModelPlatformType.DEFAULT
@@ -416,7 +416,7 @@ class ChatAgent(BaseAgent):
                 resolved_models_list.append(
                     ModelFactory.create(
                         model_platform=model_platform,
-                        model_type=model_type_item,  # type: ignore[arg-type]
+                        model_type=model_type_item,
                     )
                 )
             return resolved_models_list
@@ -424,7 +424,7 @@ class ChatAgent(BaseAgent):
             # List of tuples (platform, type)
             resolved_models_list = []
             for model_spec in model_list:
-                platform, type_ = (  # type: ignore[index]
+                platform, type_ = (
                     model_spec[0],
                     model_spec[1],
                 )
@@ -480,18 +480,18 @@ class ChatAgent(BaseAgent):
         r"""Returns a set of external tool names."""
         return set(self._external_tool_schemas.keys())
 
-    def add_tool(self, tool: Union[FunctionTool, Callable]) -> None:
+    def add_tool(self, tool: Union[FunctionTool, Callable[..., Any]]) -> None:
         r"""Add a tool to the agent."""
         new_tool = convert_to_function_tool(tool)
         self._internal_tools[new_tool.get_function_name()] = new_tool
 
-    def add_tools(self, tools: List[Union[FunctionTool, Callable]]) -> None:
+    def add_tools(self, tools: List[Union[FunctionTool, Callable[..., Any]]]) -> None:
         r"""Add a list of tools to the agent."""
         for tool in tools:
             self.add_tool(tool)
 
     def add_external_tool(
-        self, tool: Union[FunctionTool, Callable, Dict[str, Any]]
+        self, tool: Union[FunctionTool, Callable[..., Any], Dict[str, Any]]
     ) -> None:
         new_tool_schema = convert_to_schema(tool)
         self._external_tool_schemas[new_tool_schema["name"]] = new_tool_schema
@@ -563,7 +563,7 @@ class ChatAgent(BaseAgent):
         # 1. Helper to write a record to memory
         def _write_single_record(
             message: BaseMessage, role: OpenAIBackendRole, timestamp: float
-        ):
+        ) -> None:
             self.memory.write_record(
                 MemoryRecord(
                     message=message,
@@ -1065,7 +1065,7 @@ class ChatAgent(BaseAgent):
                 continue
 
             prompt = SIMPLE_FORMAT_PROMPT.format(content=message.content)
-            openai_message: OpenAIMessage = {"role": "user", "content": prompt}
+            openai_message: OpenAIMessage = {"role": "user", "content": prompt}  # type: ignore[valid-type]
             # Explicitly set the tools to empty list to avoid calling tools
             response = self._get_model_response(
                 [openai_message], 0, response_format, []
@@ -1094,14 +1094,14 @@ class ChatAgent(BaseAgent):
                 continue
 
             prompt = SIMPLE_FORMAT_PROMPT.format(content=message.content)
-            openai_message: OpenAIMessage = {"role": "user", "content": prompt}
+            openai_message: OpenAIMessage = {"role": "user", "content": prompt}  # type: ignore[valid-type]
             response = await self._aget_model_response(
                 [openai_message], 0, response_format, []
             )
             message.content = response.output_messages[0].content
             self._try_format_message(message, response_format)
 
-    @observe()
+    @observe()  # type: ignore[untyped-decorator]
     def step(
         self,
         input_message: Union[BaseMessage, str],
@@ -1262,11 +1262,11 @@ class ChatAgent(BaseAgent):
         )
 
     @property
-    def chat_history(self) -> List[OpenAIMessage]:
+    def chat_history(self) -> List[OpenAIMessage]:  # type: ignore[valid-type]
         openai_messages, _ = self.memory.get_context()
         return openai_messages
 
-    @observe()
+    @observe()  # type: ignore[untyped-decorator]
     async def astep(
         self,
         input_message: Union[BaseMessage, str],
@@ -1412,7 +1412,7 @@ class ChatAgent(BaseAgent):
                             import base64
                             import io
 
-                            from PIL import Image
+                            from PIL import Image  # type: ignore[import-not-found]
 
                             # Extract base64 data from data URL format
                             if img_data.startswith("data:image"):
@@ -1541,7 +1541,7 @@ class ChatAgent(BaseAgent):
             info=info,
         )
 
-    def _process_pending_images(self) -> List:
+    def _process_pending_images(self) -> List[Any]:
         r"""Process pending images with retry logic and return PIL Image list.
 
         Returns:
@@ -1630,10 +1630,10 @@ class ChatAgent(BaseAgent):
         ]
         return any(keyword in error_msg for keyword in vision_keywords)
 
-    def _has_images(self, messages: List[OpenAIMessage]) -> bool:
+    def _has_images(self, messages: List[OpenAIMessage]) -> bool:  # type: ignore[valid-type]
         r"""Check if any message contains images."""
         for msg in messages:
-            content = msg.get('content')
+            content = msg.get('content')  # type: ignore[attr-defined]
             if isinstance(content, list):
                 for item in content:
                     if (
@@ -1644,12 +1644,12 @@ class ChatAgent(BaseAgent):
         return False
 
     def _strip_images_from_messages(
-        self, messages: List[OpenAIMessage]
-    ) -> List[OpenAIMessage]:
+        self, messages: List[OpenAIMessage]  # type: ignore[valid-type]
+    ) -> List[Dict[str, Any]]:
         r"""Remove images from messages, keeping only text content."""
         stripped_messages = []
         for msg in messages:
-            content = msg.get('content')
+            content = msg.get('content')  # type: ignore[attr-defined]
             if isinstance(content, list):
                 # Extract only text content from multimodal messages
                 text_content = ""
@@ -1658,7 +1658,7 @@ class ChatAgent(BaseAgent):
                         text_content += item.get('text', '')
 
                 # Create new message with only text content
-                new_msg = msg.copy()
+                new_msg = msg.copy()  # type: ignore[attr-defined]
                 new_msg['content'] = (
                     text_content
                     or "[Image content removed - model doesn't support vision]"
@@ -1671,7 +1671,7 @@ class ChatAgent(BaseAgent):
 
     def _get_model_response(
         self,
-        openai_messages: List[OpenAIMessage],
+        openai_messages: List[OpenAIMessage],  # type: ignore[valid-type]  # type: ignore[valid-type]
         num_tokens: int,
         response_format: Optional[Type[BaseModel]] = None,
         tool_schemas: Optional[List[Dict[str, Any]]] = None,
@@ -1739,7 +1739,7 @@ class ChatAgent(BaseAgent):
 
     async def _aget_model_response(
         self,
-        openai_messages: List[OpenAIMessage],
+        openai_messages: List[OpenAIMessage],  # type: ignore[valid-type]
         num_tokens: int,
         response_format: Optional[Type[BaseModel]] = None,
         tool_schemas: Optional[List[Dict[str, Any]]] = None,
@@ -1805,7 +1805,7 @@ class ChatAgent(BaseAgent):
         else:
             return await self._ahandle_stream_response(response, num_tokens)
 
-    def _sanitize_messages_for_logging(self, messages):
+    def _sanitize_messages_for_logging(self, messages: List[OpenAIMessage]) -> List[OpenAIMessage]:  # type: ignore[valid-type]
         r"""Sanitize OpenAI messages for logging by replacing base64 image
         data with a simple message and a link to view the image.
 
@@ -1825,7 +1825,7 @@ class ChatAgent(BaseAgent):
         sanitized_messages = []
         for msg in messages:
             if isinstance(msg, dict):
-                sanitized_msg = msg.copy()
+                sanitized_msg = msg.copy()  # type: ignore[attr-defined]
                 # Check if content is a list (multimodal content with images)
                 if isinstance(sanitized_msg.get('content'), list):
                     content_list = []
@@ -2080,8 +2080,8 @@ class ChatAgent(BaseAgent):
         Returns:
             _ModelResponse: a parsed model response.
         """
-        content_dict: defaultdict = defaultdict(lambda: "")
-        finish_reasons_dict: defaultdict = defaultdict(lambda: "")
+        content_dict: defaultdict[int, str] = defaultdict(lambda: "")
+        finish_reasons_dict: defaultdict[int, str] = defaultdict(lambda: "")
         output_messages: List[BaseMessage] = []
         response_id: str = ""
         # All choices in one response share one role
@@ -2122,8 +2122,8 @@ class ChatAgent(BaseAgent):
         Returns:
             _ModelResponse: a parsed model response.
         """
-        content_dict: defaultdict = defaultdict(lambda: "")
-        finish_reasons_dict: defaultdict = defaultdict(lambda: "")
+        content_dict: defaultdict[int, str] = defaultdict(lambda: "")
+        finish_reasons_dict: defaultdict[int, str] = defaultdict(lambda: "")
         output_messages: List[BaseMessage] = []
         response_id: str = ""
         # All choices in one response share one role
@@ -2152,8 +2152,8 @@ class ChatAgent(BaseAgent):
     def _handle_chunk(
         self,
         chunk: ChatCompletionChunk,
-        content_dict: defaultdict,
-        finish_reasons_dict: defaultdict,
+        content_dict: defaultdict[int, str],
+        finish_reasons_dict: defaultdict[int, str],
         output_messages: List[BaseMessage],
     ) -> None:
         r"""Handle a chunk of the model response."""
@@ -2339,7 +2339,7 @@ class ChatAgent(BaseAgent):
         result: Any,
         tool_call_id: str,
         mask_output: bool = False,
-    ):
+    ) -> ToolCallingRecord:
         r"""Record the tool calling information in the memory, and return the
         tool calling record.
 
@@ -2429,7 +2429,7 @@ class ChatAgent(BaseAgent):
             total_tokens=completion_tokens + prompt_tokens,
         )
 
-    def add_model_scheduling_strategy(self, name: str, strategy_fn: Callable):
+    def add_model_scheduling_strategy(self, name: str, strategy_fn: Callable[..., Any]) -> None:
         r"""Add a scheduling strategy method provided by user to ModelManger.
 
         Args:
@@ -2509,7 +2509,7 @@ class ChatAgent(BaseAgent):
         dependencies: Optional[List[str]] = None,
         host: str = "localhost",
         port: int = 8000,
-    ):
+    ) -> Any:
         r"""Expose this ChatAgent as an MCP server.
 
         Args:
@@ -2528,7 +2528,7 @@ class ChatAgent(BaseAgent):
         Returns:
             FastMCP: An MCP server instance that can be run.
         """
-        from mcp.server.fastmcp import FastMCP
+        from mcp.server.fastmcp import FastMCP  # type: ignore[import-not-found]
 
         # Combine dependencies
         all_dependencies = ["camel-ai[all]"]
@@ -2546,12 +2546,12 @@ class ChatAgent(BaseAgent):
         agent_instance = self
 
         # Define functions first
-        async def step(message, response_format=None):
+        async def step(message: str, response_format: Optional[Type[BaseModel]] = None) -> Dict[str, Any]:
             r"""Execute a single step in the chat session with the agent."""
             format_cls = None
             if response_format:
                 format_cls = model_from_json_schema(
-                    "DynamicResponseFormat", response_format
+                    "DynamicResponseFormat", response_format  # type: ignore[arg-type]
                 )
             response = await agent_instance.astep(message, format_cls)
             return {
@@ -2562,13 +2562,13 @@ class ChatAgent(BaseAgent):
             }
 
         # Reset tool
-        def reset():
+        def reset() -> Dict[str, str]:
             r"""Reset the chat agent to its initial state."""
             agent_instance.reset()
             return {"status": "success", "message": "Agent reset successfully"}
 
         # Set language tool
-        def set_output_language(language):
+        def set_output_language(language: str) -> Dict[str, str]:
             r"""Set the output language for the chat agent."""
             agent_instance.output_language = language
             return {
@@ -2577,7 +2577,7 @@ class ChatAgent(BaseAgent):
             }
 
         # Agent info resource and tool
-        def get_agent_info():
+        def get_agent_info() -> Dict[str, Any]:
             r"""Get information about the agent."""
             info = {
                 "agent_id": agent_instance.agent_id,
@@ -2590,27 +2590,27 @@ class ChatAgent(BaseAgent):
             return info
 
         # Chat history resource and tool
-        def get_chat_history():
+        def get_chat_history() -> List[Dict[str, Any]]:
             r"""Get the chat history for the agent."""
             # Convert messages to simple serializable format
             messages = []
             for msg in agent_instance.chat_history:
                 # Create a simplified version of each message
                 msg_dict = {
-                    "role": msg.get("role", ""),
-                    "content": msg.get("content", ""),
+                    "role": msg.get("role", ""),  # type: ignore
+                    "content": msg.get("content", ""),  # type: ignore
                 }
                 # Include function calls if present
-                if "function_call" in msg:
+                if "function_call" in msg:  # type: ignore
                     msg_dict["function_call"] = {
-                        "name": msg["function_call"].get("name", ""),
-                        "arguments": msg["function_call"].get("arguments", ""),
+                        "name": msg["function_call"].get("name", ""),  # type: ignore
+                        "arguments": msg["function_call"].get("arguments", ""),  # type: ignore
                     }
                 messages.append(msg_dict)
             return messages
 
         # Available tools resource and tool
-        def get_available_tools():
+        def get_available_tools() -> Dict[str, Any]:
             r"""Get a list of available internal tools."""
             tool_info = {}
             for name, tool in agent_instance.tool_dict.items():

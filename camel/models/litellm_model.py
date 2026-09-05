@@ -179,7 +179,7 @@ class LiteLLMModel(BaseModelBackend):
         request_config = self.model_config_dict.copy()
         if tools:
             request_config['tools'] = tools
-            
+
         update_current_observation(
             input={
                 "messages": messages,

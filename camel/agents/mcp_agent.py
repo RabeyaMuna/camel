@@ -44,7 +44,7 @@ try:
 except (ImportError, AttributeError):
     from camel.utils import track_agent
 
-logger = get_logger(__name__)
+logger = get_logger(__name__)  # type: ignore[no-untyped-call]
 
 
 SYS_MSG_CONTENT = """
@@ -123,9 +123,9 @@ class MCPAgent(ChatAgent):
         ] = None,
         local_config: Optional[Dict[str, Any]] = None,
         local_config_path: Optional[str] = None,
-        tools: Optional[List[Union[FunctionTool, Callable]]] = None,
+        tools: Optional[List[Union[FunctionTool, Callable[..., Any]]] = None,
         function_calling_available: bool = True,
-        **kwargs,
+        **kwargs: Any,
     ):
         if model is None:
             model = ModelFactory.create(
@@ -211,7 +211,7 @@ class MCPAgent(ChatAgent):
         ] = None,
         model: Optional[BaseModelBackend] = None,
         function_calling_available: bool = False,
-        **kwargs,
+        **kwargs: Any,
     ) -> "MCPAgent":
         r"""Create and connect an MCPAgent instance.
 
@@ -263,7 +263,7 @@ class MCPAgent(ChatAgent):
                     # Create a custom registry config for each server
                     registry_config = BaseMCPRegistryConfig(
                         type=MCPRegistryType.CUSTOM,
-                        os=platform.system().lower(),  # type: ignore [arg-type]
+                        os=platform.system().lower(),
                         **server_config,
                     )
                     final_registry_configs.append(registry_config)
@@ -309,10 +309,10 @@ class MCPAgent(ChatAgent):
     async def disconnect(self) -> None:
         r"""Disconnect from the MCP servers."""
         if self.mcp_toolkit:
-            await self.mcp_toolkit.disconnect()
+            await self.mcp_toolkit.disconnect()  # type: ignore[no-untyped-call]
 
     async def astep(
-        self, input_message: Union[BaseMessage, str], *args, **kwargs
+        self, input_message: Union[BaseMessage, str], *args: Any, **kwargs: Any
     ) -> ChatAgentResponse:
         r"""Asynchronous step function. Make sure MCP toolkit is connected
         before proceeding.

@@ -15,14 +15,16 @@ import asyncio
 import base64
 import datetime
 from pathlib import Path
+from typing import Any, Callable, cast
 
-import streamlit as st
-from dotenv import load_dotenv
+import streamlit as st  # type: ignore[import-not-found]
+from dotenv import load_dotenv  # type: ignore[import-not-found]
 
 from camel.agents import ChatAgent
+from camel.responses import ChatAgentResponse
 from camel.logger import set_log_level
 from camel.models import ModelFactory
-from camel.toolkits import MCPToolkit
+from camel.toolkits import FunctionTool, MCPToolkit
 from camel.types import ModelPlatformType, ModelType
 
 # ——— Page config ———
@@ -55,7 +57,7 @@ st.markdown(
 
 # ——— Load env & logging ———
 load_dotenv()
-set_log_level("DEBUG")
+set_log_level("DEBUG")  # type: ignore[no-untyped-call]
 
 # ——— Persist defaults ———
 if "checkin" not in st.session_state:
@@ -97,11 +99,14 @@ if st.sidebar.button("Search Listings"):
     # Run the agent
     with st.spinner("Searching…"):
 
-        async def run_task():
+        async def run_task() -> ChatAgentResponse:
             config_path = Path(__file__).parent / "mcp_servers_config.json"
             mcp = MCPToolkit(config_path=str(config_path))
             await mcp.connect()
-            tools = list(mcp.get_tools())
+            tools = cast(
+                list[FunctionTool | Callable[..., Any]],
+                list(mcp.get_tools()),
+            )
             agent = ChatAgent(
                 system_message="You are an Airbnb search assistant.",
                 model=ModelFactory.create(
@@ -113,10 +118,10 @@ if st.sidebar.button("Search Listings"):
             )
             res = await agent.astep(prompt)
             try:
-                await mcp.disconnect()
+                await mcp.disconnect()  # type: ignore[no-untyped-call]
             except Exception:
                 pass
-            return res
+            return res  # type: ignore[no-any-return]
 
         result = asyncio.run(run_task())
 

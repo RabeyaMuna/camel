@@ -15,14 +15,16 @@ import asyncio
 import base64
 import logging
 from pathlib import Path
+from typing import Any, Callable, cast
 
-import streamlit as st
-from dotenv import load_dotenv
+import streamlit as st  # type: ignore[import-not-found]
+from dotenv import load_dotenv  # type: ignore[import-not-found]
 
 from camel.agents import ChatAgent
+from camel.responses import ChatAgentResponse
 from camel.logger import set_log_level
 from camel.models import ModelFactory
-from camel.toolkits import MCPToolkit
+from camel.toolkits import FunctionTool, MCPToolkit
 from camel.types import ModelPlatformType, ModelType
 
 # Silence noisy asyncio cancellation messages
@@ -55,7 +57,7 @@ st.markdown(
 
 # ——— Initialize ———
 load_dotenv()
-set_log_level("DEBUG")
+set_log_level("DEBUG")  # type: ignore[no-untyped-call]
 
 # ——— Session State Setup ———
 if 'repo_url' not in st.session_state:
@@ -91,11 +93,14 @@ if user_input := st.chat_input("Ask a question about the repo…"):
     st.chat_message('user').markdown(user_input)
 
     # Define async function to query the agent
-    async def query_agent(question: str):
+    async def query_agent(question: str) -> str:
         config_path = Path(__file__).parent / "mcp_servers_config.json"
         toolkit = MCPToolkit(config_path=str(config_path))
         await toolkit.connect()
-        tools = list(toolkit.get_tools())
+        tools = cast(
+            list[FunctionTool | Callable[..., Any]],
+            list(toolkit.get_tools()),
+        )
         agent = ChatAgent(
             system_message=f"You are a GitHub repo assistant. Repository: {st.session_state['repo_url']}",  # noqa: E501
             model=ModelFactory.create(
@@ -107,8 +112,8 @@ if user_input := st.chat_input("Ask a question about the repo…"):
         )
         prompt = f"{question}\nRepository: {st.session_state['repo_url']}"
         response = await agent.astep(prompt)
-        await toolkit.disconnect()
-        return response.msgs[0].content
+        await toolkit.disconnect()  # type: ignore[no-untyped-call]
+        return response.msgs[0].content  # type: ignore[no-any-return]
 
     # Run the agent
     with st.spinner("Thinking…"):

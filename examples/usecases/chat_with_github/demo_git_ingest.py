@@ -15,14 +15,16 @@ import asyncio
 import base64
 import logging
 from pathlib import Path
+from typing import Any, Callable, cast
 
-import streamlit as st
-from dotenv import load_dotenv
+import streamlit as st  # type: ignore[import-not-found]
+from dotenv import load_dotenv  # type: ignore[import-not-found]
 
 from camel.agents import ChatAgent
+from camel.responses import ChatAgentResponse
 from camel.logger import set_log_level
 from camel.models import ModelFactory
-from camel.toolkits import MCPToolkit
+from camel.toolkits import FunctionTool, MCPToolkit
 from camel.types import ModelPlatformType, ModelType
 
 # Silence noisy asyncio cancellation messages
@@ -54,7 +56,7 @@ st.markdown(
 
 # ——— Initialize ———
 load_dotenv()
-set_log_level("DEBUG")
+set_log_level("DEBUG")  # type: ignore[no-untyped-call]
 
 # ——— Sidebar Inputs ———
 st.sidebar.header("Search parameters")
@@ -74,11 +76,14 @@ if st.sidebar.button("Run Query"):
     cols[1].write(f"**Query:** {query}")
 
     # call agent
-    async def run_task():
+    async def run_task() -> ChatAgentResponse:
         config = Path(__file__).parent / "mcp_servers_config.json"
         toolkit = MCPToolkit(config_path=str(config))
         await toolkit.connect()
-        tools = list(toolkit.get_tools())
+        tools = cast(
+            list[FunctionTool | Callable[..., Any]],
+            list(toolkit.get_tools()),
+        )
         agent = ChatAgent(
             system_message="You are a GitHub repo explorer.",
             model=ModelFactory.create(
@@ -90,8 +95,8 @@ if st.sidebar.button("Run Query"):
         )
         prompt = f"{query}\nRepository: {repo_url}"
         resp = await agent.astep(prompt)
-        await toolkit.disconnect()
-        return resp
+        await toolkit.disconnect()  # type: ignore[no-untyped-call]
+        return resp  # type: ignore[no-any-return]
 
     with st.spinner("Running query…"):
         result = asyncio.run(run_task())
