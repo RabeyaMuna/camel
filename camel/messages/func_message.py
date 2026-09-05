@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 from camel.messages import (
     BaseMessage,
@@ -47,16 +47,16 @@ class FunctionCallingMessage(BaseMessage):
             (default: :obj:`None`)
         tool_call_id (Optional[str]): The ID of the tool call, if available.
             (default: :obj:`None`)
-        mask_output (Optional[bool]): Whether to return a sanitized placeholder instead 
-            of the raw tool output.
+        mask_output (Optional[bool]): Whether to return a sanitized
+            placeholder instead of the raw tool output.
             (default: :obj:`False`)
     """
 
-    func_name: Optional[str] = None
-    args: Optional[Dict] = None
-    result: Optional[Any] = None
-    tool_call_id: Optional[str] = None
-    mask_output: Optional[bool] = False
+    func_name: str | None = None
+    args: dict | None = None
+    result: Any | None = None
+    tool_call_id: str | None = None
+    mask_output: bool | None = False
 
     def to_openai_message(
         self,
@@ -80,9 +80,9 @@ class FunctionCallingMessage(BaseMessage):
 
     def to_sharegpt(
         self,
-        function_format: Optional[
-            FunctionCallFormatter[ToolCall, ToolResponse]
-        ] = None,
+        function_format: (
+            FunctionCallFormatter[ToolCall, ToolResponse] | None
+        ) = None,
     ) -> ShareGPTMessage:
         r"""Convert FunctionCallingMessage to ShareGPT message.
 
@@ -166,7 +166,7 @@ class FunctionCallingMessage(BaseMessage):
             "tool_call_id": self.tool_call_id or "null",
         }
     
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         r"""Converts the message to a dictionary.
 
         Returns:

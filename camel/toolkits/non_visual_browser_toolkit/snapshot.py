@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Dict, List, Optional
 
 if TYPE_CHECKING:
-    from playwright.async_api import Page
+    from playwright.async_api import Page  # type: ignore[import-not-found]
 
 # Logging support
 from camel.logger import get_logger

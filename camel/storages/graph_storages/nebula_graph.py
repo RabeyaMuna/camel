@@ -27,10 +27,10 @@ logger = logging.getLogger(__name__)
 
 
 if TYPE_CHECKING:
-    from nebula3.data.ResultSet import (  # type: ignore[import-untyped]
+    from nebula3.data.ResultSet import (  # type: ignore[import-not-found]
         ResultSet,
     )
-    from nebula3.gclient.net import (  # type: ignore[import-untyped]
+    from nebula3.gclient.net import (  # type: ignore[import-not-found]
         ConnectionPool,
         Session,
     )
@@ -78,7 +78,7 @@ class NebulaGraph(BaseGraphStorage):
         Raises:
             Exception: If the connection pool initialization fails.
         """
-        from nebula3.Config import Config  # type: ignore[import-untyped]
+        from nebula3.Config import Config  # type: ignore[import-not-found]
         from nebula3.gclient.net import ConnectionPool
 
         config = Config()

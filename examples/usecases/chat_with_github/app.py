@@ -19,6 +19,9 @@ from pathlib import Path
 import streamlit as st
 from dotenv import load_dotenv
 
+from typing import Any, Callable, cast
+
+from camel.tools import FunctionTool
 from camel.agents import ChatAgent
 from camel.logger import set_log_level
 from camel.models import ModelFactory
@@ -95,7 +98,7 @@ if user_input := st.chat_input("Ask a question about the repo…"):
         config_path = Path(__file__).parent / "mcp_servers_config.json"
         toolkit = MCPToolkit(config_path=str(config_path))
         await toolkit.connect()
-        tools = list(toolkit.get_tools())
+        tools = cast("list[FunctionTool | Callable[..., Any]] | None", list(toolkit.get_tools()))
         agent = ChatAgent(
             system_message=f"You are a GitHub repo assistant. Repository: {st.session_state['repo_url']}",  # noqa: E501
             model=ModelFactory.create(

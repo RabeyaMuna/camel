@@ -303,7 +303,7 @@ class AnthropicTokenCounter(BaseTokenCounter):
         Returns:
             int: Number of tokens in the messages.
         """
-        from anthropic.types import MessageParam
+        from anthropic.types import MessageParam  # type: ignore[import-not-found]
 
         return self.client.messages.count_tokens(
             messages=[

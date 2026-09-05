@@ -546,8 +546,8 @@ class MCPClient:
         """
         func_name = mcp_tool.name
         func_desc = mcp_tool.description or "No description provided."
-        parameters_schema = mcp_tool.inputSchema.get("properties", {})
-        required_params = mcp_tool.inputSchema.get("required", [])
+        parameters_schema = mcp_tool.input_schema.get("properties", {})
+        required_params = mcp_tool.input_schema.get("required", [])
 
         type_map = {
             "string": str,
@@ -731,7 +731,7 @@ class MCPClient:
 
     def _build_tool_schema(self, mcp_tool: types.Tool) -> Dict[str, Any]:
         r"""Build tool schema for OpenAI function calling format."""
-        input_schema = mcp_tool.inputSchema
+        input_schema = mcp_tool.input_schema
         properties = input_schema.get("properties", {})
         required = input_schema.get("required", [])
 
