@@ -569,6 +569,7 @@ module = [
     "docx",
     "fpdf",
     "mcp",
+    "mcp.server.fastmcp",
     "typer",
     "mem0",
     "math_verify.*",
