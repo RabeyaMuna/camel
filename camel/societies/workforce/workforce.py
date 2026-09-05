@@ -302,8 +302,7 @@ class Workforce(BaseNode):
             if coordinator_agent.system_message is not None:
                 user_sys_msg_content = coordinator_agent.system_message.content
                 combined_content = (
-                    f"{user_sys_msg_content}\n\n"
-                    f"{coord_agent_sys_msg.content}"
+                    f"{user_sys_msg_content}\n\n{coord_agent_sys_msg.content}"
                 )
                 combined_sys_msg = BaseMessage.make_assistant_message(
                     role_name=coordinator_agent.system_message.role_name,
@@ -373,8 +372,7 @@ class Workforce(BaseNode):
             if task_agent.system_message is not None:
                 user_task_sys_msg_content = task_agent.system_message.content
                 combined_task_content = (
-                    f"{user_task_sys_msg_content}\n\n"
-                    f"{task_sys_msg.content}"
+                    f"{user_task_sys_msg_content}\n\n{task_sys_msg.content}"
                 )
                 combined_task_sys_msg = BaseMessage.make_assistant_message(
                     role_name=task_agent.system_message.role_name,
@@ -2170,8 +2168,7 @@ class Workforce(BaseNode):
                     "worker creation"
                 )
                 new_node_conf = WorkerConf(
-                    description=f"Fallback worker for task: "
-                    f"{task.content}",
+                    description=f"Fallback worker for task: {task.content}",
                     role="General Assistant",
                     sys_msg="You are a general assistant that can help "
                     "with various tasks.",
@@ -2181,7 +2178,7 @@ class Workforce(BaseNode):
                     response.msg.content,
                     schema=WorkerConf,
                     fallback_values={
-                        "description": f"Worker for task: " f"{task.content}",
+                        "description": f"Worker for task: {task.content}",
                         "role": "Task Specialist",
                         "sys_msg": f"You are a specialist for: {task.content}",
                     },
@@ -2209,8 +2206,7 @@ class Workforce(BaseNode):
                 )
                 # Create a fallback worker configuration
                 new_node_conf = WorkerConf(
-                    description=f"Fallback worker for "
-                    f"task: {task.content}",
+                    description=f"Fallback worker for task: {task.content}",
                     role="General Assistant",
                     sys_msg="You are a general assistant that can help "
                     "with various tasks.",

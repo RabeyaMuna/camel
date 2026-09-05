@@ -51,17 +51,14 @@ The main class that implements the CoT generation system with the following capa
   verifier_agent = ChatAgent("System message for verifier")
 
   # Define golden answers
-  golden_answers = {
-      "question1": "answer1",
-      "question2": "answer2"
-  }
+  golden_answers = {"question1": "answer1", "question2": "answer2"}
 
   # Create generator
   cot_generator = CoTDataGenerator(
       generator_agent=generator_agent,
       verifier_agent=verifier_agent,
       golden_answers=golden_answers,
-      search_limit=100
+      search_limit=100,
   )
 
   # Generate solution
@@ -167,7 +164,7 @@ The main class that implements the CoT generation system with the following capa
       seed='seed_tasks.jsonl',  # Path to human-written seed tasks
       num_machine_instructions=5,
       data_output_path='./data_output.json',
-      human_to_machine_ratio=(6, 2)
+      human_to_machine_ratio=(6, 2),
   )
 
   # Generate instructions
@@ -188,17 +185,14 @@ The main class that implements the CoT generation system with the following capa
       "keyword": {},
       "punctuation": {},
       "non_english": {},
-      "rouge_similarity": {
-          "threshold": 0.7,
-          "metric": "rouge-l"
-      }
+      "rouge_similarity": {"threshold": 0.7, "metric": "rouge-l"},
   }
 
   pipeline = SelfInstructPipeline(
       agent=agent,
       seed='seed_tasks.jsonl',
       instruction_filter=InstructionFilter(filter_config),
-      num_machine_instructions=5
+      num_machine_instructions=5,
   )
   ```
 </Card>
@@ -301,10 +295,7 @@ The main class that implements the CoT generation system with the following capa
   Rapidly generate a multi-hop QA dataset from your own text or source files:
 
   ```python
-  from camel.datagen.source2synth import (
-      UserDataProcessor,
-      ProcessorConfig
-  )
+  from camel.datagen.source2synth import UserDataProcessor, ProcessorConfig
 
   # Create configuration
   config = ProcessorConfig(
@@ -321,8 +312,7 @@ The main class that implements the CoT generation system with the following capa
 
   # Process a single text
   result = processor.process_text(
-      "Your source text here",
-      source="example_source"
+      "Your source text here", source="example_source"
   )
 
   # Process multiple texts
@@ -426,7 +416,7 @@ The main class that implements the CoT generation system with the following capa
       evaluate_agent=evaluate_agent,
       problems=problems,
       max_iterations=3,
-      output_path="star_output.json"
+      output_path="star_output.json",
   )
 
   results = pipeline.generate()
@@ -443,7 +433,7 @@ The main class that implements the CoT generation system with the following capa
   reward_model = NemotronRewardModel(
       model_type=ModelType.NVIDIA_NEMOTRON_340B_REWARD,
       url="https://integrate.api.nvidia.com/v1",
-      api_key="your_api_key"
+      api_key="your_api_key",
   )
 
   # Create pipeline with reward model
@@ -452,11 +442,7 @@ The main class that implements the CoT generation system with the following capa
       evaluate_agent=evaluate_agent,
       problems=problems,
       reward_model=reward_model,
-      score_threshold={
-          "correctness": 0.8,
-          "clarity": 0.7,
-          "completeness": 0.7
-      }
+      score_threshold={"correctness": 0.8, "clarity": 0.7, "completeness": 0.7},
   )
   ```
 </Card>

@@ -31,9 +31,11 @@ You can easily create your own tools for any use case. Just write a Python funct
 ```python add_tool.py lines icon="python"
 from camel.toolkits import FunctionTool
 
+
 def add(a: int, b: int) -> int:
     """Adds two numbers."""
     return a + b
+
 
 add_tool = FunctionTool(add)
 ```
@@ -42,10 +44,10 @@ add_tool = FunctionTool(add)
 Inspect your tool’s properties—such as its name, description, and OpenAI-compatible schema—using built-in methods:
 <CodeGroup>
 ```python tool_properties.py
-print(add_tool.get_function_name())          # add
-print(add_tool.get_function_description())   # Adds two numbers.
-print(add_tool.get_openai_function_schema()) # OpenAI Functions schema
-print(add_tool.get_openai_tool_schema())     # OpenAI Tool format
+print(add_tool.get_function_name())  # add
+print(add_tool.get_function_description())  # Adds two numbers.
+print(add_tool.get_openai_function_schema())  # OpenAI Functions schema
+print(add_tool.get_openai_tool_schema())  # OpenAI Tool format
 ```
 ```text output.txt
 add
@@ -63,16 +65,18 @@ Toolkits group related tools for specialized tasks—search, math, or automation
 
 ```python toolkit_usage.py lines icon="python"
 from camel.toolkits import SearchToolkit
+
 toolkit = SearchToolkit()
-tools   = toolkit.get_tools()
+tools = toolkit.get_tools()
 ```
 
 You can also wrap toolkit methods as individual FunctionTools:
 
 ```python custom_tools.py lines icon="python"
 from camel.toolkits import FunctionTool, SearchToolkit
+
 google_tool = FunctionTool(SearchToolkit().search_google)
-wiki_tool   = FunctionTool(SearchToolkit().search_wiki)
+wiki_tool = FunctionTool(SearchToolkit().search_wiki)
 ```
 </Card>
 
@@ -81,6 +85,7 @@ You can enhance any <b>ChatAgent</b> with custom or toolkit-powered tools. Just 
 
 ```python chatagent_tools.py lines icon="python"
 from camel.agents import ChatAgent
+
 tool_agent = ChatAgent(
     tools=tools,  # List of FunctionTools
 )
@@ -161,19 +166,19 @@ from camel.toolkits import ArxivToolkit
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Run Arxiv Toolkit in MCP server mode.",
-        usage="python arxiv_mcp_server.py [--mode MODE] [--timeout TIMEOUT]"
+        usage="python arxiv_mcp_server.py [--mode MODE] [--timeout TIMEOUT]",
     )
     parser.add_argument(
         "--mode",
         choices=["stdio", "sse", "streamable-http"],
         default="stdio",
-        help="MCP server mode (default: 'stdio')"
+        help="MCP server mode (default: 'stdio')",
     )
     parser.add_argument(
         "--timeout",
         type=float,
         default=None,
-        help="Timeout in seconds (default: None)"
+        help="Timeout in seconds (default: None)",
     )
     args = parser.parse_args()
 
@@ -211,6 +216,7 @@ import asyncio
 from mcp.types import CallToolResult
 from camel.toolkits.mcp_toolkit import MCPToolkit, MCPClient
 
+
 async def run_example():
     mcp_toolkit = MCPToolkit(config_path="path/to/mcp_servers_config.json")
     await mcp_toolkit.connect()
@@ -229,6 +235,7 @@ async def run_example():
     print(result.content[0].text)
 
     await mcp_toolkit.disconnect()
+
 
 if __name__ == "__main__":
     asyncio.run(run_example())

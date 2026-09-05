@@ -219,9 +219,7 @@ class NpmBuildHook(BuildHookInterface):
     def _print_manual_instructions(self, ts_dir: Path):
         """Print manual installation instructions."""
         print("Installing without TypeScript support")
-        print(
-            "To use hybrid_browser_toolkit, please install Node.js and " "run:"
-        )
+        print("To use hybrid_browser_toolkit, please install Node.js and run:")
         print(f"  cd {ts_dir}")
         print("  npm install && npm run build")
         print("  npx playwright install")

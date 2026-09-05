@@ -89,11 +89,13 @@ You can use <code>sse</code> or <code>streamable-http</code> for ACI.dev, pick w
     from camel.toolkits.mcp_toolkit import MCPToolkit
     from camel.agents import ChatAgent
 
+
     async def main():
         async with MCPToolkit(config_path="config/time.json") as toolkit:
-          agent = ChatAgent(model=model, tools=toolkit.get_tools())
-          response = await agent.astep("What time is it now?")
-          print(response.msgs[0].content)
+            agent = ChatAgent(model=model, tools=toolkit.get_tools())
+            response = await agent.astep("What time is it now?")
+            print(response.msgs[0].content)
+
 
     asyncio.run(main())
     ```
@@ -126,7 +128,12 @@ Want your MCP agent discoverable by thousands of clients?
 Register it with a hub like <a href="https://aci.dev/" target="_blank">ACI.dev</a> or similar.
 ```python Register with ACI Registry lines icon="python"
 from camel.agents import MCPAgent
-from camel.types import ACIRegistryConfig, ModelFactory, ModelPlatformType, ModelType
+from camel.types import (
+    ACIRegistryConfig,
+    ModelFactory,
+    ModelPlatformType,
+    ModelType,
+)
 import os
 
 aci_config = ACIRegistryConfig(

@@ -178,7 +178,7 @@ def check_if_running(
                         if retries < max_retries:
                             logger.warning(
                                 f"{error_msg} Retrying in {retry_delay}s... "
-                                f"(Attempt {retries+1}/{max_retries})"
+                                f"(Attempt {retries + 1}/{max_retries})"
                             )
                             time.sleep(retry_delay)
                             retries += 1
@@ -200,7 +200,7 @@ def check_if_running(
                         logger.warning(
                             f"Exception in {func.__name__}: {e}. "
                             f"Retrying in {retry_delay}s... "
-                            f"(Attempt {retries+1}/{max_retries})"
+                            f"(Attempt {retries + 1}/{max_retries})"
                         )
                         time.sleep(retry_delay)
                         retries += 1

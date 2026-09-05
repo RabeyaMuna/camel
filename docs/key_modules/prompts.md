@@ -108,7 +108,7 @@ code_prompt = CodePrompt("a = 1 + 1", code_type="python")
 
 <CodeGroup>
 ```python code_prompt_access.py
-print(code_prompt)          # >>> "a = 1 + 1"
+print(code_prompt)  # >>> "a = 1 + 1"
 print(code_prompt.code_type)  # >>> "python"
 
 code_prompt.set_code_type("python")
@@ -120,7 +120,9 @@ print(code_prompt.code_type)  # >>> "python"
 
 <CodeGroup>
 ```python code_prompt_execute.py
-code_prompt = CodePrompt("a = 1 + 1\nb = a + 1\nprint(a,b)", code_type="python")
+code_prompt = CodePrompt(
+    "a = 1 + 1\nb = a + 1\nprint(a,b)", code_type="python"
+)
 output = code_prompt.execute()
 # Running code? [Y/n]: y
 print(output)
@@ -186,24 +188,24 @@ prompt2 = TextPrompt('Welcome, {name}!')
 
 # Concatenation
 prompt3 = prompt1 + ' ' + prompt2
-print(prompt3)  
+print(prompt3)
 # >>> "Hello, {name}! Welcome, {name}!"
 print(isinstance(prompt3, TextPrompt))  # >>> True
-print(prompt3.key_words)                # >>> {'name'}
+print(prompt3.key_words)  # >>> {'name'}
 
 # Joining
 prompt4 = TextPrompt(' ').join([prompt1, prompt2])
 print(prompt4)
 # >>> "Hello, {name}! Welcome, {name}!"
 print(isinstance(prompt4, TextPrompt))  # >>> True
-print(prompt4.key_words)                # >>> {'name'}
+print(prompt4.key_words)  # >>> {'name'}
 
 # String methods
 prompt5 = prompt4.upper()
 print(prompt5)
 # >>> "HELLO, {NAME}! WELCOME, {NAME}!"
 print(isinstance(prompt5, TextPrompt))  # >>> True
-print(prompt5.key_words)                # >>> {'NAME'}
+print(prompt5.key_words)  # >>> {'NAME'}
 ```
 </CodeGroup>
 

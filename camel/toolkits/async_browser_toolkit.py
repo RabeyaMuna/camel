@@ -1386,7 +1386,7 @@ Here is a plan about how to solve the task step-by-step which you must follow:
                 The task is not completed within the round limit. Please check 
                 the last round {self.history_window} information to see if 
                 there is any useful information:
-                <history>{self.history[-self.history_window:]}</history>
+                <history>{self.history[-self.history_window :]}</history>
             """
 
         else:

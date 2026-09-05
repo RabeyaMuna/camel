@@ -215,9 +215,9 @@ This example demonstrates how to create a `ChatAgent` using the CAMEL framework 
   from camel.toolkits import SearchToolkit
 
   model = ModelFactory.create(
-    model_platform=ModelPlatformType.OPENAI,
-    model_type=ModelType.GPT_4O,
-    model_config_dict={"temperature": 0.0},
+      model_platform=ModelPlatformType.OPENAI,
+      model_type=ModelType.GPT_4O,
+      model_config_dict={"temperature": 0.0},
   )
 
   search_tool = SearchToolkit().search_duckduckgo

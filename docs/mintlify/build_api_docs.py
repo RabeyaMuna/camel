@@ -1110,7 +1110,7 @@ def generate_custom_docs(modules, output_dir, package_name="camel"):
     skipped_count = 0
 
     for i, module in enumerate(modules):
-        print(f"  [{i+1}/{len(modules)}] Processing {module}...")
+        print(f"  [{i + 1}/{len(modules)}] Processing {module}...")
 
         output_file = generate_ast_docs(module, output_dir)
         if output_file:

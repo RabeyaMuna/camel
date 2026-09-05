@@ -682,6 +682,7 @@ class PPTXToolkit(BaseToolkit):
         """
         import pptx
         from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE
+        from pptx.enum import text
         from pptx.util import Inches, Pt
 
         steps = slide_json['bullet_points']
@@ -710,8 +711,8 @@ class PPTXToolkit(BaseToolkit):
                 text_frame = shape.text_frame
                 text_frame.clear()
                 paragraph = text_frame.paragraphs[0]
-                paragraph.alignment = pptx.enum.text.PP_ALIGN.CENTER
-                text_frame.vertical_anchor = pptx.enum.text.MSO_ANCHOR.MIDDLE
+                paragraph.alignment = text.PP_ALIGN.CENTER
+                text_frame.vertical_anchor = text.MSO_ANCHOR.MIDDLE
                 self._format_text(
                     paragraph, step.removeprefix(STEP_BY_STEP_PROCESS_MARKER)
                 )
@@ -732,8 +733,8 @@ class PPTXToolkit(BaseToolkit):
                 text_frame = shape.text_frame
                 text_frame.clear()
                 paragraph = text_frame.paragraphs[0]
-                paragraph.alignment = pptx.enum.text.PP_ALIGN.CENTER
-                text_frame.vertical_anchor = pptx.enum.text.MSO_ANCHOR.MIDDLE
+                paragraph.alignment = text.PP_ALIGN.CENTER
+                text_frame.vertical_anchor = text.MSO_ANCHOR.MIDDLE
                 self._format_text(
                     paragraph, step.removeprefix(STEP_BY_STEP_PROCESS_MARKER)
                 )

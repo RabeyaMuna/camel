@@ -43,6 +43,7 @@ Let your agent list files or read documents by wiring up the official MCP Filesy
     import asyncio
     from camel.utils.mcp_client import MCPClient
 
+
     async def mcp_client_example():
         config = {
             "command": "npx",
@@ -61,6 +62,7 @@ Let your agent list files or read documents by wiring up the official MCP Filesy
                     if i >= 4:
                         break
 
+
     asyncio.run(mcp_client_example())
     ```
   </Step>
@@ -76,6 +78,7 @@ Let your agent list files or read documents by wiring up the official MCP Filesy
     from camel.models import ModelFactory
     from camel.toolkits import MCPToolkit
     from camel.types import ModelPlatformType, ModelType
+
 
     async def mcp_toolkit_example():
         config_path = Path(__file__).parent / "mcp_servers_config.json"
@@ -94,6 +97,7 @@ Let your agent list files or read documents by wiring up the official MCP Filesy
             response = await camel_agent.astep(user_msg)
             print(response.msgs[0].content)
             print(response.info['tool_calls'])
+
 
     asyncio.run(mcp_toolkit_example())
     ```
@@ -126,6 +130,7 @@ Let your agent list files or read documents by wiring up the official MCP Filesy
     from camel.toolkits import MCPToolkit
     from camel.types import ModelPlatformType, ModelType
 
+
     def mcp_toolkit_example_sync():
         config_path = Path(__file__).parent / "mcp_servers_config.json"
         with MCPToolkit(config_path=str(config_path)) as mcp_toolkit:
@@ -143,6 +148,7 @@ Let your agent list files or read documents by wiring up the official MCP Filesy
             response = camel_agent.step(user_msg)
             print(response.msgs[0].content)
             print(response.info['tool_calls'])
+
 
     mcp_toolkit_example_sync()
     ```

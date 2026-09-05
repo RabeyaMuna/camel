@@ -338,8 +338,7 @@ class WebDeployToolkit(BaseToolkit):
                 return {
                     'success': False,
                     'error': (
-                        'Cannot provide both html_content and '
-                        'html_file_path'
+                        'Cannot provide both html_content and html_file_path'
                     ),
                 }
 
@@ -604,7 +603,7 @@ class WebDeployToolkit(BaseToolkit):
                 return {
                     'success': False,
                     'error': (
-                        f'Port {port} is already in use by ' f'another process'
+                        f'Port {port} is already in use by another process'
                     ),
                 }
 
