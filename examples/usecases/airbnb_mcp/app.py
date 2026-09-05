@@ -16,7 +16,7 @@ import base64
 import datetime
 from pathlib import Path
 
-import streamlit as st
+import streamlit as st  # type: ignore[import-not-found]
 from dotenv import load_dotenv
 
 from camel.agents import ChatAgent
