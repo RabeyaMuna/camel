@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import List, Optional, Union
 
 from camel.retrievers import AutoRetriever
 from camel.toolkits import FunctionTool
@@ -30,8 +29,8 @@ class RetrievalToolkit(BaseToolkit):
 
     def __init__(
         self,
-        auto_retriever: Optional[AutoRetriever] = None,
-        timeout: Optional[float] = None,
+        auto_retriever: AutoRetriever | None = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initializes a new instance of the RetrievalToolkit class."""
         super().__init__(timeout=timeout)
@@ -43,7 +42,7 @@ class RetrievalToolkit(BaseToolkit):
     def information_retrieval(
         self,
         query: str,
-        contents: Union[str, List[str]],
+        contents: str | list[str],
         top_k: int = Constants.DEFAULT_TOP_K_RESULTS,
         similarity_threshold: float = Constants.DEFAULT_SIMILARITY_THRESHOLD,
     ) -> str:
@@ -81,7 +80,7 @@ class RetrievalToolkit(BaseToolkit):
         )
         return str(retrieved_info)
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

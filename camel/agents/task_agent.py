@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from camel.agents.chat_agent import ChatAgent
 from camel.messages import BaseMessage
@@ -59,13 +59,13 @@ class TaskSpecifyAgent(ChatAgent):
 
     def __init__(
         self,
-        model: Optional[BaseModelBackend] = None,
+        model: BaseModelBackend | None = None,
         task_type: TaskType = TaskType.AI_SOCIETY,
-        task_specify_prompt: Optional[Union[str, TextPrompt]] = None,
+        task_specify_prompt: str | TextPrompt | None = None,
         word_limit: int = DEFAULT_WORD_LIMIT,
-        output_language: Optional[str] = None,
+        output_language: str | None = None,
     ) -> None:
-        self.task_specify_prompt: Union[str, TextPrompt]
+        self.task_specify_prompt: str | TextPrompt
         if task_specify_prompt is None:
             task_specify_prompt_template = (
                 PromptTemplateGenerator().get_task_specify_prompt(task_type)
@@ -92,8 +92,8 @@ class TaskSpecifyAgent(ChatAgent):
 
     def run(
         self,
-        task_prompt: Union[str, TextPrompt],
-        meta_dict: Optional[Dict[str, Any]] = None,
+        task_prompt: str | TextPrompt,
+        meta_dict: dict[str, Any] | None = None,
     ) -> TextPrompt:
         r"""Specify the given task prompt by providing more details.
 
@@ -146,8 +146,8 @@ class TaskPlannerAgent(ChatAgent):
 
     def __init__(
         self,
-        model: Optional[BaseModelBackend] = None,
-        output_language: Optional[str] = None,
+        model: BaseModelBackend | None = None,
+        output_language: str | None = None,
     ) -> None:
         self.task_planner_prompt = TextPrompt(
             "Divide this task into subtasks: {task}. Be concise."
@@ -167,7 +167,7 @@ class TaskPlannerAgent(ChatAgent):
 
     def run(
         self,
-        task_prompt: Union[str, TextPrompt],
+        task_prompt: str | TextPrompt,
     ) -> TextPrompt:
         r"""Generate subtasks based on the input task prompt.
 
@@ -228,11 +228,11 @@ class TaskCreationAgent(ChatAgent):
     def __init__(
         self,
         role_name: str,
-        objective: Union[str, TextPrompt],
-        model: Optional[BaseModelBackend] = None,
-        output_language: Optional[str] = None,
-        message_window_size: Optional[int] = None,
-        max_task_num: Optional[int] = 3,
+        objective: str | TextPrompt,
+        model: BaseModelBackend | None = None,
+        output_language: str | None = None,
+        message_window_size: int | None = None,
+        max_task_num: int | None = 3,
     ) -> None:
         task_creation_prompt = TextPrompt(
             """Create new a task with the following objective: {objective}.
@@ -276,8 +276,8 @@ Be concrete.
 
     def run(
         self,
-        task_list: List[str],
-    ) -> List[str]:
+        task_list: list[str],
+    ) -> list[str]:
         r"""Generate subtasks based on the previous task results and
         incomplete task list.
 
@@ -337,10 +337,10 @@ class TaskPrioritizationAgent(ChatAgent):
 
     def __init__(
         self,
-        objective: Union[str, TextPrompt],
-        model: Optional[BaseModelBackend] = None,
-        output_language: Optional[str] = None,
-        message_window_size: Optional[int] = None,
+        objective: str | TextPrompt,
+        model: BaseModelBackend | None = None,
+        output_language: str | None = None,
+        message_window_size: int | None = None,
     ) -> None:
         task_prioritization_prompt = TextPrompt(
             """Prioritize the following tasks : {task_list}.
@@ -381,8 +381,8 @@ with any other output."""
 
     def run(
         self,
-        task_list: List[str],
-    ) -> List[str]:
+        task_list: list[str],
+    ) -> list[str]:
         r"""Prioritize the task list given the agent objective.
 
         Args:

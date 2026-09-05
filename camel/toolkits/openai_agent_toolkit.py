@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import List, Optional
 
 from openai import OpenAI
 
@@ -43,9 +42,9 @@ class OpenAIAgentToolkit(BaseToolkit):
     )
     def __init__(
         self,
-        model: Optional[BaseModelBackend] = None,
-        api_key: Optional[str] = None,
-        timeout: Optional[float] = None,
+        model: BaseModelBackend | None = None,
+        api_key: str | None = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initialize the OpenAI agent toolkit.
 
@@ -122,7 +121,7 @@ class OpenAIAgentToolkit(BaseToolkit):
             logger.error(f"File search failed: {e!s}")
             return f"File search failed: {e!s}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Retrieve available toolkit functions as FunctionTool objects.
 
         Returns:

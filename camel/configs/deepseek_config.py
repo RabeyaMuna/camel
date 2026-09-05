@@ -14,7 +14,7 @@
 
 from __future__ import annotations
 
-from typing import Optional, Sequence, Type, Union
+from collections.abc import Sequence
 
 from pydantic import BaseModel
 
@@ -85,17 +85,17 @@ class DeepSeekConfig(BaseConfig):
             (default: :obj:`None`)
     """
 
-    temperature: Optional[float] = None  # deepseek default: 1.0
-    top_p: Optional[float] = None
-    stream: Optional[bool] = None
-    stop: Optional[Union[str, Sequence[str]]] = None
-    max_tokens: Optional[int] = None
-    presence_penalty: Optional[float] = None
-    response_format: Optional[Union[Type[BaseModel], dict]] = None
-    frequency_penalty: Optional[float] = None
-    tool_choice: Optional[Union[dict[str, str], str]] = None
-    logprobs: Optional[bool] = None
-    top_logprobs: Optional[int] = None
+    temperature: float | None = None  # deepseek default: 1.0
+    top_p: float | None = None
+    stream: bool | None = None
+    stop: str | Sequence[str] | None = None
+    max_tokens: int | None = None
+    presence_penalty: float | None = None
+    response_format: type[BaseModel] | dict | None = None
+    frequency_penalty: float | None = None
+    tool_choice: dict[str, str] | str | None = None
+    logprobs: bool | None = None
+    top_logprobs: int | None = None
 
     def __init__(self, include_usage: bool = True, **kwargs):
         super().__init__(**kwargs)

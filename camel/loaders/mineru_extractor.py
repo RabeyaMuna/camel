@@ -14,7 +14,6 @@
 
 import os
 import time
-from typing import Dict, List, Optional, Union
 
 import requests
 
@@ -46,8 +45,8 @@ class MinerU:
     )
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        api_url: Optional[str] = "https://mineru.net/api/v4",
+        api_key: str | None = None,
+        api_url: str | None = "https://mineru.net/api/v4",
         is_ocr: bool = False,
         enable_formula: bool = False,
         enable_table: bool = True,
@@ -86,7 +85,7 @@ class MinerU:
         self.layout_model = layout_model
         self.language = language
 
-    def extract_url(self, url: str) -> Dict:
+    def extract_url(self, url: str) -> dict:
         r"""Extract content from a URL document.
 
         Args:
@@ -111,7 +110,7 @@ class MinerU:
 
     def batch_extract_urls(
         self,
-        files: List[Dict[str, Union[str, bool]]],
+        files: list[dict[str, str | bool]],
     ) -> str:
         r"""Extract content from multiple document URLs in batch.
 
@@ -137,7 +136,7 @@ class MinerU:
         except Exception as e:
             raise RuntimeError(f"Failed to batch extract URLs: {e}")
 
-    def get_task_status(self, task_id: str) -> Dict:
+    def get_task_status(self, task_id: str) -> dict:
         r"""Retrieve status of a single extraction task.
 
         Args:
@@ -155,7 +154,7 @@ class MinerU:
         except Exception as e:
             raise RuntimeError(f"Failed to get task status: {e}")
 
-    def get_batch_status(self, batch_id: str) -> Dict:
+    def get_batch_status(self, batch_id: str) -> dict:
         r"""Retrieve status of a batch extraction task.
 
         Args:
@@ -179,7 +178,7 @@ class MinerU:
         is_batch: bool = False,
         timeout: float = 100,
         check_interval: float = 5,
-    ) -> Dict:
+    ) -> dict:
         r"""Monitor task until completion or timeout.
 
         Args:

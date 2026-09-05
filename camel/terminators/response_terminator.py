@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from collections import defaultdict
-from typing import Dict, List, Optional, Tuple
 
 from camel.messages import BaseMessage
 from camel.types import TerminationMode
@@ -36,7 +35,7 @@ class ResponseWordsTerminator(ResponseTerminator):
 
     def __init__(
         self,
-        words_dict: Dict[str, int],
+        words_dict: dict[str, int],
         case_sensitive: bool = False,
         mode: TerminationMode = TerminationMode.ANY,
     ):
@@ -44,7 +43,7 @@ class ResponseWordsTerminator(ResponseTerminator):
         self.words_dict = words_dict
         self.case_sensitive = case_sensitive
         self.mode = mode
-        self._word_count_dict: List[Dict[str, int]] = []
+        self._word_count_dict: list[dict[str, int]] = []
         self._validate()
 
     def _validate(self):
@@ -59,8 +58,8 @@ class ResponseWordsTerminator(ResponseTerminator):
                 )
 
     def is_terminated(
-        self, messages: List[BaseMessage]
-    ) -> Tuple[bool, Optional[str]]:
+        self, messages: list[BaseMessage]
+    ) -> tuple[bool, str | None]:
         r"""Whether terminate the agent by checking the occurrence
         of specified words reached to preset thresholds.
 
@@ -88,11 +87,11 @@ class ResponseWordsTerminator(ResponseTerminator):
                 if special_word in content:
                     self._word_count_dict[i][word] += 1
 
-        num_reached: List[int] = []
-        all_reasons: List[List[str]] = []
+        num_reached: list[int] = []
+        all_reasons: list[list[str]] = []
         for i in range(len(self._word_count_dict)):
             reached = 0
-            reasons: List[str] = []
+            reasons: list[str] = []
             for word, value in self._word_count_dict[i].items():
                 if value >= self.words_dict[word]:
                     reached += 1

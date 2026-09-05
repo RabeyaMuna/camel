@@ -14,7 +14,7 @@
 
 import json
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from chunkr_ai.models import Configuration
@@ -67,8 +67,8 @@ class ChunkrReader:
     )
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        url: Optional[str] = "https://api.chunkr.ai/api/v1/task",
+        api_key: str | None = None,
+        url: str | None = "https://api.chunkr.ai/api/v1/task",
     ) -> None:
         from chunkr_ai import Chunkr
 
@@ -78,7 +78,7 @@ class ChunkrReader:
     async def submit_task(
         self,
         file_path: str,
-        chunkr_config: Optional[ChunkrReaderConfig] = None,
+        chunkr_config: ChunkrReaderConfig | None = None,
     ) -> str:
         r"""Submits a file to the Chunkr API and returns the task ID.
 

@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional, Protocol, Tuple
+from typing import Any, Protocol
 
 from pydantic import BaseModel, Field
 
@@ -36,7 +36,7 @@ class Action(BaseModel):
     index: int = Field(default=0, description="...")
 
     llm_response: str = Field(description="Generated response from the LLM")
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional metadata about the generation",
     )
@@ -56,10 +56,10 @@ class Observation(BaseModel):
     """
 
     question: str = Field(..., description="The question posed to the LLM")
-    context: Dict[str, Any] = Field(
+    context: dict[str, Any] = Field(
         default_factory=dict, description="Additional context for the question"
     )
-    metadata: Optional[Dict[str, Any]] = Field(
+    metadata: dict[str, Any] | None = Field(
         default=None, description="Optional metadata about the observation"
     )
 
@@ -76,19 +76,19 @@ class StepResult(BaseModel):
 
     observation: Observation = Field(..., description="The next observation")
     reward: float = Field(..., description="Total reward of the action")
-    rewards_dict: Dict[str, float] = Field(
+    rewards_dict: dict[str, float] = Field(
         default_factory=dict,
         description="Dictionary of reward scores for different aspects",
     )
     done: bool = Field(..., description="Whether the episode is complete")
-    info: Dict[str, Any] = Field(
+    info: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional information about the step",
     )
 
     def as_tuple(
         self,
-    ) -> Tuple[Observation, float, bool, Dict[str, Any]]:
+    ) -> tuple[Observation, float, bool, dict[str, Any]]:
         r"""Returns all fields of the model as a tuple, in declaration order"""
         self.info["rewards_dict"] = self.rewards_dict
         return (self.observation, self.reward, self.done, self.info)

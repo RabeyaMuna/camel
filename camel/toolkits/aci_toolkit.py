@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     from aci.types.app_configurations import AppConfiguration
@@ -39,10 +39,10 @@ class ACIToolkit(BaseToolkit):
     @dependencies_required('aci')
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        base_url: Optional[str] = None,
-        linked_account_owner_id: Optional[str] = None,
-        timeout: Optional[float] = None,
+        api_key: str | None = None,
+        base_url: str | None = None,
+        linked_account_owner_id: str | None = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initialize the ACI toolkit.
 
@@ -68,13 +68,13 @@ class ACIToolkit(BaseToolkit):
 
     def search_tool(
         self,
-        intent: Optional[str] = None,
+        intent: str | None = None,
         allowed_app_only: bool = True,
         include_functions: bool = False,
-        categories: Optional[List[str]] = None,
-        limit: Optional[int] = 10,
-        offset: Optional[int] = 0,
-    ) -> Union[List["AppBasic"], str]:
+        categories: list[str] | None = None,
+        limit: int | None = 10,
+        offset: int | None = 0,
+    ) -> list["AppBasic"] | str:
         r"""Search for apps based on intent.
 
         Args:
@@ -115,10 +115,10 @@ class ACIToolkit(BaseToolkit):
 
     def list_configured_apps(
         self,
-        app_names: Optional[List[str]] = None,
-        limit: Optional[int] = 10,
-        offset: Optional[int] = 0,
-    ) -> Union[List["AppConfiguration"], str]:
+        app_names: list[str] | None = None,
+        limit: int | None = 10,
+        offset: int | None = 0,
+    ) -> list["AppConfiguration"] | str:
         r"""List all configured apps.
 
         Args:
@@ -141,7 +141,7 @@ class ACIToolkit(BaseToolkit):
             logger.error(f"Error: {e}")
             return str(e)
 
-    def configure_app(self, app_name: str) -> Union[Dict, str]:
+    def configure_app(self, app_name: str) -> dict | str:
         r"""Configure an app with specified authentication type.
 
         Args:
@@ -187,7 +187,7 @@ class ACIToolkit(BaseToolkit):
             logger.error(f"Error: {e}")
             return str(e)
 
-    def delete_app(self, app_name: str) -> Optional[str]:
+    def delete_app(self, app_name: str) -> str | None:
         r"""Delete an app configuration.
 
         Args:
@@ -254,7 +254,7 @@ class ACIToolkit(BaseToolkit):
 
     def get_linked_accounts(
         self, app_name: str
-    ) -> Union[List["LinkedAccount"], str]:
+    ) -> list["LinkedAccount"] | str:
         r"""List all linked accounts for a specific app.
 
         Args:
@@ -333,7 +333,7 @@ class ACIToolkit(BaseToolkit):
             logger.error(f"Error: {e}")
             return str(e)
 
-    def function_definition(self, func_name: str) -> Dict:
+    def function_definition(self, func_name: str) -> dict:
         r"""Get the function definition for an app.
 
         Args:
@@ -346,12 +346,12 @@ class ACIToolkit(BaseToolkit):
 
     def search_function(
         self,
-        app_names: Optional[List[str]] = None,
-        intent: Optional[str] = None,
+        app_names: list[str] | None = None,
+        intent: str | None = None,
         allowed_apps_only: bool = True,
-        limit: Optional[int] = 10,
-        offset: Optional[int] = 0,
-    ) -> List[Dict]:
+        limit: int | None = 10,
+        offset: int | None = 0,
+    ) -> list[dict]:
         r"""Search for functions based on intent.
 
         Args:
@@ -380,10 +380,10 @@ class ACIToolkit(BaseToolkit):
     def execute_function(
         self,
         function_name: str,
-        function_arguments: Dict,
+        function_arguments: dict,
         linked_account_owner_id: str,
         allowed_apps_only: bool = False,
-    ) -> Dict:
+    ) -> dict:
         r"""Execute a function call.
 
         Args:
@@ -408,7 +408,7 @@ class ACIToolkit(BaseToolkit):
         )
         return result
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Get a list of tools (functions) available in the configured apps.
 
         Returns:

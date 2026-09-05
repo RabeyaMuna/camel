@@ -14,7 +14,6 @@
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
 
 from camel.logger import get_logger
 from camel.toolkits.base import BaseToolkit
@@ -38,7 +37,7 @@ class FileWriteToolkit(BaseToolkit):
     def __init__(
         self,
         output_dir: str = "./",
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
         default_encoding: str = "utf-8",
         backup_enabled: bool = True,
     ) -> None:
@@ -178,7 +177,7 @@ class FileWriteToolkit(BaseToolkit):
         self,
         file_path: Path,
         title: str,
-        content: Union[str, List[List[str]]],
+        content: str | list[list[str]],
         use_latex: bool = False,
     ) -> None:
         r"""Write text content to a PDF file with LaTeX and table support.
@@ -447,8 +446,8 @@ class FileWriteToolkit(BaseToolkit):
             i += 1
 
     def _find_table_line_ranges(
-        self, lines: List[str]
-    ) -> List[Tuple[int, int]]:
+        self, lines: list[str]
+    ) -> list[tuple[int, int]]:
         r"""Find line ranges that contain markdown tables.
 
         Args:
@@ -540,7 +539,7 @@ class FileWriteToolkit(BaseToolkit):
         logger.warning("No Chinese font found, falling back to Helvetica")
         return "Helvetica"
 
-    def _parse_markdown_table(self, lines: List[str]) -> List[List[List[str]]]:
+    def _parse_markdown_table(self, lines: list[str]) -> list[list[list[str]]]:
         r"""Parse markdown-style tables from a list of lines.
 
         Args:
@@ -551,7 +550,7 @@ class FileWriteToolkit(BaseToolkit):
                 of rows, and each row is a list of cells.
         """
         tables = []
-        current_table_data: List[List[str]] = []
+        current_table_data: list[list[str]] = []
         in_table = False
 
         for line in lines:
@@ -617,7 +616,7 @@ class FileWriteToolkit(BaseToolkit):
         # Must contain at least one dash to be a valid separator
         return '-' in line
 
-    def _parse_table_row(self, line: str) -> List[str]:
+    def _parse_table_row(self, line: str) -> list[str]:
         r"""Parse a single table row into cells.
 
         Args:
@@ -637,7 +636,7 @@ class FileWriteToolkit(BaseToolkit):
 
         return cells
 
-    def _create_pdf_table(self, table_data: List[List[str]]):
+    def _create_pdf_table(self, table_data: list[list[str]]):
         r"""Create a formatted table for PDF.
 
         Args:
@@ -832,7 +831,7 @@ class FileWriteToolkit(BaseToolkit):
     def _write_csv_file(
         self,
         file_path: Path,
-        content: Union[str, List[List]],
+        content: str | list[list],
         encoding: str = "utf-8",
     ) -> None:
         r"""Write CSV content to a file.
@@ -896,9 +895,9 @@ class FileWriteToolkit(BaseToolkit):
     def write_to_file(
         self,
         title: str,
-        content: Union[str, List[List[str]]],
+        content: str | list[list[str]],
         filename: str,
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         use_latex: bool = False,
     ) -> str:
         r"""Write the given content to a file.
@@ -984,7 +983,7 @@ class FileWriteToolkit(BaseToolkit):
             logger.error(error_msg)
             return error_msg
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Return a list of FunctionTool objects representing the functions
         in the toolkit.
 

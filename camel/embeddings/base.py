@@ -38,7 +38,6 @@ class BaseEmbedding(ABC, Generic[T]):
             list[list[float]]: A list that represents the
                 generated embedding as a list of floating-point numbers.
         """
-        pass
 
     def embed(
         self,
@@ -64,4 +63,3 @@ class BaseEmbedding(ABC, Generic[T]):
         Returns:
             int: The dimensionality of the embedding for the current model.
         """
-        pass

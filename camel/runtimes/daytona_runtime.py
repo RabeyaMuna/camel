@@ -16,7 +16,7 @@ import inspect
 import json
 import os
 from functools import wraps
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -45,9 +45,9 @@ class DaytonaRuntime(BaseRuntime):
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        api_url: Optional[str] = None,
-        language: Optional[str] = "python",
+        api_key: str | None = None,
+        api_url: str | None = None,
+        language: str | None = "python",
     ):
         from daytona_sdk import Daytona, DaytonaConfig
 
@@ -58,7 +58,7 @@ class DaytonaRuntime(BaseRuntime):
         self.config = DaytonaConfig(api_key=self.api_key, api_url=self.api_url)
         self.daytona = Daytona(self.config)
         self.sandbox = None
-        self.entrypoint: Dict[str, str] = dict()
+        self.entrypoint: dict[str, str] = dict()
 
     def build(self) -> "DaytonaRuntime":
         r"""Create and start a Daytona sandbox.
@@ -91,9 +91,9 @@ class DaytonaRuntime(BaseRuntime):
 
     def add(
         self,
-        funcs: Union[FunctionTool, List[FunctionTool]],
+        funcs: FunctionTool | list[FunctionTool],
         entrypoint: str,
-        arguments: Optional[Dict[str, Any]] = None,
+        arguments: dict[str, Any] | None = None,
     ) -> "DaytonaRuntime":
         r"""Add a function or list of functions to the runtime.
 

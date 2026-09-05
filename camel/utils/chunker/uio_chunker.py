@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from unstructured.documents.elements import Element
@@ -43,14 +43,14 @@ class UnstructuredIOChunker(BaseChunker):
         self,
         chunk_type: str = "chunk_by_title",
         max_characters: int = 500,
-        metadata_filename: Optional[str] = None,
+        metadata_filename: str | None = None,
     ):
         self.uio = UnstructuredIO()
         self.chunk_type = chunk_type
         self.max_characters = max_characters
         self.metadata_filename = metadata_filename
 
-    def chunk(self, content: List["Element"]) -> List["Element"]:
+    def chunk(self, content: list["Element"]) -> list["Element"]:
         r"""Splits the content into smaller chunks while preserving
         structure and adhering to token constraints.
 

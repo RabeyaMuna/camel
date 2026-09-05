@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Dict, List, Literal, Optional, Union
+from typing import Literal
 
 from camel.toolkits.base import BaseToolkit
 from camel.toolkits.function_tool import FunctionTool
@@ -34,7 +34,7 @@ class DappierToolkit(BaseToolkit):
             (None, "DAPPIER_API_KEY"),
         ]
     )
-    def __init__(self, timeout: Optional[float] = None):
+    def __init__(self, timeout: float | None = None):
         r"""Initialize the DappierTookit with API clients.The API keys and
         credentials are retrieved from environment variables.
         """
@@ -99,12 +99,12 @@ class DappierToolkit(BaseToolkit):
         query: str,
         data_model_id: str = "dm_01j0pb465keqmatq9k83dthx34",
         similarity_top_k: int = 9,
-        ref: Optional[str] = None,
+        ref: str | None = None,
         num_articles_ref: int = 0,
         search_algorithm: Literal[
             "most_recent", "semantic", "most_recent_semantic", "trending"
         ] = "most_recent",
-    ) -> Union[List[Dict[str, str]], Dict[str, str]]:
+    ) -> list[dict[str, str]] | dict[str, str]:
         r"""Retrieve AI-powered recommendations based on the provided query
         and data model.
 
@@ -184,7 +184,7 @@ class DappierToolkit(BaseToolkit):
         except Exception as e:
             return {"error": f"An unexpected error occurred: {e!s}"}
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions
         in the toolkit.
 

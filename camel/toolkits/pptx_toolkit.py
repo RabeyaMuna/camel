@@ -17,7 +17,7 @@ import os
 import random
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pptx import presentation
@@ -54,7 +54,7 @@ class PPTXToolkit(BaseToolkit):
     def __init__(
         self,
         output_dir: str = "./",
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initialize the PPTXToolkit.
 
@@ -159,7 +159,7 @@ class PPTXToolkit(BaseToolkit):
     def _add_bulleted_items(
         self,
         text_frame: "TextFrame",
-        flat_items_list: List[Tuple[str, int]],
+        flat_items_list: list[tuple[str, int]],
         set_color_to_white: bool = False,
     ) -> None:
         r"""Add a list of texts as bullet points and apply formatting.
@@ -198,8 +198,8 @@ class PPTXToolkit(BaseToolkit):
             )
 
     def _get_flat_list_of_contents(
-        self, items: List[Union[str, List[Any]]], level: int
-    ) -> List[Tuple[str, int]]:
+        self, items: list[str | list[Any]], level: int
+    ) -> list[tuple[str, int]]:
         r"""Flatten a hierarchical list of bullet points to a single list.
 
         Args:
@@ -225,7 +225,7 @@ class PPTXToolkit(BaseToolkit):
 
     def _get_slide_width_height_inches(
         self, presentation: "presentation.Presentation"
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         r"""Get the dimensions of a slide in inches.
 
         Args:
@@ -245,8 +245,8 @@ class PPTXToolkit(BaseToolkit):
     def _write_pptx_file(
         self,
         file_path: Path,
-        content: List[Dict[str, Any]],
-        template: Optional[str] = None,
+        content: list[dict[str, Any]],
+        template: str | None = None,
     ) -> None:
         r"""Write text content to a PPTX file with enhanced formatting.
 
@@ -345,7 +345,7 @@ class PPTXToolkit(BaseToolkit):
         self,
         content: str,
         filename: str,
-        template: Optional[str] = None,
+        template: str | None = None,
     ) -> str:
         r"""Create a PowerPoint presentation (PPTX) file.
 
@@ -451,7 +451,7 @@ class PPTXToolkit(BaseToolkit):
     def _handle_default_display(
         self,
         presentation: "presentation.Presentation",
-        slide_json: Dict[str, Any],
+        slide_json: dict[str, Any],
     ) -> None:
         r"""Display a list of text in a slide.
 
@@ -503,7 +503,7 @@ class PPTXToolkit(BaseToolkit):
     def _handle_display_image__in_foreground(
         self,
         presentation: "presentation.Presentation",
-        slide_json: Dict[str, Any],
+        slide_json: dict[str, Any],
     ) -> bool:
         r"""Create a slide with text and image using a picture placeholder
         layout.
@@ -618,7 +618,7 @@ class PPTXToolkit(BaseToolkit):
     def _handle_table(
         self,
         presentation: "presentation.Presentation",
-        slide_json: Dict[str, Any],
+        slide_json: dict[str, Any],
     ) -> None:
         r"""Add a table to a slide.
 
@@ -655,7 +655,7 @@ class PPTXToolkit(BaseToolkit):
     def _handle_step_by_step_process(
         self,
         presentation: "presentation.Presentation",
-        slide_json: Dict[str, Any],
+        slide_json: dict[str, Any],
         slide_width_inch: float,
         slide_height_inch: float,
     ) -> None:
@@ -746,7 +746,7 @@ class PPTXToolkit(BaseToolkit):
     def _get_slide_placeholders(
         self,
         slide: "Slide",
-    ) -> List[Tuple[int, str]]:
+    ) -> list[tuple[int, str]]:
         r"""Return the index and name of all placeholders present in a slide.
 
         Args:
@@ -766,7 +766,7 @@ class PPTXToolkit(BaseToolkit):
             return placeholders
         return []
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

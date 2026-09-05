@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, List
+from typing import Any
 
 from camel.loaders import UnstructuredIO
 from camel.retrievers import BaseRetriever
@@ -87,7 +87,7 @@ class BM25Retriever(BaseRetriever):
         self,
         query: str,
         top_k: int = DEFAULT_TOP_K_RESULTS,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Executes a query and compiles the results.
 
         Args:

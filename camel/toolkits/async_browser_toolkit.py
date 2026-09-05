@@ -22,17 +22,12 @@ import os
 import re
 import shutil
 import urllib.parse
+from collections.abc import Coroutine
 from copy import deepcopy
 from typing import (
     TYPE_CHECKING,
     Any,
-    Coroutine,
-    Dict,
-    List,
     Literal,
-    Optional,
-    Tuple,
-    Union,
     cast,
 )
 
@@ -120,10 +115,10 @@ class AsyncBaseBrowser:
     def __init__(
         self,
         headless=True,
-        cache_dir: Optional[str] = None,
+        cache_dir: str | None = None,
         channel: Literal["chrome", "msedge", "chromium"] = "chromium",
-        cookie_json_path: Optional[str] = None,
-        user_data_dir: Optional[str] = None,
+        cookie_json_path: str | None = None,
+        user_data_dir: str | None = None,
     ):
         r"""
         Initialize the asynchronous browser core.
@@ -163,7 +158,7 @@ class AsyncBaseBrowser:
         self.context: Any = None
         self.page: Any = None
         self.page_url: str = ""
-        self.web_agent_model: Optional[BaseModelBackend] = None
+        self.web_agent_model: BaseModelBackend | None = None
 
         # Set the cache directory
         self.cache_dir = "tmp/" if cache_dir is None else cache_dir
@@ -230,7 +225,7 @@ class AsyncBaseBrowser:
                 args=browser_launch_args,
             )
 
-            new_context_kwargs: Dict[str, Any] = {
+            new_context_kwargs: dict[str, Any] = {
                 "accept_downloads": True,
                 "user_agent": user_agent_string,
                 "java_script_enabled": True,
@@ -334,7 +329,7 @@ class AsyncBaseBrowser:
     @retry_on_error()
     async def async_get_screenshot(
         self, save_image: bool = False
-    ) -> Tuple[Image.Image, Union[str, None]]:
+    ) -> tuple[Image.Image, str | None]:
         r"""Asynchronously get a screenshot of the current page.
 
         Args:
@@ -370,7 +365,7 @@ class AsyncBaseBrowser:
     @retry_on_error()
     def get_screenshot(
         self, save_image: bool = False
-    ) -> Coroutine[Any, Any, Tuple[Image.Image, Union[str, None]]]:
+    ) -> Coroutine[Any, Any, tuple[Image.Image, str | None]]:
         r"""Get a screenshot of the current page.
 
         Args:
@@ -386,7 +381,7 @@ class AsyncBaseBrowser:
 
     async def async_capture_full_page_screenshots(
         self, scroll_ratio: float = 0.8
-    ) -> List[str]:
+    ) -> list[str]:
         r"""Asynchronously capture full page screenshots by scrolling the
         page with a buffer zone.
 
@@ -435,7 +430,7 @@ class AsyncBaseBrowser:
 
     def capture_full_page_screenshots(
         self, scroll_ratio: float = 0.8
-    ) -> Coroutine[Any, Any, List[str]]:
+    ) -> Coroutine[Any, Any, list[str]]:
         r"""Capture full page screenshots by scrolling the page with
             a buffer zone.
 
@@ -471,7 +466,7 @@ class AsyncBaseBrowser:
 
     async def async_get_interactive_elements(
         self,
-    ) -> Dict[str, InteractiveRegion]:
+    ) -> dict[str, InteractiveRegion]:
         r"""Asynchronously get the interactive elements of the current page.
 
         Returns:
@@ -484,13 +479,13 @@ class AsyncBaseBrowser:
             logger.warning(f"Error evaluating page script: {e}")
 
         result = cast(
-            Dict[str, Dict[str, Any]],
+            dict[str, dict[str, Any]],
             await self.page.evaluate(
                 "MultimodalWebSurfer.getInteractiveRects();"
             ),
         )
 
-        typed_results: Dict[str, InteractiveRegion] = {}
+        typed_results: dict[str, InteractiveRegion] = {}
         for k in result:
             typed_results[k] = interactive_region_from_dict(result[k])
 
@@ -498,7 +493,7 @@ class AsyncBaseBrowser:
 
     def get_interactive_elements(
         self,
-    ) -> Coroutine[Any, Any, Dict[str, InteractiveRegion]]:
+    ) -> Coroutine[Any, Any, dict[str, InteractiveRegion]]:
         r"""Get the interactive elements of the current page.
 
         Returns:
@@ -509,7 +504,7 @@ class AsyncBaseBrowser:
     async def async_get_som_screenshot(
         self,
         save_image: bool = False,
-    ) -> Tuple[Image.Image, Union[str, None]]:
+    ) -> tuple[Image.Image, str | None]:
         r"""Asynchronously get a screenshot of the current viewport
         with interactive elements marked.
 
@@ -550,7 +545,7 @@ class AsyncBaseBrowser:
     def get_som_screenshot(
         self,
         save_image: bool = False,
-    ) -> Coroutine[Any, Any, Tuple[Image.Image, Union[str, None]]]:
+    ) -> Coroutine[Any, Any, tuple[Image.Image, str | None]]:
         r"""Get a screenshot of the current viewport with interactive elements
         marked.
 
@@ -584,7 +579,7 @@ class AsyncBaseBrowser:
         r"""Get the URL of the current page."""
         return self.page.url
 
-    async def async_click_id(self, identifier: Union[str, int]) -> None:
+    async def async_click_id(self, identifier: str | int) -> None:
         r"""Asynchronously click an element with the given ID.
 
         Args:
@@ -608,7 +603,7 @@ class AsyncBaseBrowser:
                 "popup", timeout=1000
             ) as page_info:
                 box = cast(
-                    Dict[str, Union[int, float]], await target.bounding_box()
+                    dict[str, int | float], await target.bounding_box()
                 )
                 await self.page.mouse.click(
                     box["x"] + box["width"] / 2, box["y"] + box["height"] / 2
@@ -622,12 +617,11 @@ class AsyncBaseBrowser:
 
         except (TimeoutError, Exception) as e:  # type: ignore[misc]
             logger.debug(f"Error during click operation: {e}")
-            pass
 
         await self.wait_for_load()
 
     def click_id(
-        self, identifier: Union[str, int]
+        self, identifier: str | int
     ) -> Coroutine[Any, Any, None]:
         r"""Click an element with the given identifier."""
         return self.async_click_id(identifier)
@@ -641,7 +635,7 @@ class AsyncBaseBrowser:
         r"""Extract the content of the current page."""
         return self.async_extract_url_content()
 
-    async def async_download_file_id(self, identifier: Union[str, int]) -> str:
+    async def async_download_file_id(self, identifier: str | int) -> str:
         r"""Asynchronously download a file with the given selector.
 
         Args:
@@ -686,13 +680,13 @@ class AsyncBaseBrowser:
             return f"Failed to download file with identifier '{identifier}'."
 
     def download_file_id(
-        self, identifier: Union[str, int]
+        self, identifier: str | int
     ) -> Coroutine[Any, Any, str]:
         r"""Download a file with the given identifier."""
         return self.async_download_file_id(identifier)
 
     async def async_fill_input_id(
-        self, identifier: Union[str, int], text: str
+        self, identifier: str | int, text: str
     ) -> str:
         r"""Asynchronously fill an input field with the given text, and then
             press Enter.
@@ -732,7 +726,7 @@ class AsyncBaseBrowser:
         )
 
     def fill_input_id(
-        self, identifier: Union[str, int], text: str
+        self, identifier: str | int, text: str
     ) -> Coroutine[Any, Any, str]:
         r"""Fill an input field with the given text, and then press Enter."""
         return self.async_fill_input_id(identifier, text)
@@ -759,7 +753,7 @@ class AsyncBaseBrowser:
         r"""Scroll to the top of the page."""
         return self.async_scroll_to_top()
 
-    async def async_hover_id(self, identifier: Union[str, int]) -> str:
+    async def async_hover_id(self, identifier: str | int) -> str:
         r"""Asynchronously hover over an element with the given identifier.
 
         Args:
@@ -786,7 +780,7 @@ class AsyncBaseBrowser:
         return f"Hovered over element with identifier '{identifier}'."
 
     def hover_id(
-        self, identifier: Union[str, int]
+        self, identifier: str | int
     ) -> Coroutine[Any, Any, str]:
         r"""Hover over an element with the given identifier."""
         return self.async_hover_id(identifier)
@@ -986,14 +980,14 @@ class AsyncBrowserToolkit(BaseToolkit):
     def __init__(
         self,
         headless: bool = False,
-        cache_dir: Optional[str] = None,
+        cache_dir: str | None = None,
         channel: Literal["chrome", "msedge", "chromium"] = "chromium",
         history_window: int = 5,
-        web_agent_model: Optional[BaseModelBackend] = None,
-        planning_agent_model: Optional[BaseModelBackend] = None,
+        web_agent_model: BaseModelBackend | None = None,
+        planning_agent_model: BaseModelBackend | None = None,
         output_language: str = "en",
-        cookie_json_path: Optional[str] = None,
-        user_data_dir: Optional[str] = None,
+        cookie_json_path: str | None = None,
+        user_data_dir: str | None = None,
     ):
         r"""Initialize the BrowserToolkit instance.
 
@@ -1044,7 +1038,7 @@ class AsyncBrowserToolkit(BaseToolkit):
         self.history = []
         os.makedirs(self.browser.cache_dir, exist_ok=True)
 
-    def _initialize_agent(self) -> Tuple["ChatAgent", "ChatAgent"]:
+    def _initialize_agent(self) -> tuple[ChatAgent, ChatAgent]:
         r"""Initialize the planning and web agents."""
         from camel.agents.chat_agent import ChatAgent
 
@@ -1084,8 +1078,8 @@ class AsyncBrowserToolkit(BaseToolkit):
         return web_agent, planning_agent
 
     async def async_observe(
-        self, task_prompt: str, detailed_plan: Optional[str] = None
-    ) -> Tuple[str, str, str]:
+        self, task_prompt: str, detailed_plan: str | None = None
+    ) -> tuple[str, str, str]:
         r"""Let agent observe the current environment, and get the next
         action."""
 
@@ -1147,7 +1141,7 @@ Here is a plan about how to solve the task step-by-step which you must follow:
 
         return observation_result, reasoning_result, action_code
 
-    async def async_act(self, action_code: str) -> Tuple[bool, str]:
+    async def async_act(self, action_code: str) -> tuple[bool, str]:
         r"""Let agent act based on the given action code.
         Args:
             action_code (str): The action code to act.
@@ -1274,7 +1268,7 @@ Here is a plan about how to solve the task step-by-step which you must follow:
 
     async def _async_task_replanning(
         self, task_prompt: str, detailed_plan: str
-    ) -> Tuple[bool, str]:
+    ) -> tuple[bool, str]:
         r"""Replan the task based on the given task prompt.
 
         Args:
@@ -1373,7 +1367,6 @@ Here is a plan about how to solve the task step-by-step which you must follow:
                 (
                     if_need_replan,
                     replanned_schema,
-                    # ruff: noqa: E501
                 ) = await self._async_task_replanning(
                     task_prompt, detailed_plan
                 )
@@ -1395,5 +1388,5 @@ Here is a plan about how to solve the task step-by-step which you must follow:
         await self.browser.close()
         return simulation_result
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         return [FunctionTool(self.browse_url)]

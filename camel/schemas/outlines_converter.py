@@ -12,7 +12,8 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Any, Callable, List, Literal, Type, Union
+from collections.abc import Callable
+from typing import Any, Literal
 
 from pydantic import BaseModel
 
@@ -84,7 +85,7 @@ class OutlinesConverter(BaseConverter):
     def convert_json(
         self,
         content: str,
-        output_schema: Union[str, Callable],
+        output_schema: str | Callable,
     ) -> dict:
         r"""Convert the content to the specified JSON schema given by
         output_schema.
@@ -107,7 +108,7 @@ class OutlinesConverter(BaseConverter):
     def convert_pydantic(
         self,
         content: str,
-        output_schema: Type[BaseModel],
+        output_schema: type[BaseModel],
     ) -> BaseModel:
         r"""Convert the content to the specified Pydantic schema.
 
@@ -152,7 +153,7 @@ class OutlinesConverter(BaseConverter):
         )
         return type_generator(content)
 
-    def convert_choice(self, content: str, choices: List[str]) -> str:
+    def convert_choice(self, content: str, choices: list[str]) -> str:
         r"""Convert the content to the specified choice.
 
         Args:

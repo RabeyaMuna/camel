@@ -15,7 +15,8 @@ import json
 import logging
 import re
 import textwrap
-from typing import Any, Callable, Dict, List, Optional, Union
+from collections.abc import Callable
+from typing import Any
 
 from camel.agents._types import ToolCallRequest
 from camel.toolkits import FunctionTool
@@ -25,7 +26,7 @@ from camel.types.agents import ToolCallingRecord
 logger = logging.getLogger(__name__)
 
 
-def generate_tool_prompt(tool_schema_list: List[Dict[str, Any]]) -> str:
+def generate_tool_prompt(tool_schema_list: list[dict[str, Any]]) -> str:
     r"""Generates a tool prompt based on the provided tool schema list.
 
     Returns:
@@ -70,7 +71,7 @@ def generate_tool_prompt(tool_schema_list: List[Dict[str, Any]]) -> str:
 
 def extract_tool_call(
     content: str,
-) -> Optional[Dict[str, Any]]:
+) -> dict[str, Any] | None:
     r"""Extract the tool call from the model response, if present.
 
     Args:
@@ -95,7 +96,7 @@ def extract_tool_call(
         return None
 
 
-def safe_model_dump(obj) -> Dict[str, Any]:
+def safe_model_dump(obj) -> dict[str, Any]:
     r"""Safely dump a Pydantic model to a dictionary.
 
     This method attempts to use the `model_dump` method if available,
@@ -112,15 +113,15 @@ def safe_model_dump(obj) -> Dict[str, Any]:
 
 
 def convert_to_function_tool(
-    tool: Union[FunctionTool, Callable],
+    tool: FunctionTool | Callable,
 ) -> FunctionTool:
     r"""Convert a tool to a FunctionTool from Callable."""
     return tool if isinstance(tool, FunctionTool) else FunctionTool(tool)
 
 
 def convert_to_schema(
-    tool: Union[FunctionTool, Callable, Dict[str, Any]],
-) -> Dict[str, Any]:
+    tool: FunctionTool | Callable | dict[str, Any],
+) -> dict[str, Any]:
     r"""Convert a tool to a schema from Callable or FunctionTool."""
     if isinstance(tool, FunctionTool):
         return tool.get_openai_tool_schema()
@@ -131,13 +132,13 @@ def convert_to_schema(
 
 
 def get_info_dict(
-    session_id: Optional[str],
-    usage: Optional[Dict[str, int]],
-    termination_reasons: List[str],
+    session_id: str | None,
+    usage: dict[str, int] | None,
+    termination_reasons: list[str],
     num_tokens: int,
-    tool_calls: List[ToolCallingRecord],
-    external_tool_call_requests: Optional[List[ToolCallRequest]] = None,
-) -> Dict[str, Any]:
+    tool_calls: list[ToolCallingRecord],
+    external_tool_call_requests: list[ToolCallRequest] | None = None,
+) -> dict[str, Any]:
     r"""Returns a dictionary containing information about the chat session.
 
     Args:
@@ -166,7 +167,7 @@ def get_info_dict(
     }
 
 
-def handle_logprobs(choice: Choice) -> Optional[List[Dict[str, Any]]]:
+def handle_logprobs(choice: Choice) -> list[dict[str, Any]] | None:
     if choice.logprobs is None:
         return None
 

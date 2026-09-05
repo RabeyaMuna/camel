@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from typing_extensions import Self
 
@@ -41,12 +41,12 @@ DEFAULT_CONVERTER_PROMPTS = """
 class AlpacaDataCollector(BaseDataCollector):
     def __init__(self) -> None:
         super().__init__()
-        self.system_message: Optional[BaseMessage] = None
-        self.agent_name: Optional[str] = None
+        self.system_message: BaseMessage | None = None
+        self.agent_name: str | None = None
 
     def record(
         self,
-        agent: Union[List[ChatAgent], ChatAgent],
+        agent: list[ChatAgent] | ChatAgent,
     ) -> Self:
         r"""Inject an agent into the data collector.
 
@@ -61,7 +61,7 @@ class AlpacaDataCollector(BaseDataCollector):
         super().record(agent)
         return self
 
-    def convert(self) -> Dict[str, Any]:
+    def convert(self) -> dict[str, Any]:
         r"""Convert the collected data into a dictionary."""
         if self.agent_name is None:
             raise ValueError("No agent injected")
@@ -94,9 +94,9 @@ class AlpacaDataCollector(BaseDataCollector):
 
     def llm_convert(
         self,
-        converter: Optional[OpenAISchemaConverter] = None,
-        prompt: Optional[str] = None,
-    ) -> Dict[str, str]:
+        converter: OpenAISchemaConverter | None = None,
+        prompt: str | None = None,
+    ) -> dict[str, str]:
         r"""Convert collected data using an LLM schema converter.
 
         Args:

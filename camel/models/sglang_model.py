@@ -16,7 +16,7 @@ import os
 import subprocess
 import threading
 import time
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any
 
 from openai import AsyncOpenAI, AsyncStream, OpenAI, Stream
 from pydantic import BaseModel
@@ -81,12 +81,12 @@ class SGLangModel(BaseModelBackend):
 
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        timeout: Optional[float] = None,
+        model_type: ModelType | str,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        timeout: float | None = None,
         max_retries: int = 3,
         **kwargs: Any,
     ) -> None:
@@ -94,11 +94,11 @@ class SGLangModel(BaseModelBackend):
             model_config_dict = SGLangConfig().as_dict()
 
         self.server_process = None
-        self.last_run_time: Optional[float] = (
+        self.last_run_time: float | None = (
             None  # Will be set when the server starts
         )
         self._lock = threading.Lock()
-        self._inactivity_thread: Optional[threading.Thread] = None
+        self._inactivity_thread: threading.Thread | None = None
 
         timeout = timeout or float(os.environ.get("MODEL_TIMEOUT", 180))
         super().__init__(
@@ -227,10 +227,10 @@ class SGLangModel(BaseModelBackend):
     @observe(as_type='generation')
     async def _arun(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         r"""Runs inference of OpenAI chat completion.
 
         Args:
@@ -294,10 +294,10 @@ class SGLangModel(BaseModelBackend):
     @observe(as_type='generation')
     def _run(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
         r"""Runs inference of OpenAI chat completion.
 
         Args:
@@ -388,7 +388,7 @@ def _terminate_process(process):
 
 
 def _kill_process_tree(
-    parent_pid, include_parent: bool = True, skip_pid: Optional[int] = None
+    parent_pid, include_parent: bool = True, skip_pid: int | None = None
 ):
     r"""Kill the process and all its child processes."""
     import os
@@ -445,7 +445,7 @@ def _execute_shell_command(command: str) -> subprocess.Popen:
     return subprocess.Popen(parts, text=True, stderr=subprocess.STDOUT)
 
 
-def _wait_for_server(base_url: str, timeout: Optional[float] = 30) -> None:
+def _wait_for_server(base_url: str, timeout: float | None = 30) -> None:
     r"""Wait for the server to be ready by polling the /v1/models endpoint.
 
     Args:

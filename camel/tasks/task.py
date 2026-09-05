@@ -13,16 +13,13 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import re
+from collections.abc import Callable
 from enum import Enum
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    Dict,
-    List,
     Literal,
     Optional,
-    Union,
 )
 
 from PIL import Image
@@ -166,8 +163,8 @@ def is_task_result_insufficient(task: "Task") -> bool:
 
 
 def parse_response(
-    response: str, task_id: Optional[str] = None
-) -> List["Task"]:
+    response: str, task_id: str | None = None
+) -> list["Task"]:
     r"""Parse Tasks from a response.
 
     Args:
@@ -251,25 +248,25 @@ class Task(BaseModel):
         TaskState.FAILED
     )  # TODO: Add logic for OPEN in workforce.py
 
-    type: Optional[str] = None
+    type: str | None = None
 
     parent: Optional["Task"] = None
 
-    subtasks: List["Task"] = []
+    subtasks: list["Task"] = []
 
-    result: Optional[str] = ""
+    result: str | None = ""
 
     failure_count: int = 0
 
-    assigned_worker_id: Optional[str] = None
+    assigned_worker_id: str | None = None
 
-    additional_info: Optional[Dict[str, Any]] = None
+    additional_info: dict[str, Any] | None = None
 
-    image_list: Optional[List[Image.Image]] = None
+    image_list: list[Image.Image] | None = None
 
     image_detail: Literal["auto", "low", "high"] = "auto"
 
-    video_bytes: Optional[bytes] = None
+    video_bytes: bytes | None = None
 
     video_detail: Literal["auto", "low", "high"] = "auto"
 
@@ -299,7 +296,6 @@ class Task(BaseModel):
     def to_message():
         r"""Convert a Task to a Message."""
         # TODO
-        pass
 
     def reset(self):
         r"""Reset Task to initial state."""
@@ -400,9 +396,9 @@ class Task(BaseModel):
     def decompose(
         self,
         agent: "ChatAgent",
-        prompt: Optional[str] = None,
-        task_parser: Callable[[str, str], List["Task"]] = parse_response,
-    ) -> List["Task"]:
+        prompt: str | None = None,
+        task_parser: Callable[[str, str], list["Task"]] = parse_response,
+    ) -> list["Task"]:
         r"""Decompose a task to a list of sub-tasks. It can be used for data
         generation and planner of agent.
 
@@ -438,7 +434,7 @@ class Task(BaseModel):
         self,
         agent: "ChatAgent",
         template: TextPrompt = TASK_COMPOSE_PROMPT,
-        result_parser: Optional[Callable[[str], str]] = None,
+        result_parser: Callable[[str], str] | None = None,
     ):
         r"""compose task result by the sub-tasks.
 
@@ -498,8 +494,8 @@ class TaskManager:
     def __init__(self, task: Task):
         self.root_task: Task = task
         self.current_task_id: str = task.id
-        self.tasks: List[Task] = [task]
-        self.task_map: Dict[str, Task] = {task.id: task}
+        self.tasks: list[Task] = [task]
+        self.task_map: dict[str, Task] = {task.id: task}
 
     def gen_task_id(self) -> str:
         r"""Generate a new task id."""
@@ -510,12 +506,12 @@ class TaskManager:
         return task_id in self.task_map
 
     @property
-    def current_task(self) -> Optional[Task]:
+    def current_task(self) -> Task | None:
         r"""Get the current task."""
         return self.task_map.get(self.current_task_id, None)
 
     @staticmethod
-    def topological_sort(tasks: List[Task]) -> List[Task]:
+    def topological_sort(tasks: list[Task]) -> list[Task]:
         r"""Sort a list of tasks by topological way.
 
         Args:
@@ -548,7 +544,7 @@ class TaskManager:
     @staticmethod
     def set_tasks_dependence(
         root: Task,
-        others: List[Task],
+        others: list[Task],
         type: Literal["serial", "parallel"] = "parallel",
     ):
         r"""Set relationship between root task and other tasks.
@@ -575,11 +571,11 @@ class TaskManager:
                 parent.add_subtask(child)
                 parent = child
 
-    def add_tasks(self, tasks: Union[Task, List[Task]]) -> None:
+    def add_tasks(self, tasks: Task | list[Task]) -> None:
         r"""self.tasks and self.task_map will be updated by the input tasks."""
         if not tasks:
             return
-        if not isinstance(tasks, List):
+        if not isinstance(tasks, list):
             tasks = [tasks]
         for task in tasks:
             assert not self.exist(task.id), f"`{task.id}` already existed."
@@ -590,9 +586,9 @@ class TaskManager:
         self,
         task: Task,
         agent: "ChatAgent",
-        template: Optional[TextPrompt] = None,
-        task_parser: Optional[Callable[[str, str], List[Task]]] = None,
-    ) -> Optional[Task]:
+        template: TextPrompt | None = None,
+        task_parser: Callable[[str, str], list[Task]] | None = None,
+    ) -> Task | None:
         r"""Evolve a task to a new task.
             Evolve is only used for data generation.
 

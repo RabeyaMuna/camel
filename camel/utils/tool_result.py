@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List, Optional
 
 
 class ToolResult:
@@ -22,7 +21,7 @@ class ToolResult:
     content that should be included in the conversation context.
     """
 
-    def __init__(self, text: str, images: Optional[List[str]] = None):
+    def __init__(self, text: str, images: list[str] | None = None):
         r"""Initialize a tool result.
 
         Args:

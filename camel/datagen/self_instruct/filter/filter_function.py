@@ -14,7 +14,6 @@
 
 import re
 from abc import ABC, abstractmethod
-from typing import List
 
 from rouge import Rouge
 
@@ -38,7 +37,6 @@ class FilterFunction(ABC):
         Returns:
             bool: True if the instruction passes the filter, False otherwise.
         """
-        pass
 
 
 class LengthFilter(FilterFunction):
@@ -76,7 +74,7 @@ class KeywordFilter(FilterFunction):
         keywords (List[str]): A list of keywords to filter out.
     """
 
-    def __init__(self, keywords: List[str]):
+    def __init__(self, keywords: list[str]):
         self.keywords = [keyword.lower() for keyword in keywords]
 
     def apply(self, instruction: str) -> bool:
@@ -134,7 +132,7 @@ class RougeSimilarityFilter(FilterFunction):
     """
 
     def __init__(
-        self, existing_instructions: List[str], threshold: float = 0.7
+        self, existing_instructions: list[str], threshold: float = 0.7
     ):
         self.existing_instructions = existing_instructions
         self.threshold = threshold

@@ -13,12 +13,12 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 """Get classes from Outschool API."""
 
-from typing import Any, Dict
+from typing import Any
 
 import requests
 
 
-def call_api(input_json: Dict[str, Any]) -> Dict[str, Any]:
+def call_api(input_json: dict[str, Any]) -> dict[str, Any]:
     response = requests.get(
         "https://chatgpt-plugin.outschool.com/api/classes", params=input_json
     )

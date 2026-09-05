@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from collections import deque
-from typing import Dict, List, Optional
 
 from camel.agents import (
     ChatAgent,
@@ -71,14 +70,14 @@ class BabyAGI:
         task_prompt: str = "",
         task_type: TaskType = TaskType.AI_SOCIETY,
         max_task_history: int = 10,
-        assistant_agent_kwargs: Optional[Dict] = None,
-        task_specify_agent_kwargs: Optional[Dict] = None,
-        task_creation_agent_kwargs: Optional[Dict] = None,
-        task_prioritization_agent_kwargs: Optional[Dict] = None,
-        sys_msg_generator_kwargs: Optional[Dict] = None,
-        extend_task_specify_meta_dict: Optional[Dict] = None,
-        output_language: Optional[str] = None,
-        message_window_size: Optional[int] = None,
+        assistant_agent_kwargs: dict | None = None,
+        task_specify_agent_kwargs: dict | None = None,
+        task_creation_agent_kwargs: dict | None = None,
+        task_prioritization_agent_kwargs: dict | None = None,
+        sys_msg_generator_kwargs: dict | None = None,
+        extend_task_specify_meta_dict: dict | None = None,
+        output_language: str | None = None,
+        message_window_size: int | None = None,
     ) -> None:
         self.task_type = task_type
         self.task_prompt = task_prompt
@@ -109,7 +108,7 @@ class BabyAGI:
         )
 
         self.assistant_agent: ChatAgent
-        self.assistant_sys_msg: Optional[BaseMessage]
+        self.assistant_sys_msg: BaseMessage | None
         self.task_creation_agent: TaskCreationAgent
         self.task_prioritization_agent: TaskPrioritizationAgent
         self.init_agents(
@@ -121,17 +120,17 @@ class BabyAGI:
             message_window_size,
         )
 
-        self.subtasks: deque = deque([])
-        self.solved_subtasks: List[str] = []
+        self.subtasks: deque = deque()
+        self.solved_subtasks: list[str] = []
         self.MAX_TASK_HISTORY = max_task_history
 
     def init_specified_task_prompt(
         self,
         assistant_role_name: str,
         user_role_name: str,
-        task_specify_agent_kwargs: Optional[Dict],
-        extend_task_specify_meta_dict: Optional[Dict],
-        output_language: Optional[str],
+        task_specify_agent_kwargs: dict | None,
+        extend_task_specify_meta_dict: dict | None,
+        output_language: str | None,
     ):
         r"""Use a task specify agent to generate a specified task prompt.
         Generated specified task prompt will be used to replace original
@@ -171,11 +170,11 @@ class BabyAGI:
     def init_agents(
         self,
         init_assistant_sys_msg: BaseMessage,
-        assistant_agent_kwargs: Optional[Dict],
-        task_creation_agent_kwargs: Optional[Dict],
-        task_prioritization_agent_kwargs: Optional[Dict],
-        output_language: Optional[str],
-        message_window_size: Optional[int] = None,
+        assistant_agent_kwargs: dict | None,
+        task_creation_agent_kwargs: dict | None,
+        task_prioritization_agent_kwargs: dict | None,
+        output_language: str | None,
+        message_window_size: int | None = None,
     ):
         r"""Initialize assistant and user agents with their system messages.
 

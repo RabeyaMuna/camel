@@ -13,14 +13,14 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any
 
 
 class BaseLoader(ABC):
     r"""Abstract base class for all data loaders in CAMEL."""
 
     @abstractmethod
-    def _load_single(self, source: Union[str, Path]) -> Dict[str, Any]:
+    def _load_single(self, source: str | Path) -> dict[str, Any]:
         r"""Load data from a single source.
 
         Args:
@@ -31,12 +31,11 @@ class BaseLoader(ABC):
                 recommended that the dictionary includes a "content" key with
                 the primary data and optional metadata keys.
         """
-        pass
 
     def load(
         self,
-        source: Union[str, Path, List[Union[str, Path]]],
-    ) -> Dict[str, List[Dict[str, Any]]]:
+        source: str | Path | list[str | Path],
+    ) -> dict[str, list[dict[str, Any]]]:
         r"""Load data from one or multiple sources.
 
         Args:
@@ -82,4 +81,3 @@ class BaseLoader(ABC):
             set[str]: A set of strings representing the supported formats/
             sources.
         """
-        pass

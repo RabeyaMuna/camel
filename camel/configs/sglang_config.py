@@ -13,7 +13,8 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Sequence, Union
+from collections.abc import Sequence
+from typing import Any
 
 from camel.configs.base_config import BaseConfig
 
@@ -62,15 +63,15 @@ class SGLangConfig(BaseConfig):
             documentation. (default: :obj:`None`)
     """
 
-    stop: Optional[Union[str, Sequence[str]]] = None
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    n: Optional[int] = None
-    frequency_penalty: Optional[float] = None
-    presence_penalty: Optional[float] = None
-    stream: Optional[bool] = None
-    max_tokens: Optional[int] = None
-    tools: Optional[Union[List[Dict[str, Any]]]] = None
+    stop: str | Sequence[str] | None = None
+    temperature: float | None = None
+    top_p: float | None = None
+    n: int | None = None
+    frequency_penalty: float | None = None
+    presence_penalty: float | None = None
+    stream: bool | None = None
+    max_tokens: int | None = None
+    tools: list[dict[str, Any]] | None = None
 
 
 SGLANG_API_PARAMS = {param for param in SGLangConfig.model_fields.keys()}

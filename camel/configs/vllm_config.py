@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Optional, Sequence, Union
+from collections.abc import Sequence
 
 from pydantic import Field
 
@@ -93,20 +93,20 @@ class VLLMConfig(BaseConfig):
         extra_body: Add additional JSON properties to the request. (default: :obj:`None`)
     """
 
-    temperature: Optional[float] = None  # openai default: 1.0
-    top_p: Optional[float] = None
-    n: Optional[int] = None
-    stream: Optional[bool] = None
-    stop: Optional[Union[str, Sequence[str]]] = None
-    max_tokens: Optional[int] = None
-    presence_penalty: Optional[float] = None
-    response_format: Optional[dict] = None
-    frequency_penalty: Optional[float] = None
+    temperature: float | None = None  # openai default: 1.0
+    top_p: float | None = None
+    n: int | None = None
+    stream: bool | None = None
+    stop: str | Sequence[str] | None = None
+    max_tokens: int | None = None
+    presence_penalty: float | None = None
+    response_format: dict | None = None
+    frequency_penalty: float | None = None
     logit_bias: dict = Field(default_factory=dict)
-    user: Optional[str] = None
-    logprobs: Optional[bool] = None
-    top_logprobs: Optional[int] = None
-    extra_body: Optional[dict] = None
+    user: str | None = None
+    logprobs: bool | None = None
+    top_logprobs: int | None = None
+    extra_body: dict | None = None
 
 
 VLLM_API_PARAMS = {param for param in VLLMConfig.model_fields.keys()}

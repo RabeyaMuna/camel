@@ -19,14 +19,14 @@ This module contains all the configuration needed to make the browser
 appear as a regular user browser rather than an automated one.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 
 class StealthConfig:
     """Configuration class for stealth browser settings."""
 
     @staticmethod
-    def get_launch_args() -> List[str]:
+    def get_launch_args() -> list[str]:
         """Get Chrome launch arguments for stealth mode.
 
         Returns:
@@ -54,7 +54,7 @@ class StealthConfig:
         ]
 
     @staticmethod
-    def get_context_options() -> Dict[str, Any]:
+    def get_context_options() -> dict[str, Any]:
         """Get browser context options for stealth mode.
 
         Returns:
@@ -74,7 +74,7 @@ class StealthConfig:
         }
 
     @staticmethod
-    def get_http_headers() -> Dict[str, str]:
+    def get_http_headers() -> dict[str, str]:
         """Get HTTP headers for stealth mode.
 
         Returns:
@@ -103,7 +103,7 @@ class StealthConfig:
         }
 
     @staticmethod
-    def get_all_config() -> Dict[str, Any]:
+    def get_all_config() -> dict[str, Any]:
         """Get all stealth configuration in one dict.
 
         Returns:

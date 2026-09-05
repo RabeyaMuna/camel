@@ -20,11 +20,7 @@ import re
 from typing import (
     Any,
     BinaryIO,
-    Dict,
-    List,
-    Tuple,
     TypedDict,
-    Union,
     cast,
 )
 
@@ -203,28 +199,28 @@ ACTION_WITH_FEEDBACK_LIST = [
 
 # TypedDicts
 class DOMRectangle(TypedDict):
-    x: Union[int, float]
-    y: Union[int, float]
-    width: Union[int, float]
-    height: Union[int, float]
-    top: Union[int, float]
-    right: Union[int, float]
-    bottom: Union[int, float]
-    left: Union[int, float]
+    x: int | float
+    y: int | float
+    width: int | float
+    height: int | float
+    top: int | float
+    right: int | float
+    bottom: int | float
+    left: int | float
 
 
 class VisualViewport(TypedDict):
-    height: Union[int, float]
-    width: Union[int, float]
-    offsetLeft: Union[int, float]
-    offsetTop: Union[int, float]
-    pageLeft: Union[int, float]
-    pageTop: Union[int, float]
-    scale: Union[int, float]
-    clientWidth: Union[int, float]
-    clientHeight: Union[int, float]
-    scrollWidth: Union[int, float]
-    scrollHeight: Union[int, float]
+    height: int | float
+    width: int | float
+    offsetLeft: int | float
+    offsetTop: int | float
+    pageLeft: int | float
+    pageTop: int | float
+    scale: int | float
+    clientWidth: int | float
+    clientHeight: int | float
+    scrollWidth: int | float
+    scrollHeight: int | float
 
 
 class InteractiveRegion(TypedDict):
@@ -232,7 +228,7 @@ class InteractiveRegion(TypedDict):
     role: str
     aria_name: str
     v_scrollable: bool
-    rects: List[DOMRectangle]
+    rects: list[DOMRectangle]
 
 
 # Helper Functions
@@ -248,7 +244,7 @@ def _get_str(d: Any, k: str) -> str:
     )
 
 
-def _get_number(d: Any, k: str) -> Union[int, float]:
+def _get_number(d: Any, k: str) -> int | float:
     r"""Safely retrieve a number (int or float) from a dictionary"""
     val = d[k]
     if isinstance(val, (int, float)):
@@ -271,7 +267,7 @@ def _get_bool(d: Any, k: str) -> bool:
 
 def _parse_json_output(
     text: str, logger: Any
-) -> Dict[str, Any]:  # Added logger argument
+) -> dict[str, Any]:  # Added logger argument
     r"""Extract JSON output from a string."""
 
     markdown_pattern = r'```(?:json)?\\s*(.*?)\\s*```'
@@ -361,7 +357,7 @@ def _reload_image(image: Image.Image) -> Image.Image:
     return Image.open(buffer)
 
 
-def dom_rectangle_from_dict(rect: Dict[str, Any]) -> DOMRectangle:
+def dom_rectangle_from_dict(rect: dict[str, Any]) -> DOMRectangle:
     r"""Create a DOMRectangle object from a dictionary."""
     return DOMRectangle(
         x=_get_number(rect, "x"),
@@ -375,9 +371,9 @@ def dom_rectangle_from_dict(rect: Dict[str, Any]) -> DOMRectangle:
     )
 
 
-def interactive_region_from_dict(region: Dict[str, Any]) -> InteractiveRegion:
+def interactive_region_from_dict(region: dict[str, Any]) -> InteractiveRegion:
     r"""Create an :class:`InteractiveRegion` object from a dictionary."""
-    typed_rects: List[DOMRectangle] = []
+    typed_rects: list[DOMRectangle] = []
     for rect_data in region[
         "rects"
     ]:  # Renamed rect to rect_data to avoid conflict
@@ -392,7 +388,7 @@ def interactive_region_from_dict(region: Dict[str, Any]) -> InteractiveRegion:
     )
 
 
-def visual_viewport_from_dict(viewport: Dict[str, Any]) -> VisualViewport:
+def visual_viewport_from_dict(viewport: dict[str, Any]) -> VisualViewport:
     r"""Create a :class:`VisualViewport` object from a dictionary."""
     return VisualViewport(
         height=_get_number(viewport, "height"),
@@ -410,9 +406,9 @@ def visual_viewport_from_dict(viewport: Dict[str, Any]) -> VisualViewport:
 
 
 def add_set_of_mark(
-    screenshot: Union[bytes, Image.Image, io.BufferedIOBase],
-    ROIs: Dict[str, InteractiveRegion],
-) -> Tuple[Image.Image, List[str], List[str], List[str]]:
+    screenshot: bytes | Image.Image | io.BufferedIOBase,
+    ROIs: dict[str, InteractiveRegion],
+) -> tuple[Image.Image, list[str], list[str], list[str]]:
     if isinstance(screenshot, Image.Image):
         return _add_set_of_mark(screenshot, ROIs)
 
@@ -428,8 +424,8 @@ def add_set_of_mark(
 
 
 def _add_set_of_mark(
-    screenshot: Image.Image, ROIs: Dict[str, InteractiveRegion]
-) -> Tuple[Image.Image, List[str], List[str], List[str]]:
+    screenshot: Image.Image, ROIs: dict[str, InteractiveRegion]
+) -> tuple[Image.Image, list[str], list[str], list[str]]:
     r"""Add a set of marks to the screenshot.
 
     Args:
@@ -442,9 +438,9 @@ def _add_set_of_mark(
             images, ROIs located above the visible area, and ROIs located below
             the visible area.
     """
-    visible_rects: List[str] = list()
-    rects_above: List[str] = list()  # Scroll up to see
-    rects_below: List[str] = list()  # Scroll down to see
+    visible_rects: list[str] = list()
+    rects_above: list[str] = list()  # Scroll up to see
+    rects_below: list[str] = list()  # Scroll down to see
 
     fnt = ImageFont.load_default(14)
     base = screenshot.convert("L").convert("RGBA")
@@ -485,7 +481,7 @@ def _add_set_of_mark(
 def _draw_roi(
     draw: ImageDraw.ImageDraw,
     idx: int,
-    font: Union[ImageFont.FreeTypeFont, ImageFont.ImageFont],
+    font: ImageFont.FreeTypeFont | ImageFont.ImageFont,
     # Made Union explicit
     rect: DOMRectangle,
 ) -> None:
@@ -534,8 +530,8 @@ def _draw_roi(
 
 
 def _get_text_color(
-    bg_color: Tuple[int, int, int, int],
-) -> Tuple[int, int, int, int]:
+    bg_color: tuple[int, int, int, int],
+) -> tuple[int, int, int, int]:
     r"""Determine the ideal text color (black or white) for contrast.
 
     Args:
@@ -548,7 +544,7 @@ def _get_text_color(
     return (0, 0, 0, 255) if luminance > 120 else (255, 255, 255, 255)
 
 
-def _get_random_color(identifier: int) -> Tuple[int, int, int, int]:
+def _get_random_color(identifier: int) -> tuple[int, int, int, int]:
     r"""Generate a consistent random RGBA color based on the identifier.
 
     Args:
@@ -565,4 +561,4 @@ def _get_random_color(identifier: int) -> Tuple[int, int, int, int]:
     # TODO: check why shuffle is needed?
     rnd.shuffle(color)
     color.append(255)
-    return cast(Tuple[int, int, int, int], tuple(color))
+    return cast(tuple[int, int, int, int], tuple(color))

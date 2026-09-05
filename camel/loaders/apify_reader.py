@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from apify_client.clients import DatasetClient
@@ -34,7 +34,7 @@ class Apify:
     )
     def __init__(
         self,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
     ) -> None:
         from apify_client import ApifyClient
 
@@ -44,15 +44,15 @@ class Apify:
     def run_actor(
         self,
         actor_id: str,
-        run_input: Optional[dict] = None,
-        content_type: Optional[str] = None,
-        build: Optional[str] = None,
-        max_items: Optional[int] = None,
-        memory_mbytes: Optional[int] = None,
-        timeout_secs: Optional[int] = None,
-        webhooks: Optional[list] = None,
-        wait_secs: Optional[int] = None,
-    ) -> Optional[dict]:
+        run_input: dict | None = None,
+        content_type: str | None = None,
+        build: str | None = None,
+        max_items: int | None = None,
+        memory_mbytes: int | None = None,
+        timeout_secs: int | None = None,
+        webhooks: list | None = None,
+        wait_secs: int | None = None,
+    ) -> dict | None:
         r"""Run an actor on the Apify platform.
 
         Args:
@@ -127,7 +127,7 @@ class Apify:
     def get_dataset(
         self,
         dataset_id: str,
-    ) -> Optional[dict]:
+    ) -> dict | None:
         r"""Get a dataset from the Apify platform.
 
         Args:
@@ -173,7 +173,7 @@ class Apify:
     def get_dataset_items(
         self,
         dataset_id: str,
-    ) -> List:
+    ) -> list:
         r"""Get items from a dataset on the Apify platform.
 
         Args:
@@ -195,11 +195,11 @@ class Apify:
 
     def get_datasets(
         self,
-        unnamed: Optional[bool] = None,
-        limit: Optional[int] = None,
-        offset: Optional[int] = None,
-        desc: Optional[bool] = None,
-    ) -> List[dict]:
+        unnamed: bool | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+        desc: bool | None = None,
+    ) -> list[dict]:
         r"""Get all named datasets from the Apify platform.
 
         Args:

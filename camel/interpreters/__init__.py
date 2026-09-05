@@ -22,10 +22,10 @@ from .subprocess_interpreter import SubprocessInterpreter
 
 __all__ = [
     'BaseInterpreter',
-    'InterpreterError',
-    'InternalPythonInterpreter',
-    'SubprocessInterpreter',
     'DockerInterpreter',
-    'JupyterKernelInterpreter',
     'E2BInterpreter',
+    'InternalPythonInterpreter',
+    'InterpreterError',
+    'JupyterKernelInterpreter',
+    'SubprocessInterpreter',
 ]

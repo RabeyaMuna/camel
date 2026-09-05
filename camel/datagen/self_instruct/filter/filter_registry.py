@@ -11,7 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Callable, Dict
+from collections.abc import Callable
+from typing import Any
 
 from .filter_function import (
     FilterFunction,
@@ -23,7 +24,7 @@ from .filter_function import (
     RougeSimilarityFilter,
 )
 
-FILTER_REGISTRY: Dict[str, Callable[[Dict[str, Any]], FilterFunction]] = {
+FILTER_REGISTRY: dict[str, Callable[[dict[str, Any]], FilterFunction]] = {
     "length": lambda kwargs: LengthFilter(
         min_len=kwargs.get("min_len", 5), max_len=kwargs.get("max_len", 200)
     ),
@@ -44,7 +45,7 @@ FILTER_REGISTRY: Dict[str, Callable[[Dict[str, Any]], FilterFunction]] = {
 
 
 def register_filter(
-    name: str, constructor: Callable[[Dict[str, Any]], FilterFunction]
+    name: str, constructor: Callable[[dict[str, Any]], FilterFunction]
 ):
     r"""Registers a new filter constructor in FILTER_REGISTRY.
 

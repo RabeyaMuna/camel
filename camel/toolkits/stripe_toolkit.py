@@ -15,7 +15,6 @@
 import json
 import logging
 import os
-from typing import List, Optional
 
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
@@ -45,7 +44,7 @@ class StripeToolkit(BaseToolkit):
     def __init__(
         self,
         retries: int = 3,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         super().__init__(timeout=timeout)
         r"""Initializes the StripeToolkit with the specified number of
@@ -273,7 +272,7 @@ class StripeToolkit(BaseToolkit):
             self.logger.error(f"Unexpected error in {func_name}: {error!s}")
             return f"Unexpected error in {func_name}: {error!s}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

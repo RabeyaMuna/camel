@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from pydantic import field_validator
 
@@ -53,14 +53,14 @@ class MistralConfig(BaseConfig):
             value.
     """
 
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    max_tokens: Optional[int] = None
-    stop: Optional[Union[str, list[str]]] = None
-    random_seed: Optional[int] = None
-    safe_prompt: Optional[bool] = None
-    response_format: Optional[Union[Dict[str, str], Any]] = None
-    tool_choice: Optional[str] = None
+    temperature: float | None = None
+    top_p: float | None = None
+    max_tokens: int | None = None
+    stop: str | list[str] | None = None
+    random_seed: int | None = None
+    safe_prompt: bool | None = None
+    response_format: dict[str, str] | Any | None = None
+    tool_choice: str | None = None
 
     @field_validator("response_format", mode="before")
     @classmethod

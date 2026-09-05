@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -45,11 +45,11 @@ class VerificationResult(BaseModel):
         default_factory=datetime.now,
         description="When the verification was performed",
     )
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional metadata about the verification",
     )
-    error_message: Optional[str] = Field(
+    error_message: str | None = Field(
         default=None, description="Error message if verification failed"
     )
 
@@ -61,7 +61,7 @@ class VerifierConfig(BaseModel):
     strict_mode: bool = Field(
         False, description="Whether to fail on any validation error"
     )
-    timeout: Optional[float] = Field(
+    timeout: float | None = Field(
         None, description="Verification timeout in seconds"
     )
     max_retries: int = Field(3, description="Maximum number of retry attempts")

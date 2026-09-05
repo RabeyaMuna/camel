@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import requests
 
@@ -40,7 +40,7 @@ class MeshyToolkit(BaseToolkit):
             (None, 'MESHY_API_KEY'),
         ]
     )
-    def __init__(self, timeout: Optional[float] = None):
+    def __init__(self, timeout: float | None = None):
         r"""Initializes the MeshyToolkit with the API key from the
         environment.
         """
@@ -49,7 +49,7 @@ class MeshyToolkit(BaseToolkit):
 
     def generate_3d_preview(
         self, prompt: str, art_style: str, negative_prompt: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Generates a 3D preview using the Meshy API.
 
         Args:
@@ -77,7 +77,7 @@ class MeshyToolkit(BaseToolkit):
         response.raise_for_status()
         return response.json()
 
-    def refine_3d_model(self, preview_task_id: str) -> Dict[str, Any]:
+    def refine_3d_model(self, preview_task_id: str) -> dict[str, Any]:
         r"""Refines a 3D model using the Meshy API.
 
         Args:
@@ -97,7 +97,7 @@ class MeshyToolkit(BaseToolkit):
         response.raise_for_status()
         return response.json()
 
-    def get_task_status(self, task_id: str) -> Dict[str, Any]:
+    def get_task_status(self, task_id: str) -> dict[str, Any]:
         r"""Retrieves the status or result of a specific 3D model generation
         task using the Meshy API.
 
@@ -118,7 +118,7 @@ class MeshyToolkit(BaseToolkit):
 
     def wait_for_task_completion(
         self, task_id: str, polling_interval: int = 10, timeout: int = 3600
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Waits for a task to complete by polling its status.
 
         Args:
@@ -163,7 +163,7 @@ class MeshyToolkit(BaseToolkit):
 
     def generate_3d_model_complete(
         self, prompt: str, art_style: str, negative_prompt: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Generates a complete 3D model by handling preview and refinement
         stages
 
@@ -191,7 +191,7 @@ class MeshyToolkit(BaseToolkit):
         # Wait for refinement completion and return final result
         return self.wait_for_task_completion(refine_task_id)
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

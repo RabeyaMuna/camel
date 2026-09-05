@@ -15,7 +15,7 @@
 
 import datetime
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from camel.logger import get_logger
 from camel.toolkits import FunctionTool
@@ -37,7 +37,7 @@ class GoogleCalendarToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         r"""Initializes a new instance of the GoogleCalendarToolkit class.
 
@@ -56,9 +56,9 @@ class GoogleCalendarToolkit(BaseToolkit):
         end_time: str,
         description: str = "",
         location: str = "",
-        attendees_email: Optional[List[str]] = None,
+        attendees_email: list[str] | None = None,
         timezone: str = "UTC",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Creates an event in the user's primary Google Calendar.
 
         Args:
@@ -117,7 +117,7 @@ class GoogleCalendarToolkit(BaseToolkit):
                 logger.error(f"Invalid email address: {email}")
                 return {"error": f"Invalid email address: {email}"}
 
-        event: Dict[str, Any] = {
+        event: dict[str, Any] = {
             'summary': event_title,
             'location': location,
             'description': description,
@@ -153,8 +153,8 @@ class GoogleCalendarToolkit(BaseToolkit):
             return {"error": error_msg}
 
     def get_events(
-        self, max_results: int = 10, time_min: Optional[str] = None
-    ) -> Union[List[Dict[str, Any]], Dict[str, Any]]:
+        self, max_results: int = 10, time_min: str | None = None
+    ) -> list[dict[str, Any]] | dict[str, Any]:
         r"""Retrieves upcoming events from the user's primary Google Calendar.
 
         Args:
@@ -217,13 +217,13 @@ class GoogleCalendarToolkit(BaseToolkit):
     def update_event(
         self,
         event_id: str,
-        event_title: Optional[str] = None,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None,
-        description: Optional[str] = None,
-        location: Optional[str] = None,
-        attendees_email: Optional[List[str]] = None,
-    ) -> Dict[str, Any]:
+        event_title: str | None = None,
+        start_time: str | None = None,
+        end_time: str | None = None,
+        description: str | None = None,
+        location: str | None = None,
+        attendees_email: list[str] | None = None,
+    ) -> dict[str, Any]:
         r"""Updates an existing event in the user's primary Google Calendar.
 
         Args:
@@ -313,7 +313,7 @@ class GoogleCalendarToolkit(BaseToolkit):
         except Exception:
             raise ValueError("Failed to delete event")
 
-    def get_calendar_details(self) -> Dict[str, Any]:
+    def get_calendar_details(self) -> dict[str, Any]:
         r"""Retrieves details about the user's primary Google Calendar.
 
         Returns:
@@ -415,7 +415,7 @@ class GoogleCalendarToolkit(BaseToolkit):
                 scopes=SCOPES,
             )
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

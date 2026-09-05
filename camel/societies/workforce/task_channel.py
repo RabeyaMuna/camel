@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import asyncio
 from enum import Enum
-from typing import Dict, List, Optional
 
 from camel.tasks import Task
 
@@ -63,7 +62,7 @@ class Packet:
         self,
         task: Task,
         publisher_id: str,
-        assignee_id: Optional[str] = None,
+        assignee_id: str | None = None,
         status: PacketStatus = PacketStatus.SENT,
     ) -> None:
         self.task = task
@@ -83,7 +82,7 @@ class TaskChannel:
 
     def __init__(self) -> None:
         self._condition = asyncio.Condition()
-        self._task_dict: Dict[str, Packet] = {}
+        self._task_dict: dict[str, Packet] = {}
 
     async def get_returned_task_by_publisher(self, publisher_id: str) -> Task:
         r"""Get a task from the channel that has been returned by the
@@ -164,7 +163,7 @@ class TaskChannel:
                 del self._task_dict[task_id]
             self._condition.notify_all()
 
-    async def get_dependency_ids(self) -> List[str]:
+    async def get_dependency_ids(self) -> list[str]:
         r"""Get the IDs of all dependencies in the channel."""
         async with self._condition:
             dependency_ids = []

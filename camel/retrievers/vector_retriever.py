@@ -14,7 +14,7 @@
 import os
 import warnings
 from io import IOBase
-from typing import IO, TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import IO, TYPE_CHECKING, Any, Union
 from urllib.parse import urlparse
 
 from camel.embeddings import BaseEmbedding, OpenAIEmbedding
@@ -50,8 +50,8 @@ class VectorRetriever(BaseRetriever):
 
     def __init__(
         self,
-        embedding_model: Optional[BaseEmbedding] = None,
-        storage: Optional[BaseVectorStorage] = None,
+        embedding_model: BaseEmbedding | None = None,
+        storage: BaseVectorStorage | None = None,
     ) -> None:
         r"""Initializes the retriever class with an optional embedding model.
 
@@ -77,9 +77,9 @@ class VectorRetriever(BaseRetriever):
         max_characters: int = 500,
         embed_batch: int = 50,
         should_chunk: bool = True,
-        extra_info: Optional[dict] = None,
-        metadata_filename: Optional[str] = None,
-        chunker: Optional[BaseChunker] = None,
+        extra_info: dict | None = None,
+        metadata_filename: str | None = None,
+        chunker: BaseChunker | None = None,
         **kwargs: Any,
     ) -> None:
         r"""Processes content from local file path, remote URL, string
@@ -200,7 +200,7 @@ class VectorRetriever(BaseRetriever):
         query: str,
         top_k: int = Constants.DEFAULT_TOP_K_RESULTS,
         similarity_threshold: float = Constants.DEFAULT_SIMILARITY_THRESHOLD,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Executes a query in vector storage and compiles the retrieved
         results into a dictionary.
 

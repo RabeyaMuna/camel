@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class BaseGraphStorage(ABC):
@@ -23,24 +23,20 @@ class BaseGraphStorage(ABC):
     @abstractmethod
     def get_client(self) -> Any:
         r"""Get the underlying graph storage client."""
-        pass
 
     @property
     @abstractmethod
     def get_schema(self) -> str:
         r"""Get the schema of the graph storage"""
-        pass
 
     @property
     @abstractmethod
-    def get_structured_schema(self) -> Dict[str, Any]:
+    def get_structured_schema(self) -> dict[str, Any]:
         r"""Get the structured schema of the graph storage"""
-        pass
 
     @abstractmethod
     def refresh_schema(self) -> None:
         r"""Refreshes the graph schema information."""
-        pass
 
     @abstractmethod
     def add_triplet(self, subj: str, obj: str, rel: str) -> None:
@@ -51,7 +47,6 @@ class BaseGraphStorage(ABC):
             obj (str): The identifier for the object entity.
             rel (str): The relationship between the subject and object.
         """
-        pass
 
     @abstractmethod
     def delete_triplet(self, subj: str, obj: str, rel: str) -> None:
@@ -63,12 +58,11 @@ class BaseGraphStorage(ABC):
             obj (str): The identifier for the object entity.
             rel (str): The relationship between the subject and object.
         """
-        pass
 
     @abstractmethod
     def query(
-        self, query: str, params: Optional[Dict[str, Any]] = None
-    ) -> List[Dict[str, Any]]:
+        self, query: str, params: dict[str, Any] | None = None
+    ) -> list[dict[str, Any]]:
         r"""Query the graph store with statement and parameters.
 
         Args:
@@ -80,4 +74,3 @@ class BaseGraphStorage(ABC):
             List[Dict[str, Any]]: A list of dictionaries, each
                 dictionary represents a row of results from the query.
         """
-        pass

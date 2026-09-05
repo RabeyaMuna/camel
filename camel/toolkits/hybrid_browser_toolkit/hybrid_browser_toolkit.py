@@ -19,8 +19,9 @@ import json
 import os
 import time
 import urllib.parse
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable, ClassVar, Dict, List, Optional, cast
+from typing import Any, ClassVar, cast
 
 from camel.logger import get_logger
 from camel.models import BaseModelBackend
@@ -53,7 +54,7 @@ class HybridBrowserToolkit(BaseToolkit):
     NETWORK_IDLE_TIMEOUT = 2000  # 2 seconds for network idle
 
     # Default tool list - core browser functionality
-    DEFAULT_TOOLS: ClassVar[List[str]] = [
+    DEFAULT_TOOLS: ClassVar[list[str]] = [
         "open_browser",
         "close_browser",
         "visit_page",
@@ -65,7 +66,7 @@ class HybridBrowserToolkit(BaseToolkit):
     ]
 
     # All available tools
-    ALL_TOOLS: ClassVar[List[str]] = [
+    ALL_TOOLS: ClassVar[list[str]] = [
         "open_browser",
         "close_browser",
         "visit_page",
@@ -90,13 +91,13 @@ class HybridBrowserToolkit(BaseToolkit):
         self,
         *,
         headless: bool = True,
-        user_data_dir: Optional[str] = None,
+        user_data_dir: str | None = None,
         stealth: bool = False,
-        web_agent_model: Optional[BaseModelBackend] = None,
+        web_agent_model: BaseModelBackend | None = None,
         cache_dir: str = "tmp/",
-        enabled_tools: Optional[List[str]] = None,
+        enabled_tools: list[str] | None = None,
         browser_log_to_file: bool = False,
-        session_id: Optional[str] = None,
+        session_id: str | None = None,
         default_start_url: str = "https://google.com/",
     ) -> None:
         r"""Initialize the HybridBrowserToolkit.
@@ -164,14 +165,14 @@ class HybridBrowserToolkit(BaseToolkit):
             os.makedirs(log_dir, exist_ok=True)
 
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            self.log_file_path: Optional[str] = os.path.join(
+            self.log_file_path: str | None = os.path.join(
                 log_dir, f"hybrid_browser_toolkit_{timestamp}_{session_id}.log"
             )
         else:
             self.log_file_path = None
 
         # Initialize log buffer for in-memory storage
-        self.log_buffer: List[Dict[str, Any]] = []
+        self.log_buffer: list[dict[str, Any]] = []
 
         # Configure enabled tools
         if enabled_tools is None:
@@ -207,7 +208,7 @@ class HybridBrowserToolkit(BaseToolkit):
         # Use the session directly - singleton logic is handled in
         # ensure_browser
         self._session = temp_session
-        self._agent: Optional[PlaywrightLLMAgent] = None
+        self._agent: PlaywrightLLMAgent | None = None
         self._unified_script = self._load_unified_analyzer()
 
     def __del__(self):
@@ -274,7 +275,7 @@ class HybridBrowserToolkit(BaseToolkit):
             return content_str[: self.max_log_length] + "... [TRUNCATED]"
         return content_str
 
-    async def _get_current_url(self) -> Optional[str]:
+    async def _get_current_url(self) -> str | None:
         r"""Safely get the current URL of the active page."""
         try:
             page = await self._session.get_page()
@@ -288,11 +289,11 @@ class HybridBrowserToolkit(BaseToolkit):
     async def _log_action(
         self,
         action_name: str,
-        inputs: Dict[str, Any],
+        inputs: dict[str, Any],
         outputs: Any,
         execution_time: float,
-        page_load_time: Optional[float] = None,
-        error: Optional[str] = None,
+        page_load_time: float | None = None,
+        error: str | None = None,
     ) -> None:
         r"""Log action details with comprehensive information."""
         if not (self.enable_action_logging or self.enable_timing_logging):
@@ -300,7 +301,7 @@ class HybridBrowserToolkit(BaseToolkit):
 
         current_url = await self._get_current_url()
 
-        log_entry: Dict[str, Any] = {
+        log_entry: dict[str, Any] = {
             "timestamp": datetime.datetime.now().isoformat(),
             "action": action_name,
             "url": current_url,
@@ -467,7 +468,7 @@ class HybridBrowserToolkit(BaseToolkit):
                 f"Page stability wait failed: {e} - continuing anyway"
             )
 
-    async def _get_unified_analysis(self) -> Dict[str, Any]:
+    async def _get_unified_analysis(self) -> dict[str, Any]:
         r"""Get unified analysis data from the page."""
         page = await self._require_page()
         try:
@@ -487,8 +488,8 @@ class HybridBrowserToolkit(BaseToolkit):
             return {"elements": {}, "metadata": {"elementCount": 0}}
 
     def _convert_analysis_to_rects(
-        self, analysis_data: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, analysis_data: dict[str, Any]
+    ) -> dict[str, Any]:
         r"""Convert analysis data to rect format for visual marking."""
         rects = {}
         elements = analysis_data.get("elements", {})
@@ -517,10 +518,10 @@ class HybridBrowserToolkit(BaseToolkit):
         # Try to get font
         try:
             font = ImageFont.truetype("arial.ttf", 16)
-        except (OSError, IOError):
+        except OSError:
             try:
                 font = ImageFont.load_default()
-            except (OSError, IOError):
+            except OSError:
                 font = None
 
         # Color scheme
@@ -581,7 +582,7 @@ class HybridBrowserToolkit(BaseToolkit):
         return marked_image
 
     def _format_snapshot_from_analysis(
-        self, analysis_data: Dict[str, Any]
+        self, analysis_data: dict[str, Any]
     ) -> str:
         r"""Format analysis data into snapshot string."""
         lines = []
@@ -612,7 +613,7 @@ class HybridBrowserToolkit(BaseToolkit):
 
         return "\n".join(lines)
 
-    async def _get_tab_info_for_output(self) -> Dict[str, Any]:
+    async def _get_tab_info_for_output(self) -> dict[str, Any]:
         r"""Get tab information to include in action outputs."""
         try:
             # Ensure we have the correct singleton session instance first
@@ -712,9 +713,9 @@ class HybridBrowserToolkit(BaseToolkit):
 
     async def _exec_with_snapshot(
         self,
-        action: Dict[str, Any],
-        element_details: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, str]:
+        action: dict[str, Any],
+        element_details: dict[str, Any] | None = None,
+    ) -> dict[str, str]:
         r"""Execute action and return result with snapshot comparison."""
 
         # Log action execution start
@@ -722,7 +723,7 @@ class HybridBrowserToolkit(BaseToolkit):
         logger.info(f"Executing action: {action_type}")
 
         action_start_time = time.time()
-        inputs: Dict[str, Any] = {"action": action}
+        inputs: dict[str, Any] = {"action": action}
         page_load_time = None
 
         try:
@@ -883,8 +884,8 @@ class HybridBrowserToolkit(BaseToolkit):
             raise
 
     async def _extract_links_by_refs(
-        self, snapshot: str, page, refs: List[str]
-    ) -> List[Dict[str, str]]:
+        self, snapshot: str, page, refs: list[str]
+    ) -> list[dict[str, str]]:
         r"""Extract multiple links by their reference IDs."""
         import re
 
@@ -945,7 +946,7 @@ class HybridBrowserToolkit(BaseToolkit):
 
     # Public API Methods
 
-    async def open_browser(self) -> Dict[str, Any]:
+    async def open_browser(self) -> dict[str, Any]:
         r"""Launches a new browser session and navigates to the configured
         default page.
 
@@ -968,7 +969,7 @@ class HybridBrowserToolkit(BaseToolkit):
         """
         # Add logging if enabled
         action_start = time.time()
-        inputs: Dict[str, Any] = {}  # No input parameters for agents
+        inputs: dict[str, Any] = {}  # No input parameters for agents
 
         logger.info("Starting browser session...")
 
@@ -1034,7 +1035,7 @@ class HybridBrowserToolkit(BaseToolkit):
         return "Browser session closed."
 
     @action_logger
-    async def visit_page(self, url: str) -> Dict[str, Any]:
+    async def visit_page(self, url: str) -> dict[str, Any]:
         r"""Navigates the current browser page to a specified URL.
 
         Args:
@@ -1086,7 +1087,7 @@ class HybridBrowserToolkit(BaseToolkit):
         return {"result": nav_result, "snapshot": snapshot, **tab_info}
 
     @action_logger
-    async def back(self) -> Dict[str, Any]:
+    async def back(self) -> dict[str, Any]:
         r"""Navigates the browser back to the previous page in history.
 
         This function simulates clicking the browser's back button, taking
@@ -1151,7 +1152,7 @@ class HybridBrowserToolkit(BaseToolkit):
             }
 
     @action_logger
-    async def forward(self) -> Dict[str, Any]:
+    async def forward(self) -> dict[str, Any]:
         r"""Navigates the browser forward to the next page in history.
 
         This function simulates clicking the browser's forward button, taking
@@ -1335,7 +1336,7 @@ class HybridBrowserToolkit(BaseToolkit):
 
         return ToolResult(text=text_result, images=[img_data_url])
 
-    async def click(self, *, ref: str) -> Dict[str, Any]:
+    async def click(self, *, ref: str) -> dict[str, Any]:
         r"""Clicks on an interactive element on the page.
 
         Args:
@@ -1383,7 +1384,7 @@ class HybridBrowserToolkit(BaseToolkit):
 
         return result
 
-    async def type(self, *, ref: str, text: str) -> Dict[str, Any]:
+    async def type(self, *, ref: str, text: str) -> dict[str, Any]:
         r"""Types text into an input field, such as a textbox or search bar.
 
         Args:
@@ -1411,7 +1412,7 @@ class HybridBrowserToolkit(BaseToolkit):
 
         return result
 
-    async def select(self, *, ref: str, value: str) -> Dict[str, Any]:
+    async def select(self, *, ref: str, value: str) -> dict[str, Any]:
         r"""Selects an option from a dropdown (`<select>`) element.
 
         Args:
@@ -1440,7 +1441,7 @@ class HybridBrowserToolkit(BaseToolkit):
 
         return result
 
-    async def scroll(self, *, direction: str, amount: int) -> Dict[str, Any]:
+    async def scroll(self, *, direction: str, amount: int) -> dict[str, Any]:
         r"""Scrolls the page window up or down by a specified amount.
 
         Args:
@@ -1473,7 +1474,7 @@ class HybridBrowserToolkit(BaseToolkit):
 
         return result
 
-    async def enter(self) -> Dict[str, Any]:
+    async def enter(self) -> dict[str, Any]:
         r"""Simulates pressing the Enter key on the currently focused element.
 
         This tool is used to execute or confirm an action after interacting
@@ -1509,8 +1510,8 @@ class HybridBrowserToolkit(BaseToolkit):
 
     @action_logger
     async def wait_user(
-        self, timeout_sec: Optional[float] = None
-    ) -> Dict[str, Any]:
+        self, timeout_sec: float | None = None
+    ) -> dict[str, Any]:
         r"""Pauses the agent's execution and waits for human intervention.
 
         This is useful for tasks that require manual steps, like solving a
@@ -1575,7 +1576,7 @@ class HybridBrowserToolkit(BaseToolkit):
         return {"result": result_msg, "snapshot": snapshot, **tab_info}
 
     @action_logger
-    async def get_page_links(self, *, ref: List[str]) -> Dict[str, Any]:
+    async def get_page_links(self, *, ref: list[str]) -> dict[str, Any]:
         r"""Retrieves the full URLs for a given list of link reference IDs.
 
         This is useful when you need to know the destination of a link before
@@ -1636,7 +1637,7 @@ class HybridBrowserToolkit(BaseToolkit):
         await agent.process_command(task_prompt, max_steps=max_steps)
         return "Task processing finished - see stdout for detailed trace."
 
-    def get_log_summary(self) -> Dict[str, Any]:
+    def get_log_summary(self) -> dict[str, Any]:
         r"""Get a summary of logged actions."""
         if not self.log_buffer:
             return {"total_actions": 0, "summary": "No actions logged"}
@@ -1651,7 +1652,7 @@ class HybridBrowserToolkit(BaseToolkit):
             if "page_load_time_ms" in entry
         )
 
-        action_counts: Dict[str, int] = {}
+        action_counts: dict[str, int] = {}
         error_count = 0
 
         for entry in self.log_buffer:
@@ -1678,7 +1679,7 @@ class HybridBrowserToolkit(BaseToolkit):
         self.log_buffer.clear()
         logger.info("Log buffer cleared")
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Get available function tools
         based on enabled_tools configuration."""
         # Map tool names to their corresponding methods
@@ -1725,7 +1726,7 @@ class HybridBrowserToolkit(BaseToolkit):
         return enabled_tools
 
     def clone_for_new_session(
-        self, new_session_id: Optional[str] = None
+        self, new_session_id: str | None = None
     ) -> "HybridBrowserToolkit":
         r"""Create a new instance of HybridBrowserToolkit with a unique
         session.
@@ -1756,7 +1757,7 @@ class HybridBrowserToolkit(BaseToolkit):
         )
 
     @action_logger
-    async def switch_tab(self, *, tab_index: int) -> Dict[str, Any]:
+    async def switch_tab(self, *, tab_index: int) -> dict[str, Any]:
         r"""Switches to a specific browser tab by its index.
 
         This allows you to control which tab is currently active. After
@@ -1805,7 +1806,7 @@ class HybridBrowserToolkit(BaseToolkit):
         return result
 
     @action_logger
-    async def close_tab(self, *, tab_index: int) -> Dict[str, Any]:
+    async def close_tab(self, *, tab_index: int) -> dict[str, Any]:
         r"""Closes a specific browser tab by its index.
 
         After closing a tab, the browser will automatically switch to another
@@ -1858,7 +1859,7 @@ class HybridBrowserToolkit(BaseToolkit):
         return result
 
     @action_logger
-    async def get_tab_info(self) -> Dict[str, Any]:
+    async def get_tab_info(self) -> dict[str, Any]:
         r"""Retrieves information about all currently open browser tabs.
 
         This provides a comprehensive overview of the browser state, including

@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
 from datetime import datetime
-from typing import List, Literal, Optional, Tuple, Union
+from typing import Literal
 
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
@@ -22,7 +22,7 @@ from camel.utils import MCPServer, api_keys_required
 
 def _process_response(
     response, return_type: str
-) -> Union[str, dict, Tuple[str, dict]]:
+) -> str | dict | tuple[str, dict]:
     r"""Process the response based on the specified return type.
 
     This helper method processes the API response and returns the content
@@ -69,7 +69,7 @@ class AskNewsToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         r"""Initialize the AskNewsToolkit with API clients.The API keys and
         credentials are retrieved from environment variables.
@@ -89,7 +89,7 @@ class AskNewsToolkit(BaseToolkit):
         n_articles: int = 10,
         return_type: Literal["string", "dicts", "both"] = "string",
         method: Literal["nl", "kw"] = "kw",
-    ) -> Union[str, dict, Tuple[str, dict]]:
+    ) -> str | dict | tuple[str, dict]:
         r"""Fetch news or stories based on a user query.
 
         Args:
@@ -123,7 +123,7 @@ class AskNewsToolkit(BaseToolkit):
     def get_stories(
         self,
         query: str,
-        categories: List[
+        categories: list[
             Literal[
                 'Politics',
                 'Economy',
@@ -144,7 +144,7 @@ class AskNewsToolkit(BaseToolkit):
         expand_updates: bool = True,
         max_updates: int = 2,
         max_articles: int = 10,
-    ) -> Union[dict, str]:
+    ) -> dict | str:
         r"""Fetch stories based on the provided parameters.
 
         Args:
@@ -196,9 +196,9 @@ class AskNewsToolkit(BaseToolkit):
 
     def get_web_search(
         self,
-        queries: List[str],
+        queries: list[str],
         return_type: Literal["string", "dicts", "both"] = "string",
-    ) -> Union[str, dict, Tuple[str, dict]]:
+    ) -> str | dict | tuple[str, dict]:
         r"""Perform a live web search based on the given queries.
 
         Args:
@@ -223,11 +223,11 @@ class AskNewsToolkit(BaseToolkit):
 
     def search_reddit(
         self,
-        keywords: List[str],
+        keywords: list[str],
         n_threads: int = 5,
         return_type: Literal["string", "dicts", "both"] = "string",
         method: Literal["nl", "kw"] = "kw",
-    ) -> Union[str, dict, Tuple[str, dict]]:
+    ) -> str | dict | tuple[str, dict]:
         r"""Search Reddit based on the provided keywords.
 
         Args:
@@ -286,9 +286,9 @@ class AskNewsToolkit(BaseToolkit):
             'news_total_weighted',
         ] = "news_positive",
         return_type: Literal["list", "string"] = "string",
-        date_from: Optional[datetime] = None,
-        date_to: Optional[datetime] = None,
-    ) -> Union[list, str]:
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+    ) -> list | str:
         r"""Fetch asset sentiment data for a given asset, metric, and date
         range.
 
@@ -340,7 +340,7 @@ class AskNewsToolkit(BaseToolkit):
         except Exception as e:
             return f"Got error: {e}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions
           in the toolkit.
 
@@ -382,7 +382,7 @@ class AsyncAskNewsToolkit(BaseToolkit):
         n_articles: int = 10,
         return_type: Literal["string", "dicts", "both"] = "string",
         method: Literal["nl", "kw"] = "kw",
-    ) -> Union[str, dict, Tuple[str, dict]]:
+    ) -> str | dict | tuple[str, dict]:
         r"""Fetch news or stories based on a user query.
 
         Args:
@@ -417,7 +417,7 @@ class AsyncAskNewsToolkit(BaseToolkit):
     async def get_stories(
         self,
         query: str,
-        categories: List[
+        categories: list[
             Literal[
                 'Politics',
                 'Economy',
@@ -438,7 +438,7 @@ class AsyncAskNewsToolkit(BaseToolkit):
         expand_updates: bool = True,
         max_updates: int = 2,
         max_articles: int = 10,
-    ) -> Union[dict, str]:
+    ) -> dict | str:
         r"""Fetch stories based on the provided parameters.
 
         Args:
@@ -491,9 +491,9 @@ class AsyncAskNewsToolkit(BaseToolkit):
 
     async def get_web_search(
         self,
-        queries: List[str],
+        queries: list[str],
         return_type: Literal["string", "dicts", "both"] = "string",
-    ) -> Union[str, dict, Tuple[str, dict]]:
+    ) -> str | dict | tuple[str, dict]:
         r"""Perform a live web search based on the given queries.
 
         Args:
@@ -518,11 +518,11 @@ class AsyncAskNewsToolkit(BaseToolkit):
 
     async def search_reddit(
         self,
-        keywords: List[str],
+        keywords: list[str],
         n_threads: int = 5,
         return_type: Literal["string", "dicts", "both"] = "string",
         method: Literal["nl", "kw"] = "kw",
-    ) -> Union[str, dict, Tuple[str, dict]]:
+    ) -> str | dict | tuple[str, dict]:
         r"""Search Reddit based on the provided keywords.
 
         Args:
@@ -581,9 +581,9 @@ class AsyncAskNewsToolkit(BaseToolkit):
             'news_total_weighted',
         ] = "news_positive",
         return_type: Literal["list", "string"] = "string",
-        date_from: Optional[datetime] = None,
-        date_to: Optional[datetime] = None,
-    ) -> Union[list, str]:
+        date_from: datetime | None = None,
+        date_to: datetime | None = None,
+    ) -> list | str:
         r"""Fetch asset sentiment data for a given asset, metric, and date
         range.
 
@@ -635,7 +635,7 @@ class AsyncAskNewsToolkit(BaseToolkit):
         except Exception as e:
             return f"Got error: {e}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions
           in the toolkit.
 

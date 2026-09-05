@@ -21,4 +21,3 @@ class BaseChunker(ABC):
     @abstractmethod
     def chunk(self, content: Any) -> Any:
         r"""Chunk the given content"""
-        pass

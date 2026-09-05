@@ -14,7 +14,7 @@
 import logging
 import os
 from hashlib import md5
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from camel.storages.graph_storages import BaseGraphStorage, GraphElement
 from camel.utils import dependencies_required
@@ -90,7 +90,7 @@ class Neo4jGraph(BaseGraphStorage):
         username: str,
         password: str,
         database: str = "neo4j",
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
         truncate: bool = False,
     ) -> None:
         r"""Create a new Neo4j graph instance."""
@@ -107,7 +107,7 @@ class Neo4jGraph(BaseGraphStorage):
         self.timeout = timeout
         self.truncate = truncate
         self.schema: str = ""
-        self.structured_schema: Dict[str, Any] = {}
+        self.structured_schema: dict[str, Any] = {}
 
         # Verify connection
         try:
@@ -156,7 +156,7 @@ class Neo4jGraph(BaseGraphStorage):
         return self.schema
 
     @property
-    def get_structured_schema(self) -> Dict[str, Any]:
+    def get_structured_schema(self) -> dict[str, Any]:
         r"""Returns the structured schema of the graph
 
         Returns:
@@ -210,8 +210,8 @@ class Neo4jGraph(BaseGraphStorage):
             return raw_value
 
     def query(
-        self, query: str, params: Optional[Dict[str, Any]] = None
-    ) -> List[Dict[str, Any]]:
+        self, query: str, params: dict[str, Any] | None = None
+    ) -> list[dict[str, Any]]:
         r"""Executes a Neo4j Cypher declarative query in a database.
 
         Args:
@@ -340,7 +340,7 @@ class Neo4jGraph(BaseGraphStorage):
         )
 
     def add_triplet(
-        self, subj: str, obj: str, rel: str, timestamp: Optional[str] = None
+        self, subj: str, obj: str, rel: str, timestamp: str | None = None
     ) -> None:
         r"""Adds a relationship (triplet) between two entities
         in the database with a timestamp.
@@ -515,7 +515,7 @@ class Neo4jGraph(BaseGraphStorage):
 
     def add_graph_elements(
         self,
-        graph_elements: List[GraphElement],
+        graph_elements: list[GraphElement],
         include_source: bool = False,
         base_entity_label: bool = False,
     ) -> None:
@@ -597,11 +597,11 @@ class Neo4jGraph(BaseGraphStorage):
         self,
         graph_name: str,
         sampling_ratio: float,
-        start_node_ids: List[int],
+        start_node_ids: list[int],
         restart_probability: float = 0.1,
         node_label_stratification: bool = False,
-        relationship_weight_property: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        relationship_weight_property: str | None = None,
+    ) -> dict[str, Any]:
         r"""Runs the Random Walk with Restarts (RWR) sampling algorithm.
 
         Args:
@@ -668,10 +668,10 @@ class Neo4jGraph(BaseGraphStorage):
         self,
         graph_name: str,
         sampling_ratio: float,
-        start_node_ids: List[int],
+        start_node_ids: list[int],
         node_label_stratification: bool = False,
-        relationship_weight_property: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        relationship_weight_property: str | None = None,
+    ) -> dict[str, Any]:
         r"""Runs the Common Neighbour Aware Random Walk (CNARW) sampling
         algorithm.
 
@@ -733,10 +733,10 @@ class Neo4jGraph(BaseGraphStorage):
 
     def get_triplet(
         self,
-        subj: Optional[str] = None,
-        obj: Optional[str] = None,
-        rel: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+        subj: str | None = None,
+        obj: str | None = None,
+        rel: str | None = None,
+    ) -> list[dict[str, Any]]:
         r"""Query triplet information. If subj, obj, or rel is
         not specified, returns all matching triplets.
 

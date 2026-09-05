@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from abc import ABC, abstractmethod
-from typing import Any, List, Union
+from typing import Any
 
 from camel.toolkits import FunctionTool
 
@@ -28,18 +28,16 @@ class BaseRuntime(ABC):
     @abstractmethod
     def add(
         self,
-        funcs: Union[FunctionTool, List[FunctionTool]],
+        funcs: FunctionTool | list[FunctionTool],
         *args: Any,
         **kwargs: Any,
     ) -> "BaseRuntime":
         r"""Adds a new tool to the runtime."""
-        pass
 
     @abstractmethod
     def reset(self, *args: Any, **kwargs: Any) -> Any:
         r"""Resets the runtime to its initial state."""
-        pass
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of all tools in the runtime."""
         return list(self.tools_map.values())

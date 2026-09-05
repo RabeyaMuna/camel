@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Any, Optional, Union
+from typing import Any
 
 from camel.models.openai_compatible_model import OpenAICompatibleModel
 from camel.types import ModelType
@@ -52,10 +52,10 @@ class NemotronModel(OpenAICompatibleModel):
     )
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        timeout: Optional[float] = None,
+        model_type: ModelType | str,
+        api_key: str | None = None,
+        url: str | None = None,
+        timeout: float | None = None,
         max_retries: int = 3,
         **kwargs: Any,
     ) -> None:

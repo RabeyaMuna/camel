@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any
 
 
 class BaseInterpreter(ABC):
@@ -36,20 +36,17 @@ class BaseInterpreter(ABC):
             InterpreterError: If the code execution encounters errors that
                 could be resolved by modifying or regenerating the code.
         """
-        pass
 
     @abstractmethod
-    def supported_code_types(self) -> List[str]:
+    def supported_code_types(self) -> list[str]:
         r"""Provides supported code types by the interpreter."""
-        pass
 
     @abstractmethod
-    def update_action_space(self, action_space: Dict[str, Any]) -> None:
+    def update_action_space(self, action_space: dict[str, Any]) -> None:
         r"""Updates action space for *python* interpreter"""
-        pass
 
     @abstractmethod
-    def execute_command(self, command: str) -> Union[str, Tuple[str, str]]:
+    def execute_command(self, command: str) -> str | tuple[str, str]:
         r"""Executes a command in the interpreter.
 
         Args:
@@ -59,4 +56,3 @@ class BaseInterpreter(ABC):
             Tuple[str, str]: A tuple containing the stdout and stderr of the
                 command execution.
         """
-        pass

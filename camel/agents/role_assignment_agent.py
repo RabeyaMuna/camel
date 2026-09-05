@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import re
-from typing import Dict, Optional, Union
 
 from camel.agents.chat_agent import ChatAgent
 from camel.messages import BaseMessage
@@ -48,7 +47,7 @@ class RoleAssignmentAgent(ChatAgent):
 
     def __init__(
         self,
-        model: Optional[BaseModelBackend] = None,
+        model: BaseModelBackend | None = None,
     ) -> None:
         system_message = BaseMessage(
             role_name="Role Assigner",
@@ -60,9 +59,9 @@ class RoleAssignmentAgent(ChatAgent):
 
     def run(
         self,
-        task_prompt: Union[str, TextPrompt],
+        task_prompt: str | TextPrompt,
         num_roles: int = 2,
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         r"""Generate role names based on the input task prompt.
 
         Args:

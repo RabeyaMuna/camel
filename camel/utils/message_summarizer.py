@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -40,16 +39,16 @@ class MessageSummary(BaseModel):
     summary: str = Field(
         description="A brief, one-sentence summary of the conversation."
     )
-    participants: List[str] = Field(
+    participants: list[str] = Field(
         description="The roles of participants involved."
     )
-    key_topics_and_entities: List[str] = Field(
+    key_topics_and_entities: list[str] = Field(
         description="Important topics, concepts, and entities discussed."
     )
-    decisions_and_outcomes: List[str] = Field(
+    decisions_and_outcomes: list[str] = Field(
         description="Key decisions, conclusions, or outcomes reached."
     )
-    action_items: List[str] = Field(
+    action_items: list[str] = Field(
         description=(
             "A list of specific tasks or actions to be taken, with assignees "
             "if mentioned."
@@ -71,7 +70,7 @@ class MessageSummarizer:
 
     def __init__(
         self,
-        model_backend: Optional[BaseModelBackend] = None,
+        model_backend: BaseModelBackend | None = None,
     ):
         if model_backend is None:
             self.model_backend = ModelFactory.create(
@@ -105,7 +104,7 @@ class MessageSummarizer:
             model=self.model_backend,
         )
 
-    def summarize(self, messages: List[BaseMessage]) -> MessageSummary:
+    def summarize(self, messages: list[BaseMessage]) -> MessageSummary:
         r"""Generate a structured summary of the provided messages.
 
         Args:

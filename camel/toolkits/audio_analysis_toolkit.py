@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
 import uuid
-from typing import List, Optional
 from urllib.parse import urlparse
 
 import requests
@@ -74,8 +73,7 @@ def download_file(url: str, cache_dir: str) -> str:
     response.raise_for_status()
 
     with open(local_path, 'wb') as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            f.write(chunk)
+        f.writelines(response.iter_content(chunk_size=8192))
 
     logger.debug(f"Downloaded file from {url} to {local_path}")
     return local_path
@@ -85,10 +83,10 @@ def download_file(url: str, cache_dir: str) -> str:
 class AudioAnalysisToolkit(BaseToolkit):
     def __init__(
         self,
-        cache_dir: Optional[str] = None,
-        transcribe_model: Optional[BaseAudioModel] = None,
-        audio_reasoning_model: Optional[BaseModelBackend] = None,
-        timeout: Optional[float] = None,
+        cache_dir: str | None = None,
+        transcribe_model: BaseAudioModel | None = None,
+        audio_reasoning_model: BaseModelBackend | None = None,
+        timeout: float | None = None,
     ):
         r"""A toolkit for audio processing and analysis. This class provides
         methods for processing, transcribing, and extracting information from
@@ -230,7 +228,7 @@ class AudioAnalysisToolkit(BaseToolkit):
             logger.error(f"Audio question answering failed: {e}")
             return f"Failed to answer question about audio: {e!s}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions
             in the toolkit.
 

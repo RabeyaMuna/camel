@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
 from pathlib import Path, PurePath
-from typing import Optional, Tuple
 from warnings import warn
 
 from camel.loaders import File, create_file_from_raw_bytes
@@ -39,7 +38,7 @@ class AzureBlobStorage(BaseObjectStorage):
         storage_account_name: str,
         container_name: str,
         create_if_not_exists: bool = True,
-        access_key: Optional[str] = None,
+        access_key: str | None = None,
     ) -> None:
         access_key = access_key or os.getenv("AZURE_ACCESS_KEY")
         self._create_if_not_exists = create_if_not_exists
@@ -84,7 +83,7 @@ class AzureBlobStorage(BaseObjectStorage):
             )
 
     @staticmethod
-    def canonicalize_path(file_path: PurePath) -> Tuple[str, str]:
+    def canonicalize_path(file_path: PurePath) -> tuple[str, str]:
         r"""Canonicalize file path for Azure Blob Storage.
 
         Args:

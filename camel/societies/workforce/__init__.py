@@ -17,7 +17,7 @@ from .single_agent_worker import SingleAgentWorker
 from .workforce import Workforce
 
 __all__ = [
-    "Workforce",
-    "SingleAgentWorker",
     "RolePlayingWorker",
+    "SingleAgentWorker",
+    "Workforce",
 ]

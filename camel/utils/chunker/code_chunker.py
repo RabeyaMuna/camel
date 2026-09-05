@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import re
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from unstructured.documents.elements import Element
@@ -42,7 +42,7 @@ class CodeChunker(BaseChunker):
         self,
         chunk_size: int = 8192,
         model_name: str = "cl100k_base",
-        remove_image: Optional[bool] = True,
+        remove_image: bool | None = True,
     ):
         self.chunk_size = chunk_size
         self.tokenizer = get_model_encoding(model_name)
@@ -68,7 +68,7 @@ class CodeChunker(BaseChunker):
         """
         return len(self.tokenizer.encode(text, disallowed_special=()))
 
-    def _split_oversized(self, line: str) -> List[str]:
+    def _split_oversized(self, line: str) -> list[str]:
         r"""Splits an oversized line into multiple chunks based on token limits
 
         Args:
@@ -96,7 +96,7 @@ class CodeChunker(BaseChunker):
             chunks.append(self.tokenizer.decode(buffer))
         return chunks
 
-    def chunk(self, content: List[str]) -> List["Element"]:
+    def chunk(self, content: list[str]) -> list["Element"]:
         r"""Splits the content into smaller chunks while preserving
         structure and adhering to token constraints.
 

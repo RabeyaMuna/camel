@@ -14,7 +14,6 @@
 import json
 import logging
 from functools import wraps
-from typing import List, Optional, Union
 
 from camel.agents import ChatAgent
 from camel.configs import ChatGPTConfig
@@ -77,7 +76,7 @@ class LLMGuardRuntime(BaseRuntime):
     def __init__(
         self,
         prompt: str = GUARDPROMPT,
-        model: Optional[BaseModelBackend] = None,
+        model: BaseModelBackend | None = None,
         verbose: bool = False,
     ):
         super().__init__()
@@ -105,7 +104,7 @@ class LLMGuardRuntime(BaseRuntime):
 
     def add(  # type: ignore[override]
         self,
-        funcs: Union[FunctionTool, List[FunctionTool]],
+        funcs: FunctionTool | list[FunctionTool],
         threshold: int = 2,
     ) -> "LLMGuardRuntime":
         r"""Add a function or list of functions to the runtime.
@@ -171,17 +170,17 @@ class LLMGuardRuntime(BaseRuntime):
                     return {"error": message}
 
                 logger.info(
-                    (
+                    
                         f"Function {function_name} passed risk assessment."
                         f"Score: {data['score']}, Reason: {data['reason']}"
-                    )
+                    
                 )
                 if self.verbose:
                     print(
-                        (
+                        
                             f"Function {function_name} passed risk assessment."
                             f"Score: {data['score']}, Reason: {data['reason']}"
-                        )
+                        
                     )
                 return inner_func(*args, **kwargs)
 

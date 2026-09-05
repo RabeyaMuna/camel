@@ -15,7 +15,7 @@
 import json
 import os
 from contextlib import AsyncExitStack
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from camel.logger import get_logger
 from camel.toolkits import BaseToolkit, FunctionTool
@@ -28,13 +28,11 @@ logger = get_logger(__name__)
 class MCPConnectionError(Exception):
     r"""Raised when MCP connection fails."""
 
-    pass
 
 
 class MCPToolError(Exception):
     r"""Raised when MCP tool execution fails."""
 
-    pass
 
 
 class MCPToolkit(BaseToolkit):
@@ -142,10 +140,10 @@ class MCPToolkit(BaseToolkit):
 
     def __init__(
         self,
-        clients: Optional[List[MCPClient]] = None,
-        config_path: Optional[str] = None,
-        config_dict: Optional[Dict[str, Any]] = None,
-        timeout: Optional[float] = None,
+        clients: list[MCPClient] | None = None,
+        config_path: str | None = None,
+        config_dict: dict[str, Any] | None = None,
+        timeout: float | None = None,
     ):
         # Call parent constructor first
         super().__init__(timeout=timeout)
@@ -161,9 +159,9 @@ class MCPToolkit(BaseToolkit):
             )
             raise ValueError(error_msg)
 
-        self.clients: List[MCPClient] = clients or []
+        self.clients: list[MCPClient] = clients or []
         self._is_connected = False
-        self._exit_stack: Optional[AsyncExitStack] = None
+        self._exit_stack: AsyncExitStack | None = None
 
         # Load clients from config sources
         if config_path:
@@ -296,7 +294,6 @@ class MCPToolkit(BaseToolkit):
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         r"""Async context manager exit point."""
         await self.disconnect()
-        return None
 
     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
         r"""Synchronously exit the async context manager."""
@@ -305,10 +302,10 @@ class MCPToolkit(BaseToolkit):
     @classmethod
     async def create(
         cls,
-        clients: Optional[List[MCPClient]] = None,
-        config_path: Optional[str] = None,
-        config_dict: Optional[Dict[str, Any]] = None,
-        timeout: Optional[float] = None,
+        clients: list[MCPClient] | None = None,
+        config_path: str | None = None,
+        config_dict: dict[str, Any] | None = None,
+        timeout: float | None = None,
     ) -> "MCPToolkit":
         r"""Factory method that creates and connects to all MCP servers.
 
@@ -369,17 +366,17 @@ class MCPToolkit(BaseToolkit):
     @classmethod
     def create_sync(
         cls,
-        clients: Optional[List[MCPClient]] = None,
-        config_path: Optional[str] = None,
-        config_dict: Optional[Dict[str, Any]] = None,
-        timeout: Optional[float] = None,
+        clients: list[MCPClient] | None = None,
+        config_path: str | None = None,
+        config_dict: dict[str, Any] | None = None,
+        timeout: float | None = None,
     ) -> "MCPToolkit":
         r"""Synchronously create and connect to all MCP servers."""
         return run_async(cls.create)(
             clients, config_path, config_dict, timeout
         )
 
-    def _load_clients_from_config(self, config_path: str) -> List[MCPClient]:
+    def _load_clients_from_config(self, config_path: str) -> list[MCPClient]:
         r"""Load clients from configuration file."""
         if not os.path.exists(config_path):
             raise FileNotFoundError(f"Config file not found: '{config_path}'")
@@ -392,13 +389,13 @@ class MCPToolkit(BaseToolkit):
             raise ValueError(error_msg) from e
         except Exception as e:
             error_msg = f"Error reading config file '{config_path}': {e}"
-            raise IOError(error_msg) from e
+            raise OSError(error_msg) from e
 
         return self._load_clients_from_dict(data)
 
     def _load_clients_from_dict(
-        self, config: Dict[str, Any]
-    ) -> List[MCPClient]:
+        self, config: dict[str, Any]
+    ) -> list[MCPClient]:
         r"""Load clients from configuration dictionary."""
         if not isinstance(config, dict):
             raise ValueError("Config must be a dictionary")
@@ -424,7 +421,7 @@ class MCPToolkit(BaseToolkit):
         return clients
 
     def _create_client_from_config(
-        self, name: str, cfg: Dict[str, Any]
+        self, name: str, cfg: dict[str, Any]
     ) -> MCPClient:
         r"""Create a single MCP client from configuration."""
         if not isinstance(cfg, dict):
@@ -522,7 +519,7 @@ class MCPToolkit(BaseToolkit):
 
         return tool
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Aggregates all tools from the managed MCP client instances.
 
         Collects and combines tools from all connected MCP clients into a
@@ -611,7 +608,7 @@ class MCPToolkit(BaseToolkit):
         return "\n\n".join(tool_descriptions)
 
     async def call_tool(
-        self, tool_name: str, tool_args: Dict[str, Any]
+        self, tool_name: str, tool_args: dict[str, Any]
     ) -> Any:
         r"""Call a tool by name across all managed clients.
 
@@ -682,11 +679,11 @@ class MCPToolkit(BaseToolkit):
         else:
             raise MCPToolError(f"Tool '{tool_name}' not found in any client")
 
-    def call_tool_sync(self, tool_name: str, tool_args: Dict[str, Any]) -> Any:
+    def call_tool_sync(self, tool_name: str, tool_args: dict[str, Any]) -> Any:
         r"""Synchronously call a tool."""
         return run_async(self.call_tool)(tool_name, tool_args)
 
-    def list_available_tools(self) -> Dict[str, List[str]]:
+    def list_available_tools(self) -> dict[str, list[str]]:
         r"""List all available tools organized by client.
 
         Returns:

@@ -14,7 +14,7 @@
 
 # Enables postponed evaluation of annotations (for string-based type hints)
 import os
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING
 
 from camel.logger import get_logger
 from camel.toolkits.base import BaseToolkit
@@ -40,8 +40,8 @@ class ExcelToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
-        file_path: Optional[str] = None,
+        timeout: float | None = None,
+        file_path: str | None = None,
     ):
         r"""Initializes a new instance of the ExcelToolkit class.
 
@@ -232,7 +232,7 @@ class ExcelToolkit(BaseToolkit):
             logger.error(f"Failed to process Excel file {document_path}: {e}")
             return f"Failed to process Excel file {document_path}: {e}"
 
-    def _save_workbook(self, file_path: Optional[str] = None) -> str:
+    def _save_workbook(self, file_path: str | None = None) -> str:
         r"""Save the current workbook to file.
 
         Args:
@@ -262,8 +262,8 @@ class ExcelToolkit(BaseToolkit):
     def create_workbook(
         self,
         file_path: str,
-        sheet_name: Optional[str] = None,
-        data: Optional[List[List[Union[str, int, float, None]]]] = None,
+        sheet_name: str | None = None,
+        data: list[list[str | int | float | None]] | None = None,
     ) -> str:
         r"""Create a new Excel workbook from scratch.
 
@@ -319,7 +319,7 @@ class ExcelToolkit(BaseToolkit):
             logger.error(f"Failed to create workbook: {e}")
             return f"Error: Failed to create workbook: {e}"
 
-    def delete_workbook(self, file_path: Optional[str] = None) -> str:
+    def delete_workbook(self, file_path: str | None = None) -> str:
         r"""Delete a spreadsheet file.
 
         Args:
@@ -352,7 +352,7 @@ class ExcelToolkit(BaseToolkit):
     def create_sheet(
         self,
         sheet_name: str,
-        data: Optional[List[List[Union[str, int, float, None]]]] = None,
+        data: list[list[str | int | float | None]] | None = None,
     ) -> str:
         r"""Create a new sheet with the given sheet name and data.
 
@@ -448,7 +448,7 @@ class ExcelToolkit(BaseToolkit):
             return f"Error: Failed to clear sheet {sheet_name}: {e}"
 
     def delete_rows(
-        self, sheet_name: str, start_row: int, end_row: Optional[int] = None
+        self, sheet_name: str, start_row: int, end_row: int | None = None
     ) -> str:
         r"""Delete rows from a sheet.
 
@@ -486,7 +486,7 @@ class ExcelToolkit(BaseToolkit):
         )
 
     def delete_columns(
-        self, sheet_name: str, start_col: int, end_col: Optional[int] = None
+        self, sheet_name: str, start_col: int, end_col: int | None = None
     ) -> str:
         r"""Delete columns from a sheet.
 
@@ -526,7 +526,7 @@ class ExcelToolkit(BaseToolkit):
 
     def get_cell_value(
         self, sheet_name: str, cell_reference: str
-    ) -> Union[str, int, float, None]:
+    ) -> str | int | float | None:
         r"""Get the value from a specific cell.
 
         Use this to read a single cell's value. Useful for checking specific
@@ -554,7 +554,7 @@ class ExcelToolkit(BaseToolkit):
         self,
         sheet_name: str,
         cell_reference: str,
-        value: Union[str, int, float, None],
+        value: str | float | None,
     ) -> str:
         r"""Set the value of a specific cell.
 
@@ -597,8 +597,8 @@ class ExcelToolkit(BaseToolkit):
             return f"Error: Failed to set cell value: {e}"
 
     def get_column_data(
-        self, sheet_name: str, column: Union[int, str]
-    ) -> Union[List[Union[str, int, float, None]], str]:
+        self, sheet_name: str, column: int | str
+    ) -> list[str | int | float | None] | str:
         r"""Get all data from a specific column.
 
         Use this to extract all values from a column for analysis or
@@ -640,9 +640,9 @@ class ExcelToolkit(BaseToolkit):
     def find_cells(
         self,
         sheet_name: str,
-        search_value: Union[str, int, float],
-        search_column: Optional[Union[int, str]] = None,
-    ) -> Union[List[str], str]:
+        search_value: str | float,
+        search_column: int | str | None = None,
+    ) -> list[str] | str:
         r"""Find cells containing a specific value.
 
         Use this to locate where specific data appears in the sheet.
@@ -694,7 +694,7 @@ class ExcelToolkit(BaseToolkit):
 
     def get_range_values(
         self, sheet_name: str, cell_range: str
-    ) -> Union[List[List[Union[str, int, float, None]]], str]:
+    ) -> list[list[str | int | float | None]] | str:
         r"""Get values from a specific range of cells.
 
         Use this to read a rectangular block of cells at once.
@@ -729,7 +729,7 @@ class ExcelToolkit(BaseToolkit):
         self,
         sheet_name: str,
         cell_range: str,
-        values: List[List[Union[str, int, float, None]]],
+        values: list[list[str | int | float | None]],
     ) -> str:
         r"""Set values for a specific range of cells.
 
@@ -798,9 +798,9 @@ class ExcelToolkit(BaseToolkit):
     def get_rows(
         self,
         sheet_name: str,
-        start_row: Optional[int] = None,
-        end_row: Optional[int] = None,
-    ) -> Union[List[List[Union[str, int, float, None]]], str]:
+        start_row: int | None = None,
+        end_row: int | None = None,
+    ) -> list[list[str | int | float | None]] | str:
         r"""Retrieve rows of data from a sheet.
 
         Use this to read data from a sheet. You can get all rows or specify a
@@ -841,7 +841,7 @@ class ExcelToolkit(BaseToolkit):
     def append_row(
         self,
         sheet_name: str,
-        row_data: List[Union[str, int, float, None]],
+        row_data: list[str | int | float | None],
     ) -> str:
         r"""Add a single row to the end of a sheet.
 
@@ -869,7 +869,7 @@ class ExcelToolkit(BaseToolkit):
         self,
         sheet_name: str,
         row_number: int,
-        row_data: List[Union[str, int, float, None]],
+        row_data: list[str | int | float | None],
     ) -> str:
         r"""Update a specific row in the sheet.
 
@@ -904,7 +904,7 @@ class ExcelToolkit(BaseToolkit):
         self._save_workbook()
         return f"Row {row_number} updated in sheet {sheet_name} successfully."
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions
         in the toolkit.
 

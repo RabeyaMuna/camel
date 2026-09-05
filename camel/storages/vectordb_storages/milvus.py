@@ -14,7 +14,7 @@
 import logging
 import re
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from camel.storages.vectordb_storages import (
     BaseVectorStorage,
@@ -57,8 +57,8 @@ class MilvusStorage(BaseVectorStorage):
     def __init__(
         self,
         vector_dim: int,
-        url_and_api_key: Tuple[str, str],
-        collection_name: Optional[str] = None,
+        url_and_api_key: tuple[str, str],
+        collection_name: str | None = None,
         **kwargs: Any,
     ) -> None:
         from pymilvus import MilvusClient
@@ -73,7 +73,7 @@ class MilvusStorage(BaseVectorStorage):
 
     def _create_client(
         self,
-        url_and_api_key: Tuple[str, str],
+        url_and_api_key: tuple[str, str],
         **kwargs: Any,
     ) -> None:
         r"""Initializes the Milvus client with the provided connection details.
@@ -213,7 +213,7 @@ class MilvusStorage(BaseVectorStorage):
         valid_name = "Time" + transformed_name
         return valid_name
 
-    def _get_collection_info(self, collection_name: str) -> Dict[str, Any]:
+    def _get_collection_info(self, collection_name: str) -> dict[str, Any]:
         r"""Retrieves details of an existing collection.
 
         Args:
@@ -246,8 +246,8 @@ class MilvusStorage(BaseVectorStorage):
         }
 
     def _validate_and_convert_vectors(
-        self, records: List[VectorRecord]
-    ) -> List[dict]:
+        self, records: list[VectorRecord]
+    ) -> list[dict]:
         r"""Validates and converts VectorRecord instances to the format
         expected by Milvus.
 
@@ -275,7 +275,7 @@ class MilvusStorage(BaseVectorStorage):
 
     def add(
         self,
-        records: List[VectorRecord],
+        records: list[VectorRecord],
         **kwargs,
     ) -> None:
         r"""Adds a list of vectors to the specified collection.
@@ -298,7 +298,7 @@ class MilvusStorage(BaseVectorStorage):
 
     def delete(
         self,
-        ids: List[str],
+        ids: list[str],
         **kwargs: Any,
     ) -> None:
         r"""Deletes a list of vectors identified by their IDs from the
@@ -338,7 +338,7 @@ class MilvusStorage(BaseVectorStorage):
         self,
         query: VectorDBQuery,
         **kwargs: Any,
-    ) -> List[VectorDBQueryResult]:
+    ) -> list[VectorDBQueryResult]:
         r"""Searches for similar vectors in the storage based on the provided
         query.
 

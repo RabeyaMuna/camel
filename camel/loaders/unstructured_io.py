@@ -18,12 +18,7 @@ from typing import (
     IO,
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
     Literal,
-    Optional,
-    Tuple,
-    Union,
 )
 
 if TYPE_CHECKING:
@@ -43,13 +38,13 @@ class UnstructuredIO:
     @staticmethod
     def create_element_from_text(
         text: str,
-        element_id: Optional[str] = None,
-        embeddings: Optional[List[float]] = None,
-        filename: Optional[str] = None,
-        file_directory: Optional[str] = None,
-        last_modified: Optional[str] = None,
-        filetype: Optional[str] = None,
-        parent_id: Optional[str] = None,
+        element_id: str | None = None,
+        embeddings: list[float] | None = None,
+        filename: str | None = None,
+        file_directory: str | None = None,
+        last_modified: str | None = None,
+        filetype: str | None = None,
+        parent_id: str | None = None,
     ) -> "Element":
         r"""Creates a Text element from a given text input, with optional
         metadata and embeddings.
@@ -97,7 +92,7 @@ class UnstructuredIO:
     def parse_file_or_url(
         input_path: str,
         **kwargs: Any,
-    ) -> Union[List["Element"], None]:
+    ) -> list["Element"] | None:
         r"""Loads a file or a URL and parses its contents into elements.
 
         Args:
@@ -158,7 +153,7 @@ class UnstructuredIO:
     @staticmethod
     def parse_bytes(
         file: IO[bytes], **kwargs: Any
-    ) -> Union[List["Element"], None]:
+    ) -> list["Element"] | None:
         r"""Parses a bytes stream and converts its contents into elements.
 
         Args:
@@ -191,7 +186,7 @@ class UnstructuredIO:
     @staticmethod
     def clean_text_data(
         text: str,
-        clean_options: Optional[List[Tuple[str, Dict[str, Any]]]] = None,
+        clean_options: list[tuple[str, dict[str, Any]]] | None = None,
     ) -> str:
         r"""Cleans text data using a variety of cleaning functions provided by
         the `unstructured` library.
@@ -359,7 +354,7 @@ class UnstructuredIO:
 
     @staticmethod
     def stage_elements(
-        elements: List[Any],
+        elements: list[Any],
         stage_type: Literal[
             'convert_to_csv',
             'convert_to_dataframe',
@@ -374,7 +369,7 @@ class UnstructuredIO:
             'stage_for_weaviate',
         ],
         **kwargs,
-    ) -> Union[str, List[Dict], Any]:
+    ) -> str | list[dict] | Any:
         r"""Stages elements for various platforms based on the
         specified staging type.
 
@@ -443,8 +438,8 @@ class UnstructuredIO:
 
     @staticmethod
     def chunk_elements(
-        elements: List["Element"], chunk_type: str, **kwargs
-    ) -> List["Element"]:
+        elements: list["Element"], chunk_type: str, **kwargs
+    ) -> list["Element"]:
         r"""Chunks elements by titles.
 
         Args:

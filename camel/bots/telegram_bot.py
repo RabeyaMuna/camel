@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from camel.agents import ChatAgent
 from camel.utils import dependencies_required
@@ -36,7 +36,7 @@ class TelegramBot:
     def __init__(
         self,
         chat_agent: ChatAgent,
-        telegram_token: Optional[str] = None,
+        telegram_token: str | None = None,
     ) -> None:
         self.chat_agent = chat_agent
 

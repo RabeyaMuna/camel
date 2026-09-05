@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from camel.retrievers import BaseRetriever
 from camel.utils import dependencies_required
@@ -37,7 +37,7 @@ class CohereRerankRetriever(BaseRetriever):
     def __init__(
         self,
         model_name: str = "rerank-multilingual-v2.0",
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
     ) -> None:
         r"""Initializes an instance of the CohereRerankRetriever. This
         constructor sets up a client for interacting with the Cohere API using
@@ -74,9 +74,9 @@ class CohereRerankRetriever(BaseRetriever):
     def query(
         self,
         query: str,
-        retrieved_result: List[Dict[str, Any]],
+        retrieved_result: list[dict[str, Any]],
         top_k: int = DEFAULT_TOP_K_RESULTS,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Queries and compiles results using the Cohere re-ranking model.
 
         Args:

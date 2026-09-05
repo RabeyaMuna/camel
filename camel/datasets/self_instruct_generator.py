@@ -14,8 +14,9 @@
 
 import asyncio
 import random
+from collections.abc import Iterable
 from datetime import datetime
-from typing import Iterable, List, Optional, cast
+from typing import cast
 
 from pydantic import BaseModel, Field, ValidationError
 
@@ -121,8 +122,8 @@ class SelfInstructGenerator(BaseGenerator):
         self,
         seed_dataset: StaticDataset,
         verifier: BaseVerifier,
-        instruction_agent: Optional[ChatAgent] = None,
-        rationale_agent: Optional[ChatAgent] = None,
+        instruction_agent: ChatAgent | None = None,
+        rationale_agent: ChatAgent | None = None,
         seed: int = 42,
         **kwargs,
     ):
@@ -143,7 +144,7 @@ class SelfInstructGenerator(BaseGenerator):
         self.seed_dataset = seed_dataset
         self.verifier = verifier
         # extract packages from verifier
-        self.packages: List[str] = getattr(
+        self.packages: list[str] = getattr(
             self.verifier, "required_packages", []
         )
         # create default agents if not provided
@@ -155,11 +156,11 @@ class SelfInstructGenerator(BaseGenerator):
         )
 
         # Extract questions from the seed dataset as human_instructions
-        self.human_instructions: List[str] = [
+        self.human_instructions: list[str] = [
             dp.question
             for dp in list(cast(Iterable[DataPoint], self.seed_dataset))
         ]
-        self.machine_instructions: List[DataPoint] = []
+        self.machine_instructions: list[DataPoint] = []
         # Create an instance-level lock for thread-safe updates to _data
         self._lock = asyncio.Lock()
         self._data = []  # Storage for generated DataPoint instances
@@ -266,8 +267,8 @@ class SelfInstructGenerator(BaseGenerator):
     def generate_rationale(
         self,
         question: str,
-        agent: Optional[ChatAgent] = None,
-        support_human_dps: Optional[list[DataPoint]] = None,
+        agent: ChatAgent | None = None,
+        support_human_dps: list[DataPoint] | None = None,
     ) -> str:
         r"""Generate rationale code (solution) for the given question.
 
@@ -336,7 +337,7 @@ class SelfInstructGenerator(BaseGenerator):
 
         while len(valid_data_points) < n and retries < max_retries:
             try:
-                human_dps_list = list(cast(List[DataPoint], self.seed_dataset))
+                human_dps_list = list(cast(list[DataPoint], self.seed_dataset))
                 support_human_dps = random.sample(
                     human_dps_list,
                     min(human_sample_count, len(human_dps_list)),

@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Dict, Optional, Sequence, Type, Union
+from collections.abc import Sequence
 
 from pydantic import BaseModel
 
@@ -86,17 +86,17 @@ class PPIOConfig(BaseConfig):
             for. A max of 128 functions are supported.
     """
 
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    n: Optional[int] = None
-    stream: Optional[bool] = None
-    stop: Optional[Union[str, Sequence[str]]] = None
-    max_tokens: Optional[int] = None
-    presence_penalty: Optional[float] = None
-    response_format: Optional[Union[Type[BaseModel], Dict]] = None
-    frequency_penalty: Optional[float] = None
-    logit_bias: Optional[Dict] = None
-    user: Optional[str] = None
+    temperature: float | None = None
+    top_p: float | None = None
+    n: int | None = None
+    stream: bool | None = None
+    stop: str | Sequence[str] | None = None
+    max_tokens: int | None = None
+    presence_penalty: float | None = None
+    response_format: type[BaseModel] | dict | None = None
+    frequency_penalty: float | None = None
+    logit_bias: dict | None = None
+    user: str | None = None
 
 
 PPIO_API_PARAMS = {param for param in PPIOConfig.model_fields.keys()}

@@ -15,7 +15,7 @@
 import logging
 import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 from uuid import UUID
 
 from camel.memories.records import MemoryRecord
@@ -48,9 +48,9 @@ class Mem0Storage(BaseKeyValueStorage):
     def __init__(
         self,
         agent_id: str,
-        api_key: Optional[str] = None,
-        user_id: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        api_key: str | None = None,
+        user_id: str | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         try:
             from mem0 import MemoryClient
@@ -75,11 +75,11 @@ class Mem0Storage(BaseKeyValueStorage):
 
     def _prepare_options(
         self,
-        agent_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        agent_id: str | None = None,
+        user_id: str | None = None,
+        metadata: dict[str, Any] | None = None,
         **kwargs: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Helper method to prepare options for Mem0 API calls.
 
         Args:
@@ -105,10 +105,10 @@ class Mem0Storage(BaseKeyValueStorage):
 
     def _prepare_filters(
         self,
-        agent_id: Optional[str] = None,
-        user_id: Optional[str] = None,
-        filters: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        agent_id: str | None = None,
+        user_id: str | None = None,
+        filters: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         r"""Helper method to prepare filters for Mem0 API calls.
 
         Args:
@@ -122,7 +122,7 @@ class Mem0Storage(BaseKeyValueStorage):
         Returns:
             Dict[str, Any]: Prepared filters dictionary for API calls.
         """
-        base_filters: Dict[str, Any] = {"AND": []}
+        base_filters: dict[str, Any] = {"AND": []}
         if filters:
             base_filters["AND"].append(filters)
         if agent_id or self.agent_id:
@@ -133,8 +133,8 @@ class Mem0Storage(BaseKeyValueStorage):
 
     def _prepare_messages(
         self,
-        records: List[Dict[str, Any]],
-    ) -> List[Dict[str, Any]]:
+        records: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
         r"""Prepare messages from records for Mem0 API calls.
 
         Args:
@@ -150,7 +150,7 @@ class Mem0Storage(BaseKeyValueStorage):
             messages.append({"role": role, "content": content})
         return messages
 
-    def save(self, records: List[Dict[str, Any]]) -> None:
+    def save(self, records: list[dict[str, Any]]) -> None:
         r"""Saves a batch of records to the Mem0 storage system.
 
         Args:
@@ -170,7 +170,7 @@ class Mem0Storage(BaseKeyValueStorage):
             logger.error(f"Error adding memory: {e}")
             logger.error(f"Error: {e}")
 
-    def load(self) -> List[Dict[str, Any]]:
+    def load(self) -> list[dict[str, Any]]:
         r"""Loads all stored records from the Mem0 storage system.
 
         Returns:

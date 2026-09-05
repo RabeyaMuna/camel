@@ -14,7 +14,7 @@
 
 import asyncio
 import logging
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from pydantic import BaseModel, ValidationError
 
@@ -63,7 +63,7 @@ class Crawl4AI:
         max_depth: int = 1,
         extraction_strategy=None,
         **kwargs,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Crawl a URL and its subpages using breadth-first search.
 
         Args:
@@ -81,8 +81,8 @@ class Crawl4AI:
             RuntimeError: If an error occurs during crawling.
         """
 
-        all_results: List[Dict[str, Any]] = []
-        visited_urls: Set[str] = set()
+        all_results: list[dict[str, Any]] = []
+        visited_urls: set[str] = set()
         queue: asyncio.Queue = asyncio.Queue()
 
         await queue.put((start_url, 1))
@@ -129,7 +129,7 @@ class Crawl4AI:
         url: str,
         extraction_strategy=None,
         **kwargs,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Scrape a single URL using CSS or LLM-based extraction.
 
         Args:
@@ -161,7 +161,7 @@ class Crawl4AI:
         self,
         url: str,
         response_format: BaseModel,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         llm_provider: str = 'ollama/llama3',
         **kwargs,
     ) -> Any:
@@ -209,7 +209,7 @@ class Crawl4AI:
         except Exception as e:
             raise RuntimeError(e) from e
 
-    async def map_site(self, start_url: str, **kwargs) -> List[str]:
+    async def map_site(self, start_url: str, **kwargs) -> list[str]:
         r"""Map a website by extracting all accessible URLs.
 
         Args:

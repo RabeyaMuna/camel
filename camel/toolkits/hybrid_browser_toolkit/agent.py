@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 import re
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from camel.logger import get_logger
 from camel.models import BaseModelBackend, ModelFactory
@@ -77,10 +77,10 @@ what was accomplished
     def __init__(
         self,
         *,
-        user_data_dir: Optional[str] = None,
+        user_data_dir: str | None = None,
         headless: bool = False,
         stealth: bool = False,
-        model_backend: Optional[BaseModelBackend] = None,
+        model_backend: BaseModelBackend | None = None,
     ):
         self._session = HybridBrowserSession(
             headless=headless, user_data_dir=user_data_dir, stealth=stealth
@@ -88,7 +88,7 @@ what was accomplished
         from camel.agents import ChatAgent
 
         # Populated lazily after first page load
-        self.action_history: List[Dict[str, Any]] = []
+        self.action_history: list[dict[str, Any]] = []
         if model_backend is None:
             model_backend = ModelFactory.create(
                 model_platform=ModelPlatformType.DEFAULT,
@@ -97,7 +97,7 @@ what was accomplished
             )
         self.model_backend = model_backend
         # Reuse ChatAgent instance to avoid recreation overhead
-        self._chat_agent: Optional[ChatAgent] = None
+        self._chat_agent: ChatAgent | None = None
 
     async def navigate(self, url: str) -> str:
         r"""Navigate to a URL and return the snapshot."""
@@ -121,7 +121,7 @@ what was accomplished
             )
         return self._chat_agent
 
-    def _safe_parse_json(self, content: str) -> Dict[str, Any]:
+    def _safe_parse_json(self, content: str) -> dict[str, Any]:
         r"""Safely parse JSON from LLM response with multiple fallback
         strategies.
         """
@@ -171,7 +171,7 @@ what was accomplished
         )
         return self._get_fallback_response("Parsing error")
 
-    def _get_fallback_response(self, error_msg: str) -> Dict[str, Any]:
+    def _get_fallback_response(self, error_msg: str) -> dict[str, Any]:
         r"""Generate a fallback response structure."""
         return {
             "plan": [f"Could not parse response: {error_msg}"],
@@ -187,8 +187,8 @@ what was accomplished
         prompt: str,
         snapshot: str,
         is_initial: bool,
-        history: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
+        history: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
         r"""Call the LLM (via CAMEL ChatAgent) to get plan & next action."""
         # Build user message
         if is_initial:
@@ -293,8 +293,8 @@ what was accomplished
         logger.info("Process completed with %d steps", steps)
 
     async def _run_action(
-        self, action: Dict[str, Any]
-    ) -> Union[str, Dict[str, Any]]:
+        self, action: dict[str, Any]
+    ) -> str | dict[str, Any]:
         r"""Execute a single action and return the result."""
         if action.get("type") == "navigate":
             return await self.navigate(action.get("url", ""))

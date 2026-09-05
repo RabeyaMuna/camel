@@ -13,8 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import List, Optional
-
 from camel.configs.base_config import BaseConfig
 
 
@@ -63,15 +61,15 @@ class CohereConfig(BaseConfig):
             value of `0.01`, max value of `0.99`. (default: :obj:`None`)
     """
 
-    temperature: Optional[float] = None
-    documents: Optional[list] = None
-    max_tokens: Optional[int] = None
-    stop_sequences: Optional[List[str]] = None
-    seed: Optional[int] = None
-    frequency_penalty: Optional[float] = None
-    presence_penalty: Optional[float] = None
-    k: Optional[int] = None
-    p: Optional[float] = None
+    temperature: float | None = None
+    documents: list | None = None
+    max_tokens: int | None = None
+    stop_sequences: list[str] | None = None
+    seed: int | None = None
+    frequency_penalty: float | None = None
+    presence_penalty: float | None = None
+    k: int | None = None
+    p: float | None = None
 
 
 COHERE_API_PARAMS = {param for param in CohereConfig.model_fields.keys()}

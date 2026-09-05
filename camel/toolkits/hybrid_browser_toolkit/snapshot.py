@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from playwright.async_api import Page
@@ -31,9 +31,9 @@ class PageSnapshot:
 
     def __init__(self, page: "Page"):
         self.page = page
-        self.snapshot_data: Optional[str] = None  # last full snapshot
-        self._last_url: Optional[str] = None
-        self.last_info: Dict[str, List[int] | bool] = {
+        self.snapshot_data: str | None = None  # last full snapshot
+        self._last_url: str | None = None
+        self.last_info: dict[str, list[int] | bool] = {
             "is_diff": False,
             "priorities": [1, 2, 3],
         }
@@ -107,11 +107,11 @@ class PageSnapshot:
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
-    _snapshot_js_cache: Optional[str] = None  # class-level cache
+    _snapshot_js_cache: str | None = None  # class-level cache
 
     async def _get_snapshot_direct(
         self,
-    ) -> Optional[Union[str, Dict[str, Any]]]:
+    ) -> str | dict[str, Any] | None:
         r"""Evaluate the snapshot-extraction JS with simple retry logic.
 
         Playwright throws *Execution context was destroyed* when a new page
@@ -197,7 +197,7 @@ class PageSnapshot:
         return "\n".join(["- Page Snapshot (diff)", "```diff", *diff, "```"])
 
     # ------------------------------------------------------------------
-    def _detect_priorities(self, snapshot_yaml: str) -> List[int]:
+    def _detect_priorities(self, snapshot_yaml: str) -> list[int]:
         """Return sorted list of priorities present (1,2,3)."""
         priorities = set()
         for line in snapshot_yaml.splitlines():

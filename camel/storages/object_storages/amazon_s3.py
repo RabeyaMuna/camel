@@ -14,7 +14,6 @@
 
 import os
 from pathlib import Path, PurePath
-from typing import Optional, Tuple
 from warnings import warn
 
 from camel.loaders import File, create_file_from_raw_bytes
@@ -50,8 +49,8 @@ class AmazonS3Storage(BaseObjectStorage):
         self,
         bucket_name: str,
         create_if_not_exists: bool = True,
-        access_key_id: Optional[str] = None,
-        secret_access_key: Optional[str] = None,
+        access_key_id: str | None = None,
+        secret_access_key: str | None = None,
         anonymous: bool = False,
     ) -> None:
         self._bucket_name = bucket_name
@@ -120,7 +119,7 @@ class AmazonS3Storage(BaseObjectStorage):
             raise PermissionError("No AWS credentials found.") from e
 
     @staticmethod
-    def canonicalize_path(file_path: PurePath) -> Tuple[str, str]:
+    def canonicalize_path(file_path: PurePath) -> tuple[str, str]:
         r"""Canonicalize file path for Amazon S3.
 
         Args:

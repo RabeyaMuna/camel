@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import logging
 from threading import Lock
-from typing import TYPE_CHECKING, ClassVar, Dict, Union, cast
+from typing import TYPE_CHECKING, ClassVar, Union, cast
 
 if TYPE_CHECKING:
     from camel.types import ModelType
@@ -28,7 +28,7 @@ class UnifiedModelType(str):
         value (Union[ModelType, str]): The value of the model type.
     """
 
-    _cache: ClassVar[Dict[str, "UnifiedModelType"]] = {}
+    _cache: ClassVar[dict[str, "UnifiedModelType"]] = {}
     _lock: ClassVar[Lock] = Lock()
 
     def __new__(cls, value: Union["ModelType", str]) -> "UnifiedModelType":

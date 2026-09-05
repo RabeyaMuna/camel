@@ -18,7 +18,7 @@ import base64
 from abc import ABC, abstractmethod
 from io import BytesIO
 from math import ceil
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 from PIL import Image
 
@@ -78,7 +78,7 @@ class BaseTokenCounter(ABC):
     r"""Base class for token counters of different kinds of models."""
 
     @abstractmethod
-    def count_tokens_from_messages(self, messages: List[OpenAIMessage]) -> int:
+    def count_tokens_from_messages(self, messages: list[OpenAIMessage]) -> int:
         r"""Count number of tokens in the provided message list.
 
         Args:
@@ -88,10 +88,9 @@ class BaseTokenCounter(ABC):
         Returns:
             int: Number of tokens in the messages.
         """
-        pass
 
     @abstractmethod
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         r"""Encode text into token IDs.
 
         Args:
@@ -100,10 +99,9 @@ class BaseTokenCounter(ABC):
         Returns:
             List[int]: List of token IDs.
         """
-        pass
 
     @abstractmethod
-    def decode(self, token_ids: List[int]) -> str:
+    def decode(self, token_ids: list[int]) -> str:
         r"""Decode token IDs back to text.
 
         Args:
@@ -112,7 +110,6 @@ class BaseTokenCounter(ABC):
         Returns:
             str: Decoded text.
         """
-        pass
 
 
 class OpenAITokenCounter(BaseTokenCounter):
@@ -157,7 +154,7 @@ class OpenAITokenCounter(BaseTokenCounter):
 
         self.encoding = get_model_encoding(self.model)
 
-    def count_tokens_from_messages(self, messages: List[OpenAIMessage]) -> int:
+    def count_tokens_from_messages(self, messages: list[OpenAIMessage]) -> int:
         r"""Count number of tokens in the provided message list with the
         help of package tiktoken.
 
@@ -192,7 +189,7 @@ class OpenAITokenCounter(BaseTokenCounter):
                             detail = item["image_url"]["detail"]
 
                             image_prefix_format = "data:image/{};base64,"
-                            image_prefix: Optional[str] = None
+                            image_prefix: str | None = None
                             for image_type in list(OpenAIImageType):
                                 # Find the correct image format
                                 image_prefix = image_prefix_format.format(
@@ -255,7 +252,7 @@ class OpenAITokenCounter(BaseTokenCounter):
         total = EXTRA_TOKENS + SQUARE_TOKENS * h * w
         return total
 
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         r"""Encode text into token IDs.
 
         Args:
@@ -266,7 +263,7 @@ class OpenAITokenCounter(BaseTokenCounter):
         """
         return self.encoding.encode(text, disallowed_special=())
 
-    def decode(self, token_ids: List[int]) -> str:
+    def decode(self, token_ids: list[int]) -> str:
         r"""Decode token IDs back to text.
 
         Args:
@@ -292,7 +289,7 @@ class AnthropicTokenCounter(BaseTokenCounter):
         self.model = model
 
     @dependencies_required('anthropic')
-    def count_tokens_from_messages(self, messages: List[OpenAIMessage]) -> int:
+    def count_tokens_from_messages(self, messages: list[OpenAIMessage]) -> int:
         r"""Count number of tokens in the provided message list using
         loaded tokenizer specific for this type of model.
 
@@ -316,7 +313,7 @@ class AnthropicTokenCounter(BaseTokenCounter):
             model=self.model,
         ).input_tokens
 
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         r"""Encode text into token IDs.
 
         Args:
@@ -330,7 +327,7 @@ class AnthropicTokenCounter(BaseTokenCounter):
             "Use count_tokens_from_messages() for token counting instead."
         )
 
-    def decode(self, token_ids: List[int]) -> str:
+    def decode(self, token_ids: list[int]) -> str:
         r"""Decode token IDs back to text.
 
         Args:
@@ -372,7 +369,7 @@ class LiteLLMTokenCounter(BaseTokenCounter):
             self._completion_cost = completion_cost
         return self._completion_cost
 
-    def count_tokens_from_messages(self, messages: List[OpenAIMessage]) -> int:
+    def count_tokens_from_messages(self, messages: list[OpenAIMessage]) -> int:
         r"""Count number of tokens in the provided message list using
         the tokenizer specific to this type of model.
 
@@ -396,7 +393,7 @@ class LiteLLMTokenCounter(BaseTokenCounter):
         """
         return self.completion_cost(completion_response=response)
 
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         r"""Encode text into token IDs.
 
         Args:
@@ -409,7 +406,7 @@ class LiteLLMTokenCounter(BaseTokenCounter):
 
         return encoding.encode(text, disallowed_special=())
 
-    def decode(self, token_ids: List[int]) -> str:
+    def decode(self, token_ids: list[int]) -> str:
         r"""Decode token IDs back to text.
 
         Args:
@@ -450,7 +447,7 @@ class MistralTokenCounter(BaseTokenCounter):
 
         self.tokenizer = MistralTokenizer.from_model(model_name)
 
-    def count_tokens_from_messages(self, messages: List[OpenAIMessage]) -> int:
+    def count_tokens_from_messages(self, messages: list[OpenAIMessage]) -> int:
         r"""Count number of tokens in the provided message list using
         loaded tokenizer specific for this type of model.
 
@@ -494,7 +491,7 @@ class MistralTokenCounter(BaseTokenCounter):
 
         return mistral_request
 
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         r"""Encode text into token IDs.
 
         Args:
@@ -516,7 +513,7 @@ class MistralTokenCounter(BaseTokenCounter):
             )
         )
 
-    def decode(self, token_ids: List[int]) -> str:
+    def decode(self, token_ids: list[int]) -> str:
         r"""Decode token IDs back to text.
 
         Args:

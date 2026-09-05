@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List, Optional
 
 from camel.embeddings import BaseEmbedding, OpenAIEmbedding
 from camel.memories.base import MemoryBlock
@@ -41,8 +40,8 @@ class VectorDBBlock(MemoryBlock):
 
     def __init__(
         self,
-        storage: Optional[BaseVectorStorage] = None,
-        embedding: Optional[BaseEmbedding] = None,
+        storage: BaseVectorStorage | None = None,
+        embedding: BaseEmbedding | None = None,
     ) -> None:
         self.embedding = embedding or OpenAIEmbedding()
         self.vector_dim = self.embedding.get_output_dim()
@@ -52,7 +51,7 @@ class VectorDBBlock(MemoryBlock):
         self,
         keyword: str,
         limit: int = 3,
-    ) -> List[ContextRecord]:
+    ) -> list[ContextRecord]:
         r"""Retrieves similar records from the vector database based on the
         content of the keyword.
 
@@ -80,7 +79,7 @@ class VectorDBBlock(MemoryBlock):
             if result.record.payload is not None
         ]
 
-    def write_records(self, records: List[MemoryRecord]) -> None:
+    def write_records(self, records: list[MemoryRecord]) -> None:
         """
         Converts the provided chat messages into vector representations and
         writes them to the vector database.

@@ -15,7 +15,6 @@
 import json
 import os
 from http import HTTPStatus
-from typing import List, Optional
 
 import requests
 
@@ -34,7 +33,7 @@ class LinkedInToolkit(BaseToolkit):
     retrieving the authenticated user's profile information.
     """
 
-    def __init__(self, timeout: Optional[float] = None):
+    def __init__(self, timeout: float | None = None):
         super().__init__(timeout=timeout)
         self._access_token = self._get_access_token()
 
@@ -198,7 +197,7 @@ class LinkedInToolkit(BaseToolkit):
 
         return profile_report
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

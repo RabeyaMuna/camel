@@ -13,7 +13,8 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import functools
 import inspect
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 
 class MCPServer:
@@ -55,8 +56,8 @@ class MCPServer:
 
     def __init__(
         self,
-        function_names: Optional[list[str]] = None,
-        server_name: Optional[str] = None,
+        function_names: list[str] | None = None,
+        server_name: str | None = None,
     ):
         self.function_names = function_names
         self.server_name = server_name

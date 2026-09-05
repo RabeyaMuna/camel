@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from datetime import datetime
-from typing import Optional
 
 
 class DiscordInstallation:
@@ -39,7 +38,7 @@ class DiscordInstallation:
         access_token: str,
         refresh_token: str,
         installed_at: datetime,
-        token_expires_at: Optional[datetime] = None,
+        token_expires_at: datetime | None = None,
     ):
         r"""Initialize the DiscordInstallation.
 

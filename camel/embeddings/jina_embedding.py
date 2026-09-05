@@ -18,7 +18,7 @@ from __future__ import annotations
 import base64
 import io
 import os
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 import requests
 from PIL import Image
@@ -56,10 +56,10 @@ class JinaEmbedding(BaseEmbedding[Union[str, Image.Image]]):
     def __init__(
         self,
         model_type: EmbeddingModelType = EmbeddingModelType.JINA_EMBEDDINGS_V3,
-        api_key: Optional[str] = None,
-        dimensions: Optional[int] = None,
-        embedding_type: Optional[str] = None,
-        task: Optional[str] = None,
+        api_key: str | None = None,
+        dimensions: int | None = None,
+        embedding_type: str | None = None,
+        task: str | None = None,
         late_chunking: bool = False,
         normalized: bool = False,
     ) -> None:
@@ -88,7 +88,7 @@ class JinaEmbedding(BaseEmbedding[Union[str, Image.Image]]):
 
     def embed_list(
         self,
-        objs: list[Union[str, Image.Image]],
+        objs: list[str | Image.Image],
         **kwargs: Any,
     ) -> list[list[float]]:
         r"""Generates embeddings for the given texts or images.

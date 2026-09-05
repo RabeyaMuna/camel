@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
@@ -32,9 +32,9 @@ class VectorRecord(BaseModel):
             or information related to the vector. (default: :obj:`None`)
     """
 
-    vector: List[float]
+    vector: list[float]
     id: str = Field(default_factory=lambda: str(uuid4()))
-    payload: Optional[Dict[str, Any]] = None
+    payload: dict[str, Any] | None = None
 
 
 class VectorDBQuery(BaseModel):
@@ -47,13 +47,13 @@ class VectorDBQuery(BaseModel):
             from the database. (default: :obj:`1`)
     """
 
-    query_vector: List[float]
+    query_vector: list[float]
     """The numerical representation of the query vector."""
     top_k: int = 1
     """The number of top similar vectors to retrieve from the database."""
 
     def __init__(
-        self, query_vector: List[float], top_k: int, **kwargs: Any
+        self, query_vector: list[float], top_k: int, **kwargs: Any
     ) -> None:
         """Pass in query_vector and tok_k as positional arg.
         Args:
@@ -81,9 +81,9 @@ class VectorDBQueryResult(BaseModel):
     def create(
         cls,
         similarity: float,
-        vector: List[float],
+        vector: list[float],
         id: str,
-        payload: Optional[Dict[str, Any]] = None,
+        payload: dict[str, Any] | None = None,
     ) -> "VectorDBQueryResult":
         r"""A class method to construct a `VectorDBQueryResult` instance."""
         return cls(
@@ -115,7 +115,7 @@ class BaseVectorStorage(ABC):
     @abstractmethod
     def add(
         self,
-        records: List[VectorRecord],
+        records: list[VectorRecord],
         **kwargs: Any,
     ) -> None:
         r"""Saves a list of vector records to the storage.
@@ -127,12 +127,11 @@ class BaseVectorStorage(ABC):
         Raises:
             RuntimeError: If there is an error during the saving process.
         """
-        pass
 
     @abstractmethod
     def delete(
         self,
-        ids: List[str],
+        ids: list[str],
         **kwargs: Any,
     ) -> None:
         r"""Deletes a list of vectors identified by their IDs from the storage.
@@ -145,7 +144,6 @@ class BaseVectorStorage(ABC):
         Raises:
             RuntimeError: If there is an error during the deletion process.
         """
-        pass
 
     @abstractmethod
     def status(self) -> VectorDBStatus:
@@ -154,14 +152,13 @@ class BaseVectorStorage(ABC):
         Returns:
             VectorDBStatus: The vector database status.
         """
-        pass
 
     @abstractmethod
     def query(
         self,
         query: VectorDBQuery,
         **kwargs: Any,
-    ) -> List[VectorDBQueryResult]:
+    ) -> list[VectorDBQueryResult]:
         r"""Searches for similar vectors in the storage based on the provided
         query.
 
@@ -174,29 +171,25 @@ class BaseVectorStorage(ABC):
             List[VectorDBQueryResult]: A list of vectors retrieved from the
                 storage based on similarity to the query vector.
         """
-        pass
 
     @abstractmethod
     def clear(self) -> None:
         r"""Remove all vectors from the storage."""
-        pass
 
     @abstractmethod
     def load(self) -> None:
         r"""Load the collection hosted on cloud service."""
-        pass
 
     @property
     @abstractmethod
     def client(self) -> Any:
         r"""Provides access to the underlying vector database client."""
-        pass
 
     def get_payloads_by_vector(
         self,
-        vector: List[float],
+        vector: list[float],
         top_k: int,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Returns payloads of top k vector records that closest to the given
         vector.
 

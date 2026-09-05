@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List, Optional
 
 from camel.toolkits import BaseToolkit, FunctionTool
 
@@ -38,8 +37,8 @@ class PlaywrightMCPToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
-        additional_args: Optional[List[str]] = None,
+        timeout: float | None = None,
+        additional_args: list[str] | None = None,
     ) -> None:
         r"""Initializes the PlaywrightMCPToolkit.
 
@@ -74,7 +73,7 @@ class PlaywrightMCPToolkit(BaseToolkit):
         r"""Explicitly disconnect from the Playwright MCP server."""
         await self._mcp_toolkit.disconnect()
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of tools provided by the PlaywrightMCPToolkit.
 
         Returns:

@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import re
-from typing import Dict, List, Optional, Union
 
 from camel.agents.chat_agent import ChatAgent
 from camel.logger import get_logger
@@ -55,7 +54,7 @@ class DeductiveReasonerAgent(ChatAgent):
 
     def __init__(
         self,
-        model: Optional[BaseModelBackend] = None,
+        model: BaseModelBackend | None = None,
     ) -> None:
         system_message = BaseMessage(
             role_name="Insight Agent",
@@ -69,8 +68,8 @@ class DeductiveReasonerAgent(ChatAgent):
         self,
         starting_state: str,
         target_state: str,
-        role_descriptions_dict: Optional[Dict[str, str]] = None,
-    ) -> Dict[str, Union[List[str], Dict[str, str]]]:
+        role_descriptions_dict: dict[str, str] | None = None,
+    ) -> dict[str, list[str] | dict[str, str]]:
         r"""Derives the conditions and quality from the starting state and the
         target state based on the model of the deductive reasoning and the
         knowledge base. It can optionally consider the roles involved in the
@@ -293,8 +292,8 @@ square brackets)
         )
 
         # Convert them into JSON format
-        conditions_and_quality_json: Dict[
-            str, Union[List[str], Dict[str, str]]
+        conditions_and_quality_json: dict[
+            str, list[str] | dict[str, str]
         ] = {}
         conditions_and_quality_json["conditions"] = conditions_dict
         conditions_and_quality_json["labels"] = labels

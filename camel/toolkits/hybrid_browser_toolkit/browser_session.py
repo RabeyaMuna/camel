@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from camel.logger import get_logger
 
@@ -50,20 +50,20 @@ class HybridBrowserSession:
 
     # Class-level registry for singleton instances
     # Format: {(loop_id, session_id): HybridBrowserSession}
-    _instances: ClassVar[Dict[Tuple[Any, str], "HybridBrowserSession"]] = {}
+    _instances: ClassVar[dict[tuple[Any, str], HybridBrowserSession]] = {}
     _instances_lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
     _initialized: bool
-    _creation_params: Dict[str, Any]
+    _creation_params: dict[str, Any]
 
     def __new__(
         cls,
         *,
         headless: bool = True,
-        user_data_dir: Optional[str] = None,
+        user_data_dir: str | None = None,
         stealth: bool = False,
-        session_id: Optional[str] = None,
-    ) -> "HybridBrowserSession":
+        session_id: str | None = None,
+    ) -> HybridBrowserSession:
         # Create a unique key for this event loop and session combination
         # We defer the event loop lookup to avoid issues with creation
         # outside async context
@@ -81,8 +81,8 @@ class HybridBrowserSession:
     @classmethod
     async def _get_or_create_instance(
         cls,
-        instance: "HybridBrowserSession",
-    ) -> "HybridBrowserSession":
+        instance: HybridBrowserSession,
+    ) -> HybridBrowserSession:
         """Get or create singleton instance for the current event loop and
         session."""
         try:
@@ -123,9 +123,9 @@ class HybridBrowserSession:
         self,
         *,
         headless: bool = True,
-        user_data_dir: Optional[str] = None,
+        user_data_dir: str | None = None,
         stealth: bool = False,
-        session_id: Optional[str] = None,
+        session_id: str | None = None,
     ):
         if self._initialized:
             return
@@ -144,24 +144,24 @@ class HybridBrowserSession:
             "session_id": session_id,
         }
 
-        self._playwright: Optional[Playwright] = None
-        self._browser: Optional[Browser] = None
-        self._context: Optional[BrowserContext] = None
-        self._page: Optional[Page] = None
+        self._playwright: Playwright | None = None
+        self._browser: Browser | None = None
+        self._context: BrowserContext | None = None
+        self._page: Page | None = None
 
         # Multi-tab support
-        self._pages: List[Page] = []  # All tabs
+        self._pages: list[Page] = []  # All tabs
         self._current_tab_index: int = 0  # Current active tab index
 
-        self.snapshot: Optional[PageSnapshot] = None
-        self.executor: Optional[ActionExecutor] = None
+        self.snapshot: PageSnapshot | None = None
+        self.executor: ActionExecutor | None = None
 
         # Protect browser initialisation against concurrent calls
-        self._ensure_lock: "asyncio.Lock" = asyncio.Lock()
+        self._ensure_lock: asyncio.Lock = asyncio.Lock()
 
         # Load stealth script and config on initialization
-        self._stealth_script: Optional[str] = None
-        self._stealth_config: Optional[Dict[str, Any]] = None
+        self._stealth_script: str | None = None
+        self._stealth_config: dict[str, Any] | None = None
         if self._stealth:
             self._stealth_script = self._load_stealth_script()
             self._stealth_config = StealthConfig.get_all_config()
@@ -197,7 +197,7 @@ class HybridBrowserSession:
     # ------------------------------------------------------------------
     # Multi-tab management methods
     # ------------------------------------------------------------------
-    async def create_new_tab(self, url: Optional[str] = None) -> int:
+    async def create_new_tab(self, url: str | None = None) -> int:
         r"""Create a new tab and optionally navigate to a URL.
 
         Args:
@@ -243,7 +243,7 @@ class HybridBrowserSession:
         )
         return new_tab_index
 
-    async def register_page(self, new_page: "Page") -> int:
+    async def register_page(self, new_page: Page) -> int:
         r"""Register a page that was created externally (e.g., by a click).
 
         Args:
@@ -377,7 +377,7 @@ class HybridBrowserSession:
             logger.warning(f"Error closing tab {tab_index}: {e}")
             return False
 
-    async def get_tab_info(self) -> List[Dict[str, Any]]:
+    async def get_tab_info(self) -> list[dict[str, Any]]:
         r"""Get information about all open tabs.
 
         Returns:
@@ -465,8 +465,8 @@ class HybridBrowserSession:
         self._playwright = await async_playwright().start()
 
         # Prepare stealth options
-        launch_options: Dict[str, Any] = {"headless": self._headless}
-        context_options: Dict[str, Any] = {}
+        launch_options: dict[str, Any] = {"headless": self._headless}
+        context_options: dict[str, Any] = {}
         if self._stealth and self._stealth_config:
             # Use preloaded stealth configuration
             launch_options['args'] = self._stealth_config['launch_args']
@@ -691,7 +691,7 @@ class HybridBrowserSession:
             force_refresh=force_refresh, diff_only=diff_only
         )
 
-    async def exec_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
+    async def exec_action(self, action: dict[str, Any]) -> dict[str, Any]:
         r"""Execute action on current tab."""
         if not self.executor:
             return {
@@ -701,7 +701,7 @@ class HybridBrowserSession:
             }
         return await self.executor.execute(action)
 
-    async def get_page(self) -> "Page":
+    async def get_page(self) -> Page:
         r"""Get current active page."""
         await self.ensure_browser()
         if self._page is None:

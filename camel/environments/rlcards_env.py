@@ -14,7 +14,7 @@
 
 import re
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from rlcard.agents import RandomAgent
@@ -39,7 +39,7 @@ class ActionExtractor(BaseExtractorStrategy):
         """
         self.action_pattern = action_pattern
 
-    async def extract(self, text: str) -> Optional[str]:
+    async def extract(self, text: str) -> str | None:
         r"""Extract a valid RLCard action from text.
 
         Looks for a pattern '<Action> action_str' where action_str is the
@@ -70,8 +70,8 @@ class RLCardsEnv(MultiStepEnv):
     def __init__(
         self,
         game_name: str,
-        extractor: Optional[BaseExtractor] = None,
-        max_steps: Optional[int] = None,
+        extractor: BaseExtractor | None = None,
+        max_steps: int | None = None,
         num_players: int = 2,
         **kwargs,
     ) -> None:
@@ -97,7 +97,7 @@ class RLCardsEnv(MultiStepEnv):
         self.num_players = num_players
         self.rlcard_env = None
         self.current_player_id = None
-        self.agents: Optional[List[Optional['RandomAgent']]] = None
+        self.agents: list[RandomAgent | None] | None = None
 
     async def _setup(self) -> None:
         r"""Set up the RLCard environment.
@@ -142,7 +142,7 @@ class RLCardsEnv(MultiStepEnv):
         self.rlcard_env = None
         self.agents = None
 
-    def _get_initial_state(self) -> Dict[str, Any]:
+    def _get_initial_state(self) -> dict[str, Any]:
         r"""Get the initial state of the environment.
 
         Returns:
@@ -375,7 +375,7 @@ class RLCardsEnv(MultiStepEnv):
 
     async def compute_reward(
         self,
-    ) -> Tuple[float, Dict[str, float]]:
+    ) -> tuple[float, dict[str, float]]:
         r"""Compute the reward for the current state.
 
         Returns:
@@ -421,10 +421,9 @@ class RLCardsEnv(MultiStepEnv):
         Returns:
             Any: The action in the format expected by the RLCard environment.
         """
-        pass
 
     @abstractmethod
-    def _format_state_for_observation(self, state: Dict[str, Any]) -> str:
+    def _format_state_for_observation(self, state: dict[str, Any]) -> str:
         r"""Format the RLCard state for human-readable observation.
 
         This method must be implemented by subclasses to create a
@@ -436,10 +435,9 @@ class RLCardsEnv(MultiStepEnv):
         Returns:
             str: A human-readable representation of the state.
         """
-        pass
 
     @abstractmethod
-    def _format_legal_actions(self, legal_actions: List[Any]) -> str:
+    def _format_legal_actions(self, legal_actions: list[Any]) -> str:
         r"""Format the legal actions for human-readable observation.
 
         This method must be implemented by subclasses to create a
@@ -451,7 +449,6 @@ class RLCardsEnv(MultiStepEnv):
         Returns:
             str: A human-readable representation of the legal actions.
         """
-        pass
 
 
 class BlackjackEnv(RLCardsEnv):
@@ -463,8 +460,8 @@ class BlackjackEnv(RLCardsEnv):
 
     def __init__(
         self,
-        extractor: Optional[BaseExtractor] = None,
-        max_steps: Optional[int] = None,
+        extractor: BaseExtractor | None = None,
+        max_steps: int | None = None,
         **kwargs,
     ) -> None:
         r"""Initialize the Blackjack environment.
@@ -498,7 +495,7 @@ class BlackjackEnv(RLCardsEnv):
             return 1
         raise ValueError()
 
-    def _format_state_for_observation(self, state: Dict[str, Any]) -> str:
+    def _format_state_for_observation(self, state: dict[str, Any]) -> str:
         r"""Format the Blackjack state for human-readable observation.
 
         Args:
@@ -536,7 +533,7 @@ class BlackjackEnv(RLCardsEnv):
             f"Dealer's hand: {dealer_cards} (Value: {dealer_value})"
         )
 
-    def _format_legal_actions(self, legal_actions: List[int]) -> str:
+    def _format_legal_actions(self, legal_actions: list[int]) -> str:
         r"""Format the legal actions for Blackjack.
 
         Args:
@@ -551,7 +548,7 @@ class BlackjackEnv(RLCardsEnv):
         action_map = {0: "hit", 1: "stand"}
         return ", ".join([action_map.get(a, str(a)) for a in legal_actions])
 
-    def _format_cards(self, cards: List[str]) -> str:
+    def _format_cards(self, cards: list[str]) -> str:
         r"""Format a list of cards for display.
 
         Args:
@@ -562,7 +559,7 @@ class BlackjackEnv(RLCardsEnv):
         """
         return ", ".join(cards)
 
-    def _calculate_hand_value(self, cards: List[str]) -> int:
+    def _calculate_hand_value(self, cards: list[str]) -> int:
         r"""Calculate the value of a hand in Blackjack.
 
         Args:
@@ -602,8 +599,8 @@ class LeducHoldemEnv(RLCardsEnv):
 
     def __init__(
         self,
-        extractor: Optional[BaseExtractor] = None,
-        max_steps: Optional[int] = None,
+        extractor: BaseExtractor | None = None,
+        max_steps: int | None = None,
         num_players: int = 2,
         **kwargs,
     ) -> None:
@@ -648,7 +645,7 @@ class LeducHoldemEnv(RLCardsEnv):
         else:
             raise ValueError()
 
-    def _format_state_for_observation(self, state: Dict[str, Any]) -> str:
+    def _format_state_for_observation(self, state: dict[str, Any]) -> str:
         r"""Format the Leduc Hold'em state for human-readable observation.
 
         Args:
@@ -686,7 +683,7 @@ class LeducHoldemEnv(RLCardsEnv):
 
         return obs_text
 
-    def _format_legal_actions(self, legal_actions: List[int]) -> str:
+    def _format_legal_actions(self, legal_actions: list[int]) -> str:
         r"""Format the legal actions for Leduc Hold'em.
 
         Args:
@@ -708,8 +705,8 @@ class DoudizhuEnv(RLCardsEnv):
 
     def __init__(
         self,
-        extractor: Optional[BaseExtractor] = None,
-        max_steps: Optional[int] = None,
+        extractor: BaseExtractor | None = None,
+        max_steps: int | None = None,
         **kwargs,
     ) -> None:
         r"""Initialize the Doudizhu environment.
@@ -753,7 +750,7 @@ class DoudizhuEnv(RLCardsEnv):
 
         return None
 
-    def _format_state_for_observation(self, state: Dict[str, Any]) -> str:
+    def _format_state_for_observation(self, state: dict[str, Any]) -> str:
         r"""Format the Doudizhu state for human-readable observation.
 
         Args:
@@ -825,7 +822,7 @@ class DoudizhuEnv(RLCardsEnv):
 
         return obs_text
 
-    def _format_legal_actions(self, legal_actions: List[str]) -> str:
+    def _format_legal_actions(self, legal_actions: list[str]) -> str:
         r"""Format the legal actions for Doudizhu.
 
         Args:
@@ -846,7 +843,7 @@ class DoudizhuEnv(RLCardsEnv):
 
         return action_str
 
-    def _format_cards(self, cards: List[str]) -> str:
+    def _format_cards(self, cards: list[str]) -> str:
         r"""Format a list of cards for display.
 
         Args:

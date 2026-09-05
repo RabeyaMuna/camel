@@ -14,7 +14,7 @@
 import json
 import os
 import tempfile
-from typing import Any, List, Optional
+from typing import Any
 
 from camel.datahubs.base import BaseDatasetManager
 from camel.datahubs.models import Record
@@ -41,7 +41,7 @@ class HuggingFaceDatasetManager(BaseDatasetManager):
         ]
     )
     @dependencies_required('huggingface_hub')
-    def __init__(self, token: Optional[str] = None):
+    def __init__(self, token: str | None = None):
         from huggingface_hub import HfApi
 
         self._api_key = token or os.getenv("HF_TOKEN")
@@ -51,14 +51,14 @@ class HuggingFaceDatasetManager(BaseDatasetManager):
         self,
         dataset_name: str,
         description: str,
-        license: Optional[str] = None,
-        version: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        authors: Optional[List[str]] = None,
-        size_category: Optional[List[str]] = None,
-        language: Optional[List[str]] = None,
-        task_categories: Optional[List[str]] = None,
-        content: Optional[str] = None,
+        license: str | None = None,
+        version: str | None = None,
+        tags: list[str] | None = None,
+        authors: list[str] | None = None,
+        size_category: list[str] | None = None,
+        language: list[str] | None = None,
+        task_categories: list[str] | None = None,
+        content: str | None = None,
     ) -> None:
         r"""Creates and uploads a dataset card to the Hugging Face Hub in YAML
             format.
@@ -146,7 +146,7 @@ class HuggingFaceDatasetManager(BaseDatasetManager):
 
     def list_datasets(
         self, username: str, limit: int = 100, **kwargs: Any
-    ) -> List[str]:
+    ) -> list[str]:
         r"""Lists all datasets for the current user.
 
         Args:
@@ -190,7 +190,7 @@ class HuggingFaceDatasetManager(BaseDatasetManager):
     def add_records(
         self,
         dataset_name: str,
-        records: List[Record],
+        records: list[Record],
         filepath: str = "records/records.json",
         **kwargs: Any,
     ) -> None:
@@ -225,7 +225,7 @@ class HuggingFaceDatasetManager(BaseDatasetManager):
     def update_records(
         self,
         dataset_name: str,
-        records: List[Record],
+        records: list[Record],
         filepath: str = "records/records.json",
         **kwargs: Any,
     ) -> None:
@@ -315,7 +315,7 @@ class HuggingFaceDatasetManager(BaseDatasetManager):
         dataset_name: str,
         filepath: str = "records/records.json",
         **kwargs: Any,
-    ) -> List[Record]:
+    ) -> list[Record]:
         r"""Lists all records in a dataset.
 
         Args:
@@ -332,7 +332,7 @@ class HuggingFaceDatasetManager(BaseDatasetManager):
 
     def _download_records(
         self, dataset_name: str, filepath: str, **kwargs: Any
-    ) -> List[Record]:
+    ) -> list[Record]:
         from huggingface_hub import hf_hub_download
         from huggingface_hub.errors import EntryNotFoundError
 
@@ -358,7 +358,7 @@ class HuggingFaceDatasetManager(BaseDatasetManager):
 
     def _upload_records(
         self,
-        records: List[Record],
+        records: list[Record],
         dataset_name: str,
         filepath: str,
         **kwargs: Any,

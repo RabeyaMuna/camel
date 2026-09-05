@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -32,15 +32,15 @@ class DataPoint(BaseModel):
         ..., description="The primary question or issue to be addressed."
     )
     final_answer: str = Field(..., description="The final answer.")
-    rationale: Optional[str] = Field(
+    rationale: str | None = Field(
         default=None,
         description="Logical reasoning or explanation behind the answer.",
     )
-    metadata: Optional[Dict[str, Any]] = Field(
+    metadata: dict[str, Any] | None = Field(
         default=None, description="Additional metadata about the data point."
     )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         r"""Convert DataPoint to a dictionary.
 
         Returns:
@@ -49,7 +49,7 @@ class DataPoint(BaseModel):
         return self.model_dump()
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'DataPoint':
+    def from_dict(cls, data: dict[str, Any]) -> 'DataPoint':
         r"""Create a DataPoint from a dictionary.
 
         Args:

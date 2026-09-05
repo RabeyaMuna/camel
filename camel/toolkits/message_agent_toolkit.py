@@ -15,7 +15,7 @@
 import json
 import time
 import uuid
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from camel.logger import get_logger
 from camel.messages import BaseMessage
@@ -43,8 +43,8 @@ class AgentMessage(BaseMessage):
         receiver_id: str,
         content: str,
         timestamp: float,
-        reply_to: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        reply_to: str | None = None,
+        metadata: dict[str, Any] | None = None,
     ):
         # Initialize BaseMessage with standard fields
         super().__init__(
@@ -92,8 +92,8 @@ class AgentCommunicationToolkit(BaseToolkit):
 
     def __init__(
         self,
-        agents: Optional[Dict[str, "ChatAgent"]] = None,
-        timeout: Optional[float] = None,
+        agents: dict[str, "ChatAgent"] | None = None,
+        timeout: float | None = None,
         max_message_history: int = 100,
         get_response: bool = False,
     ) -> None:
@@ -103,8 +103,8 @@ class AgentCommunicationToolkit(BaseToolkit):
         self.get_response = get_response
 
         # Message management
-        self._message_history: Dict[str, List[AgentMessage]] = {}
-        self._conversation_threads: Dict[str, List[str]] = {}
+        self._message_history: dict[str, list[AgentMessage]] = {}
+        self._conversation_threads: dict[str, list[str]] = {}
 
         logger.info(
             f"AgentCommunicationToolkit initialized with {len(self.agents)} "
@@ -140,7 +140,7 @@ class AgentCommunicationToolkit(BaseToolkit):
             f"Total agents: {len(self.agents)}"
         )
 
-    def _find_agent_id(self, agent_id: str) -> Optional[str]:
+    def _find_agent_id(self, agent_id: str) -> str | None:
         r"""Find agent ID with flexible matching (case-insensitive, partial
         matches).
         """
@@ -180,8 +180,8 @@ class AgentCommunicationToolkit(BaseToolkit):
         message: str,
         receiver_id: str,
         sender_id: str = "system",
-        reply_to: Optional[str] = None,
-        metadata_json: Optional[str] = None,
+        reply_to: str | None = None,
+        metadata_json: str | None = None,
     ) -> str:
         r"""Sends a message to a specific agent.
 
@@ -325,7 +325,7 @@ class AgentCommunicationToolkit(BaseToolkit):
         self,
         message: str,
         sender_id: str = "system",
-        exclude_agents: Optional[List[str]] = None,
+        exclude_agents: list[str] | None = None,
     ) -> str:
         r"""Sends a message to all other agents in the system.
 
@@ -381,7 +381,7 @@ class AgentCommunicationToolkit(BaseToolkit):
         return "Broadcast completed. Results:\n" + "\n".join(results)
 
     def get_message_history(
-        self, agent_id: str, limit: Optional[int] = None
+        self, agent_id: str, limit: int | None = None
     ) -> str:
         r"""Retrieves the message history for a specific agent.
 
@@ -587,7 +587,7 @@ class AgentCommunicationToolkit(BaseToolkit):
         else:
             self._conversation_threads[new_id] = [parent_id, new_id]
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         communication functions in the toolkit.
 

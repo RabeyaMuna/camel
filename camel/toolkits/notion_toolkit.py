@@ -12,14 +12,14 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import List, Optional, cast
+from typing import cast
 
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
 from camel.utils import MCPServer, api_keys_required
 
 
-def get_plain_text_from_rich_text(rich_text: List[dict]) -> str:
+def get_plain_text_from_rich_text(rich_text: list[dict]) -> str:
     r"""Extracts plain text from a list of rich text elements.
 
     Args:
@@ -85,8 +85,8 @@ class NotionToolkit(BaseToolkit):
     )
     def __init__(
         self,
-        notion_token: Optional[str] = None,
-        timeout: Optional[float] = None,
+        notion_token: str | None = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initializes the NotionToolkit.
 
@@ -100,13 +100,13 @@ class NotionToolkit(BaseToolkit):
         self.notion_token = notion_token or os.environ.get("NOTION_TOKEN")
         self.notion_client = Client(auth=self.notion_token)
 
-    def list_all_users(self) -> List[dict]:
+    def list_all_users(self) -> list[dict]:
         r"""Lists all users via the Notion integration.
 
         Returns:
             List[dict]: A list of user objects with type, name, and workspace.
         """
-        all_users_info: List[dict] = []
+        all_users_info: list[dict] = []
         cursor = None
 
         while True:
@@ -134,13 +134,13 @@ class NotionToolkit(BaseToolkit):
 
         return formatted_users
 
-    def list_all_pages(self) -> List[dict]:
+    def list_all_pages(self) -> list[dict]:
         r"""Lists all pages in the Notion workspace.
 
         Returns:
             List[dict]: A list of page objects with title and id.
         """
-        all_pages_info: List[dict] = []
+        all_pages_info: list[dict] = []
         cursor = None
 
         while True:
@@ -187,7 +187,7 @@ class NotionToolkit(BaseToolkit):
             str: The text content of a Notion block, containing all
                 the sub blocks.
         """
-        blocks: List[dict] = []
+        blocks: list[dict] = []
         cursor = None
 
         while True:
@@ -273,7 +273,7 @@ class NotionToolkit(BaseToolkit):
 
         return text
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

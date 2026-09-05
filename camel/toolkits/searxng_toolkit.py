@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import ClassVar, Dict, List, Optional, Union
+from typing import ClassVar
 from urllib.parse import urlparse
 
 import requests
@@ -55,22 +55,22 @@ class SearxNGToolkit(BaseToolkit):
     """
 
     # Constants for validation
-    _SAFE_SEARCH_LEVELS: ClassVar[Dict[int, str]] = {
+    _SAFE_SEARCH_LEVELS: ClassVar[dict[int, str]] = {
         0: "Disabled",
         1: "Moderate",
         2: "Strict",
     }
-    _VALID_TIME_RANGES: ClassVar[List[str]] = ["day", "week", "month", "year"]
+    _VALID_TIME_RANGES: ClassVar[list[str]] = ["day", "week", "month", "year"]
     _DEFAULT_CATEGORY: ClassVar[str] = "general"
 
     def __init__(
         self,
         searxng_host: str,
         language: str = "en",
-        categories: Optional[List[str]] = None,
-        time_range: Optional[str] = None,
+        categories: list[str] | None = None,
+        time_range: str | None = None,
         safe_search: int = 1,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ) -> None:
         super().__init__(timeout=timeout)
         self._validate_searxng_host(searxng_host)
@@ -147,8 +147,8 @@ class SearxNGToolkit(BaseToolkit):
         self,
         query: str,
         num_results: int = 10,
-        category: Optional[str] = None,
-    ) -> List[Dict[str, str]]:
+        category: str | None = None,
+    ) -> list[dict[str, str]]:
         r"""Perform a web search using the configured SearxNG instance.
 
         Args:
@@ -163,7 +163,7 @@ class SearxNGToolkit(BaseToolkit):
             List[Dict[str, str]]: List of search results, where each result is
                 dictionary containing 'title', 'link', and 'snippet' keys.
         """
-        params: Dict[str, Union[str, int]] = {
+        params: dict[str, str | int] = {
             "q": query,
             "format": "json",
             "language": self.language,
@@ -202,7 +202,7 @@ class SearxNGToolkit(BaseToolkit):
             logger.error(f"Search failed: {error!s}")
             return []
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Get the list of available tools in the toolkit.
 
         Returns:

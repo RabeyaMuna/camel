@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-import apps.data_explorer.loader as loader
+from apps.data_explorer import loader
 
 
 def test_load_datasets_smoke():

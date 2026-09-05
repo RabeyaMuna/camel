@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from chromadb.api import ClientAPI
@@ -138,26 +138,26 @@ class ChromaStorage(BaseVectorStorage):
     def __init__(
         self,
         vector_dim: int,
-        collection_name: Optional[str] = None,
+        collection_name: str | None = None,
         client_type: Literal[
             "ephemeral", "persistent", "http", "cloud"
         ] = "ephemeral",
         # Persistent client parameters
-        path: Optional[str] = "./chroma",
+        path: str | None = "./chroma",
         # HTTP client parameters
         host: str = "localhost",
         port: int = 8000,
         ssl: bool = False,
-        headers: Optional[Dict[str, str]] = None,
+        headers: dict[str, str] | None = None,
         # Cloud client parameters
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         cloud_host: str = "api.trychroma.com",
         cloud_port: int = 8000,
         enable_ssl: bool = True,
         # Common parameters for all client types
-        settings: Optional[Any] = None,
-        tenant: Optional[str] = None,
-        database: Optional[str] = None,
+        settings: Any | None = None,
+        tenant: str | None = None,
+        database: str | None = None,
         distance: VectorDistance = VectorDistance.COSINE,
         delete_collection_on_del: bool = False,
         **kwargs: Any,
@@ -197,11 +197,11 @@ class ChromaStorage(BaseVectorStorage):
         self._validate_client_config()
 
         # Create client using the unified approach
-        self._client: "ClientAPI" = self._get_connection_client()
+        self._client: ClientAPI = self._get_connection_client()
         logger.info(f"Created ChromaDB client with type: {self.client_type}")
 
         # Create or get the collection
-        self._collection: "Collection" = self._get_or_create_collection()
+        self._collection: Collection = self._get_or_create_collection()
 
         logger.info(
             f"Successfully initialized ChromaDB storage "
@@ -274,7 +274,7 @@ class ChromaStorage(BaseVectorStorage):
         import chromadb
 
         # Map client types to handler methods
-        client_handlers: Dict[
+        client_handlers: dict[
             Literal["ephemeral", "persistent", "http", "cloud"], Any
         ] = {
             'ephemeral': self._create_ephemeral_client,
@@ -358,9 +358,9 @@ class ChromaStorage(BaseVectorStorage):
                 "upgrade ChromaDB when CloudClient is released."
             )
 
-    def _get_common_client_kwargs(self) -> Dict[str, Any]:
+    def _get_common_client_kwargs(self) -> dict[str, Any]:
         r"""Get common kwargs for all ChromaDB clients."""
-        common_kwargs: Dict[str, Any] = {}
+        common_kwargs: dict[str, Any] = {}
 
         # Add truly common parameters that all ChromaDB clients support
         if self._connection_params.get('settings') is not None:
@@ -392,7 +392,7 @@ class ChromaStorage(BaseVectorStorage):
         References:
             https://docs.trychroma.com/docs/collections/configure
         """
-        distance_map: Dict[VectorDistance, str] = {
+        distance_map: dict[VectorDistance, str] = {
             VectorDistance.COSINE: "cosine",
             VectorDistance.EUCLIDEAN: "l2",
             VectorDistance.DOT: "ip",  # inner product
@@ -425,7 +425,7 @@ class ChromaStorage(BaseVectorStorage):
 
     def add(
         self,
-        records: List[VectorRecord],
+        records: list[VectorRecord],
         **kwargs: Any,
     ) -> None:
         r"""Adds vector records to ChromaDB collection.
@@ -443,13 +443,13 @@ class ChromaStorage(BaseVectorStorage):
 
         try:
             # Prepare data for ChromaDB
-            ids: List[str] = [record.id for record in records]
-            embeddings: List[List[float]] = [
+            ids: list[str] = [record.id for record in records]
+            embeddings: list[list[float]] = [
                 record.vector for record in records
             ]
 
             # Prepare metadatas - ChromaDB requires a list
-            metadatas: List[Dict[str, Any]] = []
+            metadatas: list[dict[str, Any]] = []
             for record in records:
                 if record.payload is not None:
                     metadatas.append(record.payload)
@@ -457,7 +457,7 @@ class ChromaStorage(BaseVectorStorage):
                     metadatas.append({})
 
             # Add to collection using upsert for safety
-            add_kwargs: Dict[str, Any] = {
+            add_kwargs: dict[str, Any] = {
                 'ids': ids,
                 'embeddings': embeddings,
                 'metadatas': metadatas,
@@ -476,7 +476,7 @@ class ChromaStorage(BaseVectorStorage):
 
     def delete(
         self,
-        ids: List[str],
+        ids: list[str],
         **kwargs: Any,
     ) -> None:
         r"""Deletes vectors by their IDs from ChromaDB collection.
@@ -493,7 +493,7 @@ class ChromaStorage(BaseVectorStorage):
         if not ids:
             return
         try:
-            delete_kwargs: Dict[str, Any] = {'ids': ids}
+            delete_kwargs: dict[str, Any] = {'ids': ids}
             delete_kwargs.update(kwargs)
 
             self._collection.delete(**delete_kwargs)
@@ -527,7 +527,7 @@ class ChromaStorage(BaseVectorStorage):
         self,
         query: VectorDBQuery,
         **kwargs: Any,
-    ) -> List[VectorDBQueryResult]:
+    ) -> list[VectorDBQueryResult]:
         r"""Searches for similar vectors in ChromaDB based on the provided
         query.
 
@@ -546,20 +546,20 @@ class ChromaStorage(BaseVectorStorage):
         """
         try:
             # Query ChromaDB
-            query_kwargs: Dict[str, Any] = {
+            query_kwargs: dict[str, Any] = {
                 'query_embeddings': [query.query_vector],
                 'n_results': query.top_k,
                 'include': ["embeddings", "metadatas", "distances"],
             }
             query_kwargs.update(kwargs)
 
-            results: "QueryResult" = self._collection.query(**query_kwargs)
+            results: QueryResult = self._collection.query(**query_kwargs)
 
             # Convert ChromaDB results to VectorDBQueryResult format
-            query_results: List[VectorDBQueryResult] = []
+            query_results: list[VectorDBQueryResult] = []
 
             if results.get("ids") and len(results["ids"]) > 0:
-                ids: List[str] = results["ids"][0]
+                ids: list[str] = results["ids"][0]
 
                 # Safely extract embeddings with proper type handling
                 embeddings_result = results.get("embeddings")
@@ -567,7 +567,7 @@ class ChromaStorage(BaseVectorStorage):
                     embeddings_raw = embeddings_result[0]
                     # Convert to List[List[float]] format
                     if embeddings_raw is not None:
-                        embeddings: List[List[float]] = []
+                        embeddings: list[list[float]] = []
                         for emb in embeddings_raw:
                             if hasattr(emb, '__iter__'):
                                 # Convert any array-like structure to
@@ -586,7 +586,7 @@ class ChromaStorage(BaseVectorStorage):
                     metadatas_raw = metadatas_result[0]
                     # Convert to List[Dict[str, Any]] format
                     if metadatas_raw is not None:
-                        metadatas: List[Dict[str, Any]] = []
+                        metadatas: list[dict[str, Any]] = []
                         for meta in metadatas_raw:
                             if meta is not None:
                                 # Convert Mapping to Dict
@@ -602,7 +602,7 @@ class ChromaStorage(BaseVectorStorage):
                 distances_result = results.get("distances")
                 if distances_result and len(distances_result) > 0:
                     distances_raw = distances_result[0]
-                    distances: List[float] = (
+                    distances: list[float] = (
                         list(distances_raw)
                         if distances_raw is not None
                         else []
@@ -618,10 +618,10 @@ class ChromaStorage(BaseVectorStorage):
                     )
                     similarity: float = self._distance_to_similarity(distance)
 
-                    embedding: List[float] = (
+                    embedding: list[float] = (
                         embeddings[i] if i < len(embeddings) else []
                     )
-                    metadata: Dict[str, Any] = (
+                    metadata: dict[str, Any] = (
                         metadatas[i] if i < len(metadatas) else {}
                     )
 
@@ -696,7 +696,6 @@ class ChromaStorage(BaseVectorStorage):
         """
         # ChromaDB collections are automatically available when client connects
         # No explicit loading is required
-        pass
 
     def delete_collection(self) -> None:
         r"""Deletes the entire collection from ChromaDB.

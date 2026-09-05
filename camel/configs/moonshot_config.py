@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List, Optional, Union
 
 from camel.configs.base_config import BaseConfig
 
@@ -49,15 +48,15 @@ class MoonshotConfig(BaseConfig):
             (default: :obj:`None`)
     """
 
-    temperature: Optional[float] = None
-    max_tokens: Optional[int] = None
-    stream: Optional[bool] = None
-    tools: Optional[list] = None
-    top_p: Optional[float] = None
-    n: Optional[int] = None
-    presence_penalty: Optional[float] = None
-    frequency_penalty: Optional[float] = None
-    stop: Optional[Union[str, List[str]]] = None
+    temperature: float | None = None
+    max_tokens: int | None = None
+    stream: bool | None = None
+    tools: list | None = None
+    top_p: float | None = None
+    n: int | None = None
+    presence_penalty: float | None = None
+    frequency_penalty: float | None = None
+    stop: str | list[str] | None = None
 
 
 MOONSHOT_API_PARAMS = {param for param in MoonshotConfig.model_fields.keys()}

@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from camel.environments.models import Action, Observation, StepResult
 from camel.extractors.base import BaseExtractor
@@ -28,7 +28,7 @@ class MultiStepEnv(ABC):
     def __init__(
         self,
         extractor: BaseExtractor,
-        max_steps: Optional[int] = None,
+        max_steps: int | None = None,
         **kwargs,
     ) -> None:
         r"""Initialize the environment.
@@ -46,9 +46,9 @@ class MultiStepEnv(ABC):
         self._is_setup: bool = False
         self._current_step: int = 0
         self._episode_ended: bool = False
-        self._state: Dict[str, Any] = self._get_initial_state()
-        self._last_observation: Optional[Observation] = None
-        self._episode_history: List[Tuple[Observation, Action]] = []
+        self._state: dict[str, Any] = self._get_initial_state()
+        self._last_observation: Observation | None = None
+        self._episode_history: list[tuple[Observation, Action]] = []
 
     async def setup(self) -> None:
         r"""Set up the environment by initializing the verifier and extractor.
@@ -134,7 +134,7 @@ class MultiStepEnv(ABC):
 
     async def step(
         self, action: Action
-    ) -> Tuple[Observation, float, bool, Dict[str, Any]]:
+    ) -> tuple[Observation, float, bool, dict[str, Any]]:
         r"""Take a step in the environment using the given action.
 
         This method updates the environment state based on the LLM's response,
@@ -207,7 +207,7 @@ class MultiStepEnv(ABC):
         ).as_tuple()
 
     @abstractmethod
-    def _get_initial_state(self) -> Dict[str, Any]:
+    def _get_initial_state(self) -> dict[str, Any]:
         pass
 
     @abstractmethod
@@ -225,7 +225,7 @@ class MultiStepEnv(ABC):
     @abstractmethod
     async def compute_reward(
         self,
-    ) -> Tuple[float, Dict[str, float]]:
+    ) -> tuple[float, dict[str, float]]:
         pass
 
     def is_done(self) -> bool:
@@ -253,7 +253,7 @@ class MultiStepEnv(ABC):
         pass
 
     @property
-    def metadata(self) -> Dict[str, Any]:
+    def metadata(self) -> dict[str, Any]:
         r"""Retrieve the metadata of the environment.
 
         This provides additional parameters and configuration details.

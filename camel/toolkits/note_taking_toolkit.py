@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from pathlib import Path
-from typing import List, Optional
 
 from camel.toolkits.base import BaseToolkit
 from camel.toolkits.function_tool import FunctionTool
@@ -28,7 +27,7 @@ class NoteTakingToolkit(BaseToolkit):
     def __init__(
         self,
         note_file_path: str = "notes/notes.md",
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initialize the NoteTakingToolkit.
 
@@ -71,7 +70,7 @@ class NoteTakingToolkit(BaseToolkit):
         except Exception as e:
             return f"Error reading note: {e}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Return a list of FunctionTool objects representing the functions
         in the toolkit.
 

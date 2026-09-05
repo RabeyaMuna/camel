@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import uuid
-from typing import List, Optional
 
 from camel.logger import get_logger
 from camel.tasks import Task
@@ -26,7 +25,7 @@ class TaskPlanningToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         r"""Initialize the TaskPlanningToolkit.
 
@@ -39,9 +38,9 @@ class TaskPlanningToolkit(BaseToolkit):
     def decompose_task(
         self,
         original_task_content: str,
-        sub_task_contents: List[str],
-        original_task_id: Optional[str] = None,
-    ) -> List[Task]:
+        sub_task_contents: list[str],
+        original_task_id: str | None = None,
+    ) -> list[Task]:
         r"""Use the tool to decompose an original task into several sub-tasks.
         It creates new Task objects from the provided original task content,
         used when the original task is complex and needs to be decomposed.
@@ -64,7 +63,7 @@ class TaskPlanningToolkit(BaseToolkit):
             id=original_task_id if original_task_id else str(uuid.uuid4()),
         )
 
-        new_tasks: List[Task] = []
+        new_tasks: list[Task] = []
         for i, content in enumerate(sub_task_contents):
             new_task = Task(
                 content=content,
@@ -85,9 +84,9 @@ class TaskPlanningToolkit(BaseToolkit):
     def replan_tasks(
         self,
         original_task_content: str,
-        sub_task_contents: List[str],
-        original_task_id: Optional[str] = None,
-    ) -> List[Task]:
+        sub_task_contents: list[str],
+        original_task_id: str | None = None,
+    ) -> list[Task]:
         r"""Use the tool to re_decompose a task into several subTasks.
         It creates new Task objects from the provided original task content,
         used when the decomposed tasks are not good enough to help finish
@@ -109,7 +108,7 @@ class TaskPlanningToolkit(BaseToolkit):
             id=original_task_id if original_task_id else str(uuid.uuid4()),
         )
 
-        new_tasks: List[Task] = []
+        new_tasks: list[Task] = []
         for i, content in enumerate(sub_task_contents):
             new_task = Task(
                 content=content,
@@ -127,7 +126,7 @@ class TaskPlanningToolkit(BaseToolkit):
 
         return new_tasks
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         return [
             FunctionTool(self.decompose_task),
             FunctionTool(self.replan_tasks),

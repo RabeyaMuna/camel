@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from camel.memories import (
     ChatHistoryMemory,
@@ -43,7 +43,7 @@ class MemoryToolkit(BaseToolkit):
             (default: :obj:`None`)
     """
 
-    def __init__(self, agent: 'ChatAgent', timeout: Optional[float] = None):
+    def __init__(self, agent: 'ChatAgent', timeout: float | None = None):
         super().__init__(timeout=timeout)
         self.agent = agent
 

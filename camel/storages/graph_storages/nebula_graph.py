@@ -15,7 +15,7 @@
 import logging
 import re
 import time
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any
 
 from camel.storages.graph_storages.base import BaseGraphStorage
 from camel.storages.graph_storages.graph_element import (
@@ -65,7 +65,7 @@ class NebulaGraph(BaseGraphStorage):
         self.timeout = timeout
         self.port = port
         self.schema: str = ""
-        self.structured_schema: Dict[str, Any] = {}
+        self.structured_schema: dict[str, Any] = {}
         self.connection_pool = self._init_connection_pool()
         self.session = self._get_session()
 
@@ -155,7 +155,7 @@ class NebulaGraph(BaseGraphStorage):
         except Exception as e:
             raise ValueError(f"Query execution error: {e!s}")
 
-    def get_relationship_types(self) -> List[str]:
+    def get_relationship_types(self) -> list[str]:
         r"""Retrieve relationship types from the graph.
 
         Returns:
@@ -174,7 +174,7 @@ class NebulaGraph(BaseGraphStorage):
 
     def add_graph_elements(
         self,
-        graph_elements: List[GraphElement],
+        graph_elements: list[GraphElement],
     ) -> None:
         r"""Add graph elements (nodes and relationships) to the graph.
 
@@ -203,7 +203,7 @@ class NebulaGraph(BaseGraphStorage):
     def ensure_edge_type_exists(
         self,
         edge_type: str,
-        time_label: Optional[str] = None,
+        time_label: str | None = None,
     ) -> None:
         r"""Ensures that a specified edge type exists in the NebulaGraph
         database. If the edge type already exists, this method does nothing.
@@ -239,7 +239,7 @@ class NebulaGraph(BaseGraphStorage):
                 )
 
     def ensure_tag_exists(
-        self, tag_name: str, time_label: Optional[str] = None
+        self, tag_name: str, time_label: str | None = None
     ) -> None:
         r"""Ensures a tag is created in the NebulaGraph database. If the tag
         already exists, it does nothing.
@@ -278,7 +278,7 @@ class NebulaGraph(BaseGraphStorage):
         self,
         node_id: str,
         tag_name: str,
-        time_label: Optional[str] = None,
+        time_label: str | None = None,
     ) -> None:
         r"""Add a node with the specified tag and properties.
 
@@ -321,7 +321,7 @@ class NebulaGraph(BaseGraphStorage):
                     f" {MAX_RETRIES} attempts: {res.error_msg()}"
                 )
 
-    def _extract_nodes(self, graph_elements: List[Any]) -> List[Dict]:
+    def _extract_nodes(self, graph_elements: list[Any]) -> list[dict]:
         r"""Extracts unique nodes from graph elements.
 
         Args:
@@ -347,7 +347,7 @@ class NebulaGraph(BaseGraphStorage):
                     seen_nodes.add(node_key)
         return nodes
 
-    def _extract_relationships(self, graph_elements: List[Any]) -> List[Dict]:
+    def _extract_relationships(self, graph_elements: list[Any]) -> list[dict]:
         r"""Extracts relationships from graph elements.
 
         Args:
@@ -374,7 +374,7 @@ class NebulaGraph(BaseGraphStorage):
         self.structured_schema = self.get_structured_schema
 
     @property
-    def get_structured_schema(self) -> Dict[str, Any]:
+    def get_structured_schema(self) -> dict[str, Any]:
         r"""Generates a structured schema consisting of node and relationship
         properties, relationships, and metadata, including timestamps.
 
@@ -447,7 +447,7 @@ class NebulaGraph(BaseGraphStorage):
         subj: str,
         obj: str,
         rel: str,
-        time_label: Optional[str] = None,
+        time_label: str | None = None,
     ) -> None:
         r"""Adds a relationship (triplet) between two entities in the Nebula
         Graph database.
@@ -550,7 +550,7 @@ class NebulaGraph(BaseGraphStorage):
         else:
             return False
 
-    def get_node_properties(self) -> Tuple[List[str], List[Dict[str, Any]]]:
+    def get_node_properties(self) -> tuple[list[str], list[dict[str, Any]]]:
         r"""Retrieve node properties from the graph.
 
         Returns:
@@ -582,7 +582,7 @@ class NebulaGraph(BaseGraphStorage):
 
     def get_relationship_properties(
         self,
-    ) -> Tuple[List[str], List[Dict[str, Any]]]:
+    ) -> tuple[list[str], list[dict[str, Any]]]:
         r"""Retrieve relationship (edge) properties from the graph.
 
         Returns:

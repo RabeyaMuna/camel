@@ -19,7 +19,7 @@ import random
 import re
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 import numpy as np
 from rouge import Rouge
@@ -39,9 +39,9 @@ if current_folder not in sys.path:
 
 
 def process_messages(
-    chat_history: List[Dict[str, Any]],
+    chat_history: list[dict[str, Any]],
     prompt: str,
-) -> List[Dict[str, str]]:
+) -> list[dict[str, str]]:
     """
     Processes chat history into a structured format for further use.
 
@@ -68,7 +68,7 @@ def process_messages(
                 item['api_name'],
                 ', '.join(
                     [
-                        '{}=\'{}\''.format(k, v)
+                        f'{k}=\'{v}\''
                         for k, v in item['param_dict'].items()
                     ]
                 ),
@@ -105,7 +105,7 @@ class APIBankBenchmark(BaseBenchmark):
         """
         # Predefine data_dir for better import management
         super().__init__("apibank", "api_bank", save_to, processes)
-        self._data: Dict[str, List[APIBankSample]] = dict()  # type: ignore[assignment]
+        self._data: dict[str, list[APIBankSample]] = dict()  # type: ignore[assignment]
 
     def download(self):
         r"""Download APIBank dataset and code from Github."""
@@ -195,8 +195,8 @@ class APIBankBenchmark(BaseBenchmark):
         level: Literal["level-1", "level-2"],
         api_test_enabled=True,
         randomize: bool = False,
-        subset: Optional[int] = None,
-    ) -> Dict[str, Any]:
+        subset: int | None = None,
+    ) -> dict[str, Any]:
         r"""Run the benchmark.
 
         Args:
@@ -280,7 +280,7 @@ class APIBankBenchmark(BaseBenchmark):
                                     e
                                 ):
                                     raise e
-                                logging.info('AssertionError: {}'.format(e))
+                                logging.info(f'AssertionError: {e}')
                                 correct = False
                         else:
                             model_output_result = 'No API call found'
@@ -288,9 +288,7 @@ class APIBankBenchmark(BaseBenchmark):
                         if correct:
                             correct_api_calls += 1
                             logging.info(
-                                'Correct API call: {} Ground truth: {}'.format(
-                                    api_call, sample.ground_truth
-                                )
+                                f'Correct API call: {api_call} Ground truth: {sample.ground_truth}'
                             )
                         else:
                             logging.info(
@@ -385,7 +383,7 @@ class APIBankBenchmark(BaseBenchmark):
 
 # The following code are migrated from the original repo:
 # https://github.com/AlibabaResearch/DAMO-ConvAI/tree/main/api-bank
-def agent_call(messages: List[Dict], agent: ChatAgent):
+def agent_call(messages: list[dict], agent: ChatAgent):
     r"""Add messages to agent memory and get response."""
     for i, msg in enumerate(messages):
         if msg['role'] == 'user':
@@ -441,9 +439,7 @@ class APIBankSample:
         self.ground_truth = ground_truth
 
     def __repr__(self):
-        return 'Sample(chat_history={}, apis={}, ground_truth={})'.format(
-            self.chat_history, self.apis, self.ground_truth
-        )
+        return f'Sample(chat_history={self.chat_history}, apis={self.apis}, ground_truth={self.ground_truth})'
 
     @classmethod
     def from_chat_history(cls, chat_history):
@@ -467,7 +463,7 @@ class APIBankSample:
 class Evaluator:
     r"""Evaluator for APIBank benchmark."""
 
-    def __init__(self, samples: List[APIBankSample]):
+    def __init__(self, samples: list[APIBankSample]):
         # Place holder for import as the import
         # only works after the files have been downloaded
         try:

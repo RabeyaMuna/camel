@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -38,7 +37,7 @@ class SlackAuthProfile(BaseModel):
     - https://api.slack.com/changelog/2020-09-15-events-api-truncate-authed-users#no_context
     """
 
-    enterprise_id: Optional[str] = None
+    enterprise_id: str | None = None
     """The ID of the enterprise associated with the authorization."""
 
     team_id: str
@@ -68,7 +67,7 @@ class SlackEventProfile(BaseModel):
     ts: str
     """A timestamp representing when the event was triggered."""
 
-    thread_ts: Optional[str] = None
+    thread_ts: str | None = None
     """The timestamp of the parent message in a thread."""
 
     client_msg_id: str
@@ -89,7 +88,7 @@ class SlackEventProfile(BaseModel):
     event_ts: str
     """The event-specific timestamp when it occurred."""
 
-    channel_type: Optional[str]
+    channel_type: str | None
     """The type of Slack channel (e.g., 'channel', 'im')."""
 
 
@@ -104,10 +103,10 @@ class SlackEventBody(BaseModel):
     team_id: str
     """The ID of the team where the event is happening."""
 
-    context_team_id: Optional[str]
+    context_team_id: str | None
     """The team ID for the shared channel context, if applicable."""
 
-    context_enterprise_id: Optional[str] = None
+    context_enterprise_id: str | None = None
     """The enterprise ID for the shared channel context, if applicable."""
 
     api_app_id: str
@@ -125,7 +124,7 @@ class SlackEventBody(BaseModel):
     event_time: int
     """The timestamp (in seconds) representing when the event was triggered."""
 
-    authorizations: Optional[list[SlackAuthProfile]] = None
+    authorizations: list[SlackAuthProfile] | None = None
     """An optional list of authorizations that describe which installation can 
     see the event."""
 
@@ -142,7 +141,7 @@ class SlackAppMentionEventProfile(SlackEventProfile):
     mentioned in a message.
     """
 
-    channel_type: Optional[str] = None
+    channel_type: str | None = None
     """The type of Slack channel. it's None for app mentions."""
 
 
@@ -151,7 +150,7 @@ class SlackAppMentionEventBody(SlackEventBody):
     in a message.
     """
 
-    context_team_id: Optional[str] = None
+    context_team_id: str | None = None
     """A detailed profile of the event. it's None for app mentions."""
 
     event: SlackAppMentionEventProfile

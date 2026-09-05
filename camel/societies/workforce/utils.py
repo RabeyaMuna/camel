@@ -11,9 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
+from collections.abc import Callable
 from enum import Enum
 from functools import wraps
-from typing import Callable, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -49,7 +49,7 @@ class TaskAssignment(BaseModel):
     assignee_id: str = Field(
         description="The ID of the worker/workforce to assign the task to."
     )
-    dependencies: List[str] = Field(
+    dependencies: list[str] = Field(
         default_factory=list,
         description="List of task IDs that must complete before this task. "
         "This is critical for the task decomposition and execution.",
@@ -59,12 +59,12 @@ class TaskAssignment(BaseModel):
     # string. This validator converts such cases into a list[str] so that
     # downstream logic does not break with validation errors.
     @staticmethod
-    def _split_and_strip(dep_str: str) -> List[str]:
+    def _split_and_strip(dep_str: str) -> list[str]:
         r"""Utility to split a comma separated string and strip whitespace."""
         return [d.strip() for d in dep_str.split(',') if d.strip()]
 
     @field_validator("dependencies", mode="before")
-    def validate_dependencies(cls, v) -> List[str]:
+    def validate_dependencies(cls, v) -> list[str]:
         if v is None:
             return []
         # Handle empty string or comma-separated string from LLM
@@ -76,7 +76,7 @@ class TaskAssignment(BaseModel):
 class TaskAssignResult(BaseModel):
     r"""The result of task assignment for both single and batch assignments."""
 
-    assignments: List[TaskAssignment] = Field(
+    assignments: list[TaskAssignment] = Field(
         description="List of task assignments."
     )
 
@@ -105,13 +105,13 @@ class FailureContext(BaseModel):
         description="Number of times this task has failed"
     )
     error_message: str = Field(description="Detailed error message")
-    worker_id: Optional[str] = Field(
+    worker_id: str | None = Field(
         default=None, description="ID of the worker that failed"
     )
     task_depth: int = Field(
         description="Depth of the task in the decomposition hierarchy"
     )
-    additional_info: Optional[str] = Field(
+    additional_info: str | None = Field(
         default=None, description="Additional context about the task"
     )
 
@@ -123,7 +123,7 @@ class RecoveryDecision(BaseModel):
         description="The chosen recovery strategy"
     )
     reasoning: str = Field(description="Explanation for the chosen strategy")
-    modified_task_content: Optional[str] = Field(
+    modified_task_content: str | None = Field(
         default=None, description="Modified task content if strategy is REPLAN"
     )
 

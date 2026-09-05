@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import base64
 import os
-from typing import Any, List, Optional, Union
+from typing import Any
 
 from openai import AsyncOpenAI, OpenAI, _legacy_response
 
@@ -27,9 +27,9 @@ class OpenAIAudioModels(BaseAudioModel):
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        timeout: Optional[float] = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initialize an instance of OpenAI."""
         super().__init__(api_key, url, timeout)
@@ -55,12 +55,9 @@ class OpenAIAudioModels(BaseAudioModel):
         *,
         model_type: AudioModelType = AudioModelType.TTS_1,
         voice: VoiceType = VoiceType.ALLOY,
-        storage_path: Optional[str] = None,
+        storage_path: str | None = None,
         **kwargs: Any,
-    ) -> Union[
-        List[_legacy_response.HttpxBinaryResponseContent],
-        _legacy_response.HttpxBinaryResponseContent,
-    ]:
+    ) -> list[_legacy_response.HttpxBinaryResponseContent] | _legacy_response.HttpxBinaryResponseContent:
         r"""Convert text to speech using OpenAI's TTS model. This method
         converts the given input text to speech using the specified model and
         voice.

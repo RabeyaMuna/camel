@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Union
 
 from camel.types import ModelType
 
@@ -26,16 +25,16 @@ class BaseRewardModel(ABC):
 
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
+        model_type: ModelType | str,
+        api_key: str | None = None,
+        url: str | None = None,
     ) -> None:
         self.model_type = model_type
         self.api_key = api_key
         self.url = url
 
     @abstractmethod
-    def evaluate(self, messages: List[Dict[str, str]]) -> Dict[str, float]:
+    def evaluate(self, messages: list[dict[str, str]]) -> dict[str, float]:
         r"""Evaluate the messages and return scores based on different
         criteria.
 
@@ -46,13 +45,11 @@ class BaseRewardModel(ABC):
         Returns:
             Dict[str, float]: A dictionary mapping score types to their values.
         """
-        pass
 
     @abstractmethod
-    def get_scores_types(self) -> List[str]:
+    def get_scores_types(self) -> list[str]:
         r"""Get the list of score types that the reward model can return.
 
         Returns:
             List[str]: A list of score types that the reward model can return.
         """
-        pass

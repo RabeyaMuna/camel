@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Dict, List, Optional, Union
 
 from openai import OpenAI
 
@@ -37,9 +36,9 @@ class NemotronRewardModel(BaseRewardModel):
 
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
+        model_type: ModelType | str,
+        api_key: str | None = None,
+        url: str | None = None,
     ) -> None:
         url = url or os.environ.get(
             "NVIDIA_API_BASE_URL", "https://integrate.api.nvidia.com/v1"
@@ -58,7 +57,7 @@ class NemotronRewardModel(BaseRewardModel):
             (None, "NVIDIA_API_KEY"),
         ]
     )
-    def evaluate(self, messages: List[Dict[str, str]]) -> Dict[str, float]:
+    def evaluate(self, messages: list[dict[str, str]]) -> dict[str, float]:
         r"""Evaluate the messages using the Nemotron model.
 
         Args:
@@ -76,7 +75,7 @@ class NemotronRewardModel(BaseRewardModel):
         scores = self._parse_scores(response)
         return scores
 
-    def get_scores_types(self) -> List[str]:
+    def get_scores_types(self) -> list[str]:
         r"""Get the list of score types that the reward model can return.
 
         Returns:
@@ -90,7 +89,7 @@ class NemotronRewardModel(BaseRewardModel):
             "verbosity",
         ]
 
-    def _parse_scores(self, response: ChatCompletion) -> Dict[str, float]:
+    def _parse_scores(self, response: ChatCompletion) -> dict[str, float]:
         r"""Parse the scores from the response.
 
         Args:

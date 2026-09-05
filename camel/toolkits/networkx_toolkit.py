@@ -13,7 +13,8 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import json
-from typing import Any, Callable, Dict, List, Literal, Optional, Tuple, Union
+from collections.abc import Callable
+from typing import Any, Literal
 
 from camel.logger import get_logger
 from camel.toolkits import FunctionTool
@@ -38,7 +39,7 @@ class NetworkXToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
         graph_type: Literal[
             'graph', 'digraph', 'multigraph', 'multidigraph'
         ] = 'graph',
@@ -99,7 +100,7 @@ class NetworkXToolkit(BaseToolkit):
         )
         self.graph.add_edge(source, target, **attributes)
 
-    def get_nodes(self) -> List[str]:
+    def get_nodes(self) -> list[str]:
         r"""Returns all nodes in the graph.
 
         Returns:
@@ -108,7 +109,7 @@ class NetworkXToolkit(BaseToolkit):
         logger.info("Fetching all nodes.")
         return list(self.graph.nodes)
 
-    def get_edges(self) -> List[Tuple[str, str]]:
+    def get_edges(self) -> list[tuple[str, str]]:
         r"""Returns all edges in the graph.
 
         Returns:
@@ -121,9 +122,9 @@ class NetworkXToolkit(BaseToolkit):
         self,
         source: str,
         target: str,
-        weight: Optional[Union[str, Callable]] = None,
+        weight: str | Callable | None = None,
         method: Literal['dijkstra', 'bellman-ford'] = 'dijkstra',
-    ) -> List[str]:
+    ) -> list[str]:
         r"""Finds the shortest path between two nodes.
 
         Args:
@@ -167,7 +168,7 @@ class NetworkXToolkit(BaseToolkit):
             logger.error(error_msg)
             return [error_msg]
 
-    def compute_centrality(self) -> Dict[str, float]:
+    def compute_centrality(self) -> dict[str, float]:
         r"""Computes centrality measures for the graph.
 
         Returns:
@@ -224,7 +225,7 @@ class NetworkXToolkit(BaseToolkit):
         logger.info("Clearing the graph.")
         self.graph.clear()
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

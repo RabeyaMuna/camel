@@ -17,7 +17,7 @@ import asyncio
 import datetime
 import time
 from collections import deque
-from typing import Any, List, Optional
+from typing import Any
 
 from colorama import Fore
 
@@ -222,8 +222,8 @@ class SingleAgentWorker(Worker):
         self.worker = worker
         self.use_agent_pool = use_agent_pool
 
-        self.agent_pool: Optional[AgentPool] = None
-        self._cleanup_task: Optional[asyncio.Task] = None
+        self.agent_pool: AgentPool | None = None
+        self._cleanup_task: asyncio.Task | None = None
         # Initialize agent pool if enabled
         if self.use_agent_pool:
             self.agent_pool = AgentPool(
@@ -264,7 +264,7 @@ class SingleAgentWorker(Worker):
         # If not using pool, agent will be garbage collected
 
     async def _process_task(
-        self, task: Task, dependencies: List[Task]
+        self, task: Task, dependencies: list[Task]
     ) -> TaskState:
         r"""Processes a task with its dependencies using an efficient agent
         management system.
@@ -439,7 +439,7 @@ class SingleAgentWorker(Worker):
             except Exception as e:
                 print(f"Error in pool cleanup: {e}")
 
-    def get_pool_stats(self) -> Optional[dict]:
+    def get_pool_stats(self) -> dict | None:
         r"""Get agent pool statistics if pool is enabled."""
         if self.use_agent_pool and self.agent_pool:
             return self.agent_pool.get_stats()

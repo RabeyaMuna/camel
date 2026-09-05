@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Dict, List
 
 from camel.models.reward import BaseRewardModel
 
@@ -27,7 +26,7 @@ class Evaluator:
     def __init__(self, reward_model: BaseRewardModel):
         self.reward_model = reward_model
 
-    def evaluate(self, messages: List[Dict[str, str]]) -> Dict[str, float]:
+    def evaluate(self, messages: list[dict[str, str]]) -> dict[str, float]:
         r"""Evaluate the messages using the reward model.
 
         Args:
@@ -41,7 +40,7 @@ class Evaluator:
         return scores
 
     def filter_data(
-        self, messages: List[Dict[str, str]], thresholds: Dict[str, float]
+        self, messages: list[dict[str, str]], thresholds: dict[str, float]
     ) -> bool:
         r"""Filter messages based on the scores.
 

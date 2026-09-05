@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Optional, Tuple
 
 from camel.terminators.base import BaseTerminator
 
@@ -34,7 +33,7 @@ class TokenLimitTerminator(BaseTerminator):
                 f"value larger than 0, got {self.token_limit}."
             )
 
-    def is_terminated(self, num_tokens: int) -> Tuple[bool, Optional[str]]:
+    def is_terminated(self, num_tokens: int) -> tuple[bool, str | None]:
         r"""Whether terminate the agent by checking number of
         used tokens reached to token limit.
 

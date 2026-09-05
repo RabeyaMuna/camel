@@ -17,7 +17,6 @@ import json
 import logging
 import os
 import sys
-from typing import Dict
 
 import uvicorn
 from fastapi import FastAPI, Request
@@ -70,7 +69,7 @@ for module_function in modules_functions:
         for func in function:
 
             @app.post(f"/{func.get_function_name()}")
-            async def dynamic_function(data: Dict, func=func):
+            async def dynamic_function(data: dict, func=func):
                 redirect_stdout = data.get('redirect_stdout', False)
                 if redirect_stdout:
                     sys.stdout = io.StringIO()

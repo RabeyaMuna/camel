@@ -17,7 +17,7 @@ import asyncio
 import json
 import random
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any
 
 from pydantic import ValidationError
 from torch.utils.data import IterableDataset
@@ -40,8 +40,8 @@ class BaseGenerator(abc.ABC, IterableDataset):
         self,
         seed: int = 42,
         buffer: int = 20,
-        cache: Union[str, Path, None] = None,
-        data_path: Union[str, Path, None] = None,
+        cache: str | Path | None = None,
+        data_path: str | Path | None = None,
         **kwargs,
     ):
         r"""Initialize the base generator.
@@ -60,8 +60,8 @@ class BaseGenerator(abc.ABC, IterableDataset):
         self._rng = random.Random(seed)
         self.cache = Path(cache) if cache else None
         self._buffer = buffer
-        self._data: List[DataPoint] = []
-        self._batch_to_save: List[DataPoint] = []
+        self._data: list[DataPoint] = []
+        self._batch_to_save: list[DataPoint] = []
 
         if data_path:
             file_path = Path(data_path)
@@ -97,7 +97,6 @@ class BaseGenerator(abc.ABC, IterableDataset):
                 self._data.extend(new_points)
             ```
         """
-        pass
 
     def __aiter__(self):
         r"""Async iterator that yields datapoints dynamically.
@@ -204,7 +203,7 @@ class BaseGenerator(abc.ABC, IterableDataset):
         async_iter = self.__aiter__()
         return await async_iter.__anext__()
 
-    def save_to_jsonl(self, file_path: Union[str, Path]) -> None:
+    def save_to_jsonl(self, file_path: str | Path) -> None:
         r"""Saves the generated datapoints to a JSONL (JSON Lines) file.
 
         Each datapoint is stored as a separate JSON object on a new line.
@@ -232,11 +231,11 @@ class BaseGenerator(abc.ABC, IterableDataset):
                     json.dump(datapoint.to_dict(), f, ensure_ascii=False)
                     f.write("\n")
             logger.info(f"Dataset saved successfully to {file_path}")
-        except IOError as e:
+        except OSError as e:
             logger.error(f"Error writing to file {file_path}: {e}")
             raise
 
-    def flush(self, file_path: Union[str, Path]) -> None:
+    def flush(self, file_path: str | Path) -> None:
         r"""Flush the current data to a JSONL file and clear the data.
 
         Args:
@@ -250,7 +249,7 @@ class BaseGenerator(abc.ABC, IterableDataset):
         self._data = []
         logger.info(f"Data flushed to {file_path} and cleared from the memory")
 
-    def _init_from_jsonl(self, file_path: Path) -> List[Dict[str, Any]]:
+    def _init_from_jsonl(self, file_path: Path) -> list[dict[str, Any]]:
         r"""Load and parse a dataset from a JSONL file.
 
         Args:

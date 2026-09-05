@@ -17,7 +17,7 @@ import shlex
 import tarfile
 import uuid
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from colorama import Fore
 
@@ -49,21 +49,21 @@ class DockerInterpreter(BaseInterpreter):
             of the executed code. Defaults to `True`.
     """
 
-    _CODE_EXECUTE_CMD_MAPPING: ClassVar[Dict[str, str]] = {
+    _CODE_EXECUTE_CMD_MAPPING: ClassVar[dict[str, str]] = {
         "python": "python {file_name}",
         "bash": "bash {file_name}",
         "r": "Rscript {file_name}",
         "node": "node {file_name}",
     }
 
-    _CODE_EXTENSION_MAPPING: ClassVar[Dict[str, str]] = {
+    _CODE_EXTENSION_MAPPING: ClassVar[dict[str, str]] = {
         "python": "py",
         "bash": "sh",
         "r": "R",
         "node": "js",
     }
 
-    _CODE_TYPE_MAPPING: ClassVar[Dict[str, str]] = {
+    _CODE_TYPE_MAPPING: ClassVar[dict[str, str]] = {
         "python": "python",
         "py3": "python",
         "python3": "python",
@@ -91,7 +91,7 @@ class DockerInterpreter(BaseInterpreter):
         self.print_stderr = print_stderr
 
         # lazy initialization of container
-        self._container: Optional[Container] = None
+        self._container: Container | None = None
 
     def __del__(self) -> None:
         r"""Destructor for the DockerInterpreter class.
@@ -280,11 +280,11 @@ class DockerInterpreter(BaseInterpreter):
             )
         return self._CODE_TYPE_MAPPING[code_type]
 
-    def supported_code_types(self) -> List[str]:
+    def supported_code_types(self) -> list[str]:
         r"""Provides supported code types by the interpreter."""
         return list(self._CODE_EXTENSION_MAPPING.keys())
 
-    def update_action_space(self, action_space: Dict[str, Any]) -> None:
+    def update_action_space(self, action_space: dict[str, Any]) -> None:
         r"""Updates action space for *python* interpreter"""
         raise RuntimeError("DockerInterpreter doesn't support `action_space`.")
 

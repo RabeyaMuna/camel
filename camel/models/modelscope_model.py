@@ -14,7 +14,7 @@
 
 import os
 import time
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from openai import AsyncStream, Stream
 
@@ -69,12 +69,12 @@ class ModelScopeModel(OpenAICompatibleModel):
     )
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        timeout: Optional[float] = None,
+        model_type: ModelType | str,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        timeout: float | None = None,
         max_retries: int = 3,
         **kwargs: Any,
     ) -> None:
@@ -98,7 +98,7 @@ class ModelScopeModel(OpenAICompatibleModel):
         )
 
     def _post_handle_response(
-        self, response: Union[ChatCompletion, Stream[ChatCompletionChunk]]
+        self, response: ChatCompletion | Stream[ChatCompletionChunk]
     ) -> ChatCompletion:
         r"""Handle reasoning content with <think> tags at the beginning."""
         if not isinstance(response, Stream):
@@ -229,9 +229,9 @@ class ModelScopeModel(OpenAICompatibleModel):
 
     def _request_chat_completion(
         self,
-        messages: List[OpenAIMessage],
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
         request_config = self.model_config_dict.copy()
 
         if tools:
@@ -247,9 +247,9 @@ class ModelScopeModel(OpenAICompatibleModel):
 
     async def _arequest_chat_completion(
         self,
-        messages: List[OpenAIMessage],
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         request_config = self.model_config_dict.copy()
 
         if tools:

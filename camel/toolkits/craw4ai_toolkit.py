@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List, Optional
 
 from camel.logger import get_logger
 from camel.toolkits.base import BaseToolkit
@@ -28,7 +27,7 @@ class Crawl4AIToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         super().__init__(timeout=timeout)
         self._client = None
@@ -80,7 +79,7 @@ class Crawl4AIToolkit(BaseToolkit):
             await self._client.__aexit__(exc_type, exc_val, exc_tb)
             self._client = None
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

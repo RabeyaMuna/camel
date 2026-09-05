@@ -15,7 +15,7 @@
 import json
 from enum import EnumMeta
 from pathlib import Path
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar
 
 from camel.storages.key_value_storages import BaseKeyValueStorage
 from camel.types import (
@@ -31,7 +31,7 @@ class CamelJSONEncoder(json.JSONEncoder):
     Ensures enumerated types can be stored in and retrieved from JSON format.
     """
 
-    CAMEL_ENUMS: ClassVar[Dict[str, EnumMeta]] = {
+    CAMEL_ENUMS: ClassVar[dict[str, EnumMeta]] = {
         "RoleType": RoleType,
         "TaskType": TaskType,
         "ModelType": ModelType,
@@ -55,7 +55,7 @@ class JsonStorage(BaseKeyValueStorage):
             (default: :obj:`None`)
     """
 
-    def __init__(self, path: Optional[Path] = None) -> None:
+    def __init__(self, path: Path | None = None) -> None:
         self.json_path = path or Path("./chat_history.json")
         self.json_path.touch()
 
@@ -66,7 +66,7 @@ class JsonStorage(BaseKeyValueStorage):
         else:
             return d
 
-    def save(self, records: List[Dict[str, Any]]) -> None:
+    def save(self, records: list[dict[str, Any]]) -> None:
         r"""Saves a batch of records to the key-value storage system.
 
         Args:
@@ -78,7 +78,7 @@ class JsonStorage(BaseKeyValueStorage):
                 [json.dumps(r, cls=CamelJSONEncoder) + "\n" for r in records]
             )
 
-    def load(self) -> List[Dict[str, Any]]:
+    def load(self) -> list[dict[str, Any]]:
         r"""Loads all stored records from the key-value storage system.
 
         Returns:

@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple
 
 from camel.memories.records import ContextRecord, MemoryRecord
 from camel.messages import OpenAIMessage
@@ -29,13 +28,12 @@ class MemoryBlock(ABC):
     """
 
     @abstractmethod
-    def write_records(self, records: List[MemoryRecord]) -> None:
+    def write_records(self, records: list[MemoryRecord]) -> None:
         r"""Writes records to the memory, appending them to existing ones.
 
         Args:
             records (List[MemoryRecord]): Records to be added to the memory.
         """
-        pass
 
     def write_record(self, record: MemoryRecord) -> None:
         r"""Writes a record to the memory, appending it to existing ones.
@@ -48,7 +46,6 @@ class MemoryBlock(ABC):
     @abstractmethod
     def clear(self) -> None:
         r"""Clears all messages from the memory."""
-        pass
 
 
 class BaseContextCreator(ABC):
@@ -84,8 +81,8 @@ class BaseContextCreator(ABC):
     @abstractmethod
     def create_context(
         self,
-        records: List[ContextRecord],
-    ) -> Tuple[List[OpenAIMessage], int]:
+        records: list[ContextRecord],
+    ) -> tuple[list[OpenAIMessage], int]:
         r"""An abstract method to create conversational context from the chat
         history.
 
@@ -102,7 +99,6 @@ class BaseContextCreator(ABC):
             Tuple[List[OpenAIMessage], int]: A tuple containing the constructed
                 context in OpenAIMessage format and the total token count.
         """
-        pass
 
 
 class AgentMemory(MemoryBlock, ABC):
@@ -114,22 +110,21 @@ class AgentMemory(MemoryBlock, ABC):
 
     @property
     @abstractmethod
-    def agent_id(self) -> Optional[str]:
+    def agent_id(self) -> str | None:
         pass
 
     @agent_id.setter
     @abstractmethod
-    def agent_id(self, val: Optional[str]) -> None:
+    def agent_id(self, val: str | None) -> None:
         pass
 
     @abstractmethod
-    def retrieve(self) -> List[ContextRecord]:
+    def retrieve(self) -> list[ContextRecord]:
         r"""Get a record list from the memory for creating model context.
 
         Returns:
             List[ContextRecord]: A record list for creating model context.
         """
-        pass
 
     @abstractmethod
     def get_context_creator(self) -> BaseContextCreator:
@@ -138,9 +133,8 @@ class AgentMemory(MemoryBlock, ABC):
         Returns:
             BaseContextCreator: A model context creator.
         """
-        pass
 
-    def get_context(self) -> Tuple[List[OpenAIMessage], int]:
+    def get_context(self) -> tuple[list[OpenAIMessage], int]:
         r"""Gets chat context with a proper size for the agent from the memory.
 
         Returns:

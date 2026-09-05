@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 import re
-from typing import Any, ClassVar, Dict, List, Optional, Type, Union
+from typing import Any, ClassVar
 
 from pydantic import BaseModel, ValidationError
 
@@ -40,7 +40,7 @@ class StructuredOutputHandler:
     """
 
     # Common JSON extraction patterns
-    JSON_PATTERNS: ClassVar[List[str]] = [
+    JSON_PATTERNS: ClassVar[list[str]] = [
         # Pattern 1: Standard JSON block
         r'```json\s*\n(.*?)\n```',
         # Pattern 2: JSON without code block
@@ -50,7 +50,7 @@ class StructuredOutputHandler:
     ]
 
     # Schema-specific patterns for more targeted extraction
-    SCHEMA_PATTERNS: ClassVar[Dict[str, List[str]]] = {
+    SCHEMA_PATTERNS: ClassVar[dict[str, list[str]]] = {
         'TaskAssignResult': [
             r'"assignments"\s*:\s*\[(.*?)\]',
             r'assignments.*?:\s*\[(.*?)\]',
@@ -74,9 +74,9 @@ class StructuredOutputHandler:
     @staticmethod
     def generate_structured_prompt(
         base_prompt: str,
-        schema: Type[BaseModel],
-        examples: Optional[List[Dict[str, Any]]] = None,
-        additional_instructions: Optional[str] = None,
+        schema: type[BaseModel],
+        examples: list[dict[str, Any]] | None = None,
+        additional_instructions: str | None = None,
     ) -> str:
         r"""Generate a prompt that guides agents to produce structured output.
 
@@ -157,8 +157,8 @@ Ensure the JSON is valid and properly formatted.
     @staticmethod
     def extract_json(
         text: str,
-        schema: Optional[Type[BaseModel]] = None,
-    ) -> Optional[Dict[str, Any]]:
+        schema: type[BaseModel] | None = None,
+    ) -> dict[str, Any] | None:
         r"""Extract JSON data from text using multiple patterns.
 
         Args:
@@ -212,8 +212,8 @@ Ensure the JSON is valid and properly formatted.
     @staticmethod
     def _extract_with_schema_patterns(
         text: str,
-        schema: Type[BaseModel],
-    ) -> Optional[Dict[str, Any]]:
+        schema: type[BaseModel],
+    ) -> dict[str, Any] | None:
         r"""Extract data using schema-specific patterns.
 
         Args:
@@ -269,9 +269,9 @@ Ensure the JSON is valid and properly formatted.
     @staticmethod
     def parse_structured_response(
         response_text: str,
-        schema: Type[BaseModel],
-        fallback_values: Optional[Dict[str, Any]] = None,
-    ) -> Union[BaseModel, Dict[str, Any]]:
+        schema: type[BaseModel],
+        fallback_values: dict[str, Any] | None = None,
+    ) -> BaseModel | dict[str, Any]:
         r"""Parse agent response into structured data with fallback support.
 
         Args:
@@ -332,9 +332,9 @@ Ensure the JSON is valid and properly formatted.
 
     @staticmethod
     def _fix_common_issues(
-        data: Dict[str, Any],
-        schema: Type[BaseModel],
-    ) -> Optional[Dict[str, Any]]:
+        data: dict[str, Any],
+        schema: type[BaseModel],
+    ) -> dict[str, Any] | None:
         r"""Attempt to fix common validation issues in extracted data.
 
         Args:
@@ -390,7 +390,7 @@ Ensure the JSON is valid and properly formatted.
         return fixed_data
 
     @staticmethod
-    def _create_default_instance(schema: Type[BaseModel]) -> BaseModel:
+    def _create_default_instance(schema: type[BaseModel]) -> BaseModel:
         r"""Create a default instance of the schema with minimal required
         fields.
 
@@ -422,8 +422,8 @@ Ensure the JSON is valid and properly formatted.
 
     @staticmethod
     def validate_response(
-        response: Union[BaseModel, Dict[str, Any]],
-        schema: Type[BaseModel],
+        response: BaseModel | dict[str, Any],
+        schema: type[BaseModel],
     ) -> bool:
         r"""Validate that a response conforms to the expected schema.
 
@@ -448,9 +448,9 @@ Ensure the JSON is valid and properly formatted.
 
     @staticmethod
     def create_fallback_response(
-        schema: Type[BaseModel],
+        schema: type[BaseModel],
         error_message: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> BaseModel:
         r"""Create a fallback response for a given schema with error context.
 

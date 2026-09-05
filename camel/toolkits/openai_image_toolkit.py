@@ -16,7 +16,7 @@ import base64
 import os
 import uuid
 from io import BytesIO
-from typing import List, Literal, Optional
+from typing import Literal
 
 from openai import OpenAI
 from PIL import Image
@@ -42,34 +42,17 @@ class OpenAIImageToolkit(BaseToolkit):
     )
     def __init__(
         self,
-        model: Optional[
-            Literal["gpt-image-1", "dall-e-3", "dall-e-2"]
-        ] = "gpt-image-1",
-        timeout: Optional[float] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        size: Optional[
-            Literal[
-                "256x256",
-                "512x512",
-                "1024x1024",
-                "1536x1024",
-                "1024x1536",
-                "1792x1024",
-                "1024x1792",
-                "auto",
-            ]
-        ] = "1024x1024",
-        quality: Optional[
-            Literal["auto", "low", "medium", "high", "standard", "hd"]
-        ] = "standard",
-        response_format: Optional[Literal["url", "b64_json"]] = "b64_json",
-        n: Optional[int] = 1,
-        background: Optional[
-            Literal["transparent", "opaque", "auto"]
-        ] = "auto",
-        style: Optional[Literal["vivid", "natural"]] = None,
-        image_save_path: Optional[str] = "image_save",
+        model: Literal["gpt-image-1", "dall-e-3", "dall-e-2"] | None = "gpt-image-1",
+        timeout: float | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        size: Literal["256x256", "512x512", "1024x1024", "1536x1024", "1024x1536", "1792x1024", "1024x1792", "auto"] | None = "1024x1024",
+        quality: Literal["auto", "low", "medium", "high", "standard", "hd"] | None = "standard",
+        response_format: Literal["url", "b64_json"] | None = "b64_json",
+        n: int | None = 1,
+        background: Literal["transparent", "opaque", "auto"] | None = "auto",
+        style: Literal["vivid", "natural"] | None = None,
+        image_save_path: str | None = "image_save",
     ):
         r"""Initializes a new instance of the OpenAIImageToolkit class.
 
@@ -116,7 +99,7 @@ class OpenAIImageToolkit(BaseToolkit):
         self.style = style
         self.image_save_path: str = image_save_path or "image_save"
 
-    def base64_to_image(self, base64_string: str) -> Optional[Image.Image]:
+    def base64_to_image(self, base64_string: str) -> Image.Image | None:
         r"""Converts a base64 encoded string into a PIL Image object.
 
         Args:
@@ -278,7 +261,7 @@ class OpenAIImageToolkit(BaseToolkit):
             logger.error(error_msg)
             return error_msg
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

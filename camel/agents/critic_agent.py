@@ -13,7 +13,8 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import random
 import warnings
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from collections.abc import Sequence
+from typing import Any
 
 from colorama import Fore
 
@@ -66,22 +67,9 @@ class CriticAgent(ChatAgent):
 
     def __init__(
         self,
-        system_message: Optional[Union[BaseMessage, str]] = None,
-        model: Optional[
-            Union[
-                BaseModelBackend,
-                Tuple[str, str],
-                str,
-                ModelType,
-                Tuple[ModelPlatformType, ModelType],
-                List[BaseModelBackend],
-                List[str],
-                List[ModelType],
-                List[Tuple[str, str]],
-                List[Tuple[ModelPlatformType, ModelType]],
-            ]
-        ] = None,
-        memory: Optional[AgentMemory] = None,
+        system_message: BaseMessage | str | None = None,
+        model: BaseModelBackend | tuple[str, str] | str | ModelType | tuple[ModelPlatformType, ModelType] | list[BaseModelBackend] | list[str] | list[ModelType] | list[tuple[str, str]] | list[tuple[ModelPlatformType, ModelType]] | None = None,
+        memory: AgentMemory | None = None,
         message_window_size: int = 6,
         retry_attempts: int = 2,
         verbose: bool = False,
@@ -93,7 +81,7 @@ class CriticAgent(ChatAgent):
             memory=memory,
             message_window_size=message_window_size,
         )
-        self.options_dict: Dict[str, str] = dict()
+        self.options_dict: dict[str, str] = dict()
         self.retry_attempts = retry_attempts
         self.verbose = verbose
         self.logger_color = logger_color
@@ -169,7 +157,7 @@ class CriticAgent(ChatAgent):
         )
         return random.choice(list(self.options_dict.values()))
 
-    def parse_critic(self, critic_msg: BaseMessage) -> Optional[str]:
+    def parse_critic(self, critic_msg: BaseMessage) -> str | None:
         r"""Parses the critic's message and extracts the choice.
 
         Args:

@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import logging
-from typing import List, Literal, Optional
+from typing import Literal
 
 from camel.toolkits.base import BaseToolkit
 from camel.toolkits.function_tool import FunctionTool
@@ -38,7 +38,7 @@ class OpenBBToolkit(BaseToolkit):
             (None, "OPENBB_TOKEN"),
         ]
     )
-    def __init__(self, timeout: Optional[float] = None) -> None:
+    def __init__(self, timeout: float | None = None) -> None:
         r"""Initialize the OpenBBToolkit.
 
         This method sets up the OpenBB client and initializes the OpenBB
@@ -60,7 +60,7 @@ class OpenBBToolkit(BaseToolkit):
         operation: str,
         log_level: str = "warning",
         **format_args,
-    ) -> List:
+    ) -> list:
         r"""Handle API operation errors consistently.
 
         Args:
@@ -90,7 +90,7 @@ class OpenBBToolkit(BaseToolkit):
         self,
         query: str,
         provider: Literal["intrinio", "sec"] = "sec",
-    ) -> List:
+    ) -> list:
         r"""Search for equity symbols and company information.
 
         For SEC provider, an empty query ("") returns the complete list of
@@ -121,7 +121,7 @@ class OpenBBToolkit(BaseToolkit):
                 provider=provider,
             )
 
-    def search_institution(self, query: str) -> List:
+    def search_institution(self, query: str) -> list:
         r"""Search for financial institutions in SEC database.
 
         Args:
@@ -148,8 +148,8 @@ class OpenBBToolkit(BaseToolkit):
         self,
         symbol: str,
         provider: Literal["fmp", "intrinio", "sec"] = "sec",
-        form_type: Optional[str] = None,
-    ) -> List:
+        form_type: str | None = None,
+    ) -> list:
         r"""Search for SEC filings by CIK or ticker symbol.
 
         Args:
@@ -186,7 +186,7 @@ class OpenBBToolkit(BaseToolkit):
         self,
         query: str,
         provider: Literal["fmp", "intrinio"] = "fmp",
-    ) -> List:
+    ) -> list:
         r"""Search for ETF information.
 
         Args:
@@ -213,15 +213,15 @@ class OpenBBToolkit(BaseToolkit):
     def screen_market(
         self,
         provider: Literal["fmp", "yfinance"] = "fmp",
-        country: Optional[str] = None,
-        exchange: Optional[str] = None,
-        sector: Optional[str] = None,
-        industry: Optional[str] = None,
-        mktcap_min: Optional[float] = None,
-        mktcap_max: Optional[float] = None,
-        beta_min: Optional[float] = None,
-        beta_max: Optional[float] = None,
-    ) -> List:
+        country: str | None = None,
+        exchange: str | None = None,
+        sector: str | None = None,
+        industry: str | None = None,
+        mktcap_min: float | None = None,
+        mktcap_max: float | None = None,
+        beta_min: float | None = None,
+        beta_max: float | None = None,
+    ) -> list:
         r"""Screen stocks based on market and fundamental criteria.
 
         Args:
@@ -278,7 +278,7 @@ class OpenBBToolkit(BaseToolkit):
     def get_available_indices(
         self,
         provider: Literal['fmp', 'yfinance'] = 'fmp',
-    ) -> List:
+    ) -> list:
         r"""Get list of available market indices.
 
         Args:
@@ -305,7 +305,7 @@ class OpenBBToolkit(BaseToolkit):
         self,
         symbol: str,
         provider: Literal['fmp', 'intrinio', 'yfinance'] = "fmp",
-    ) -> List:
+    ) -> list:
         r"""Get current stock quote for a given symbol.
 
         Args:
@@ -340,10 +340,10 @@ class OpenBBToolkit(BaseToolkit):
             "currency",
             "crypto",
         ] = "equity",
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
         interval: Literal["1m", "5m", "15m", "30m", "1h", "4h", "1d"] = "1d",
-    ) -> List:
+    ) -> list:
         r"""Retrieves historical market data from OpenBB Platform providers.
 
         Args:
@@ -399,7 +399,7 @@ class OpenBBToolkit(BaseToolkit):
     def get_market_data(
         self,
         category: Literal["gainers", "losers", "active"] = "active",
-    ) -> List:
+    ) -> list:
         r"""Get market movers data.
 
         Args:
@@ -430,9 +430,9 @@ class OpenBBToolkit(BaseToolkit):
 
     def get_earnings_calendar(
         self,
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
-    ) -> List:
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> list:
         r"""Get company earnings calendar with filtering and sorting options.
 
         Args:
@@ -460,9 +460,9 @@ class OpenBBToolkit(BaseToolkit):
 
     def get_dividend_calendar(
         self,
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
-    ) -> List:
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> list:
         r"""Get dividend calendar with optional yield calculations.
 
         Args:
@@ -490,9 +490,9 @@ class OpenBBToolkit(BaseToolkit):
 
     def get_ipo_calendar(
         self,
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
-    ) -> List:
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> list:
         r"""Get IPO/SPO calendar with comprehensive filtering options.
 
         Args:
@@ -521,7 +521,7 @@ class OpenBBToolkit(BaseToolkit):
     def get_available_indicators(
         self,
         provider: Literal["econdb", "imf"] = "econdb",
-    ) -> List:
+    ) -> list:
         r"""Get list of available economic indicators.
 
         Args:
@@ -551,7 +551,7 @@ class OpenBBToolkit(BaseToolkit):
         symbol: str,
         country: str,
         provider: Literal["econdb", "imf"] = "econdb",
-    ) -> List:
+    ) -> list:
         r"""Get detailed metadata for an economic indicator.
 
         Args:
@@ -585,7 +585,7 @@ class OpenBBToolkit(BaseToolkit):
         provider: Literal['fmp', 'intrinio', 'yfinance'] = "fmp",
         period: Literal["annual", "quarter"] = "annual",
         limit: int = 5,
-    ) -> List:
+    ) -> list:
         r"""Get company financial metrics and ratios.
 
         Args:
@@ -620,7 +620,7 @@ class OpenBBToolkit(BaseToolkit):
         self,
         symbol: str,
         provider: Literal["fmp", "intrinio", "yfinance"] = "fmp",
-    ) -> List:
+    ) -> list:
         r"""Get company profile information.
 
         Args:
@@ -654,7 +654,7 @@ class OpenBBToolkit(BaseToolkit):
         statement_type: Literal["balance", "income", "cash"] = "balance",
         period: Literal["annual", "quarter"] = "annual",
         limit: int = 5,
-    ) -> List:
+    ) -> list:
         r"""Get company financial statements.
 
         Access balance sheet, income statement, or cash flow statement data.
@@ -710,7 +710,7 @@ class OpenBBToolkit(BaseToolkit):
         frequency: Literal[
             "daily", "weekly", "monthly", "quarterly", "yearly"
         ] = "yearly",
-    ) -> List:
+    ) -> list:
         r"""Get historical values for a specific financial attribute.
 
         Args:
@@ -743,7 +743,7 @@ class OpenBBToolkit(BaseToolkit):
     def search_financial_attributes(
         self,
         query: str,
-    ) -> List:
+    ) -> list:
         r"""Search for available financial attributes/tags.
 
         Args:
@@ -770,9 +770,9 @@ class OpenBBToolkit(BaseToolkit):
     def get_economic_calendar(
         self,
         provider: Literal["fmp", "tradingeconomics"] = "fmp",
-        start_date: Optional[str] = None,
-        end_date: Optional[str] = None,
-    ) -> List:
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> list:
         r"""Get economic calendar events.
 
         Args:
@@ -801,7 +801,7 @@ class OpenBBToolkit(BaseToolkit):
                 provider=provider,
             )
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of available OpenBB financial tools.
 
         Returns:

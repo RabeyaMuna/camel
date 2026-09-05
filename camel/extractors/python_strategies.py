@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import ast
-from typing import Optional
 
 from camel.extractors.base import BaseExtractorStrategy
 from camel.logger import get_logger
@@ -24,7 +23,7 @@ logger = get_logger(__name__)
 class BoxedStrategy(BaseExtractorStrategy):
     r"""Extracts content from \\boxed{} and \boxed{} environments."""
 
-    async def extract(self, text: str) -> Optional[str]:
+    async def extract(self, text: str) -> str | None:
         r"""Extract content from \\boxed{} and \boxed{} environments.
 
         Args:
@@ -93,7 +92,7 @@ class BoxedStrategy(BaseExtractorStrategy):
 class PythonListStrategy(BaseExtractorStrategy):
     r"""Extracts and normalizes Python lists."""
 
-    async def extract(self, text: str) -> Optional[str]:
+    async def extract(self, text: str) -> str | None:
         r"""Extract and normalize a Python list.
 
         Args:
@@ -127,7 +126,7 @@ class PythonListStrategy(BaseExtractorStrategy):
 class PythonDictStrategy(BaseExtractorStrategy):
     r"""Extracts and normalizes Python dictionaries."""
 
-    async def extract(self, text: str) -> Optional[str]:
+    async def extract(self, text: str) -> str | None:
         r"""Extract and normalize a Python dictionary.
 
         Args:
@@ -165,7 +164,7 @@ class PythonDictStrategy(BaseExtractorStrategy):
 class PythonSetStrategy(BaseExtractorStrategy):
     r"""Extracts and normalizes Python sets."""
 
-    async def extract(self, text: str) -> Optional[str]:
+    async def extract(self, text: str) -> str | None:
         r"""Extract and normalize a Python set.
 
         Args:
@@ -203,7 +202,7 @@ class PythonSetStrategy(BaseExtractorStrategy):
 class PythonTupleStrategy(BaseExtractorStrategy):
     r"""Extracts and normalizes Python tuples."""
 
-    async def extract(self, text: str) -> Optional[str]:
+    async def extract(self, text: str) -> str | None:
         r"""Extract and normalize a Python tuple.
 
         Args:

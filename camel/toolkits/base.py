@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List, Literal, Optional
+from typing import Literal
 
 from camel.toolkits import FunctionTool
 from camel.utils import AgentOpsMeta, with_timeout
@@ -28,9 +28,9 @@ class BaseToolkit(metaclass=AgentOpsMeta):
     from mcp.server import FastMCP
 
     mcp: FastMCP
-    timeout: Optional[float] = None
+    timeout: float | None = None
 
-    def __init__(self, timeout: Optional[float] = None):
+    def __init__(self, timeout: float | None = None):
         # check if timeout is a positive number
         if timeout is not None and timeout <= 0:
             raise ValueError("Timeout must be a positive number.")
@@ -43,7 +43,7 @@ class BaseToolkit(metaclass=AgentOpsMeta):
             if callable(attr_value) and not attr_name.startswith("__"):
                 setattr(cls, attr_name, with_timeout(attr_value))
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

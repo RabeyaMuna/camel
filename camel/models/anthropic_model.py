@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from openai import AsyncStream, Stream
 
@@ -29,8 +29,8 @@ from camel.utils import (
 
 
 def strip_trailing_whitespace_from_messages(
-    messages: List[OpenAIMessage],
-) -> List[OpenAIMessage]:
+    messages: list[OpenAIMessage],
+) -> list[OpenAIMessage]:
     r"""Strip trailing whitespace from all message contents in a list of
     messages. This is necessary because the Anthropic API doesn't allow
     trailing whitespace in message content.
@@ -104,12 +104,12 @@ class AnthropicModel(OpenAICompatibleModel):
     @dependencies_required('anthropic')
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        timeout: Optional[float] = None,
+        model_type: ModelType | str,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        timeout: float | None = None,
         max_retries: int = 3,
         **kwargs: Any,
     ) -> None:
@@ -165,9 +165,9 @@ class AnthropicModel(OpenAICompatibleModel):
 
     def _request_chat_completion(
         self,
-        messages: List[OpenAIMessage],
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
         # Strip trailing whitespace from all message contents to prevent
         # Anthropic API errors
         processed_messages = strip_trailing_whitespace_from_messages(messages)
@@ -177,9 +177,9 @@ class AnthropicModel(OpenAICompatibleModel):
 
     async def _arequest_chat_completion(
         self,
-        messages: List[OpenAIMessage],
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         # Strip trailing whitespace from all message contents to prevent
         # Anthropic API errors
         processed_messages = strip_trailing_whitespace_from_messages(messages)

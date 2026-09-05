@@ -16,7 +16,7 @@ import logging
 import re
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any
 
 from camel.storages.vectordb_storages import (
     BaseVectorStorage,
@@ -68,8 +68,8 @@ class TiDBStorage(BaseVectorStorage):
     def __init__(
         self,
         vector_dim: int,
-        collection_name: Optional[str] = None,
-        url_and_api_key: Optional[Union[Tuple[str, str], str]] = None,
+        collection_name: str | None = None,
+        url_and_api_key: tuple[str, str] | str | None = None,
         **kwargs: Any,
     ) -> None:
         from pytidb import TiDBClient
@@ -89,7 +89,7 @@ class TiDBStorage(BaseVectorStorage):
 
     def _create_client(
         self,
-        database_url: Optional[str] = None,
+        database_url: str | None = None,
         **kwargs: Any,
     ) -> None:
         r"""Initializes the TiDB client with the provided connection details.
@@ -111,9 +111,9 @@ class TiDBStorage(BaseVectorStorage):
         from sqlalchemy import JSON
 
         class VectorDBRecord(TableModel):
-            id: Optional[str] = Field(None, primary_key=True)
+            id: str | None = Field(None, primary_key=True)
             vector: list[float] = VectorField(self.vector_dim)
-            payload: Optional[dict[str, Any]] = Field(None, sa_type=JSON)
+            payload: dict[str, Any] | None = Field(None, sa_type=JSON)
 
         # Notice: Avoid repeated definition warnings by dynamically generating
         # class names.
@@ -158,7 +158,7 @@ class TiDBStorage(BaseVectorStorage):
         valid_name = "vectors_" + transformed_name
         return valid_name
 
-    def _get_table_info(self) -> Dict[str, Any]:
+    def _get_table_info(self) -> dict[str, Any]:
         r"""Retrieves details of an existing table.
 
         Returns:
@@ -188,8 +188,8 @@ class TiDBStorage(BaseVectorStorage):
         }
 
     def _validate_and_convert_vectors(
-        self, records: List[VectorRecord]
-    ) -> List[Any]:
+        self, records: list[VectorRecord]
+    ) -> list[Any]:
         r"""Validates and converts VectorRecord instances to VectorDBRecord
         instances.
 
@@ -221,7 +221,7 @@ class TiDBStorage(BaseVectorStorage):
 
     def add(
         self,
-        records: List[VectorRecord],
+        records: list[VectorRecord],
         **kwargs,
     ) -> None:
         r"""Adds a list of vectors to the specified table.
@@ -245,7 +245,7 @@ class TiDBStorage(BaseVectorStorage):
 
     def delete(
         self,
-        ids: List[str],
+        ids: list[str],
         **kwargs: Any,
     ) -> None:
         r"""Deletes a list of vectors identified by their IDs from the
@@ -282,7 +282,7 @@ class TiDBStorage(BaseVectorStorage):
         self,
         query: VectorDBQuery,
         **kwargs: Any,
-    ) -> List[VectorDBQueryResult]:
+    ) -> list[VectorDBQueryResult]:
         r"""Searches for similar vectors in the storage based on the provided
         query.
 
@@ -320,7 +320,6 @@ class TiDBStorage(BaseVectorStorage):
 
     def load(self) -> None:
         r"""Load the collection hosted on cloud service."""
-        pass
 
     @property
     def client(self) -> "TiDBClient":

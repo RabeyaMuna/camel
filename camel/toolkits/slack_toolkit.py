@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import json
 import os
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 from camel.toolkits.base import BaseToolkit
 from camel.utils import MCPServer
@@ -42,7 +42,7 @@ class SlackToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         r"""Initializes a new instance of the SlackToolkit class.
 
@@ -55,8 +55,8 @@ class SlackToolkit(BaseToolkit):
 
     def _login_slack(
         self,
-        slack_token: Optional[str] = None,
-        ssl: Optional[SSLContext] = None,
+        slack_token: str | None = None,
+        ssl: SSLContext | None = None,
     ) -> WebClient:
         r"""Authenticate using the Slack API.
 
@@ -97,7 +97,7 @@ class SlackToolkit(BaseToolkit):
         return client
 
     def create_slack_channel(
-        self, name: str, is_private: Optional[bool] = True
+        self, name: str, is_private: bool | None = True
     ) -> str:
         r"""Creates a new slack channel, either public or private.
 
@@ -239,7 +239,7 @@ class SlackToolkit(BaseToolkit):
         self,
         message: str,
         channel_id: str,
-        user: Optional[str] = None,
+        user: str | None = None,
     ) -> str:
         r"""Send a message to a Slack channel.
 
@@ -301,7 +301,7 @@ class SlackToolkit(BaseToolkit):
         except SlackApiError as e:
             return f"Error creating conversation: {e.response['error']}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

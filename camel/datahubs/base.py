@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import Any
 
 from camel.datahubs.models import Record
 
@@ -31,12 +31,11 @@ class BaseDatasetManager(ABC):
         Returns:
             str: The URL of the created dataset.
         """
-        pass
 
     @abstractmethod
     def list_datasets(
         self, username: str, limit: int = 100, **kwargs: Any
-    ) -> List[str]:
+    ) -> list[str]:
         r"""Lists all datasets for the current user.
 
         Args:
@@ -48,7 +47,6 @@ class BaseDatasetManager(ABC):
         Returns:
             List[str]: A list of dataset ids.
         """
-        pass
 
     @abstractmethod
     def delete_dataset(self, dataset_name: str, **kwargs: Any) -> None:
@@ -58,13 +56,12 @@ class BaseDatasetManager(ABC):
             dataset_name (str): The name of the dataset to delete.
             kwargs (Any): Additional keyword arguments.
         """
-        pass
 
     @abstractmethod
     def add_records(
         self,
         dataset_name: str,
-        records: List[Record],
+        records: list[Record],
         filepath: str = "records/records.json",
         **kwargs: Any,
     ) -> None:
@@ -77,13 +74,12 @@ class BaseDatasetManager(ABC):
                 (default::obj:`"records/records.json"`)
             kwargs (Any): Additional keyword arguments.
         """
-        pass
 
     @abstractmethod
     def update_records(
         self,
         dataset_name: str,
-        records: List[Record],
+        records: list[Record],
         filepath: str = "records/records.json",
         **kwargs: Any,
     ) -> None:
@@ -96,7 +92,6 @@ class BaseDatasetManager(ABC):
                 (default::obj:`"records/records.json"`)
             kwargs (Any): Additional keyword arguments.
         """
-        pass
 
     @abstractmethod
     def list_records(
@@ -104,7 +99,7 @@ class BaseDatasetManager(ABC):
         dataset_name: str,
         filepath: str = "records/records.json",
         **kwargs: Any,
-    ) -> List[Record]:
+    ) -> list[Record]:
         r"""Lists records in a dataset.
 
         Args:
@@ -113,7 +108,6 @@ class BaseDatasetManager(ABC):
                 (default::obj:`"records/records.json"`)
             kwargs (Any): Additional keyword arguments.
         """
-        pass
 
     # New method for record deletion
     @abstractmethod
@@ -133,4 +127,3 @@ class BaseDatasetManager(ABC):
                 (default::obj:`"records/records.json"`)
             kwargs (Any): Additional keyword arguments.
         """
-        pass

@@ -15,7 +15,7 @@
 import os
 import pickle
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from camel.logger import get_logger
 from camel.storages.vectordb_storages import (
@@ -75,8 +75,8 @@ class FaissStorage(BaseVectorStorage):
         self,
         vector_dim: int,
         index_type: str = 'Flat',
-        collection_name: Optional[str] = None,
-        storage_path: Optional[str] = None,
+        collection_name: str | None = None,
+        storage_path: str | None = None,
         distance: VectorDistance = VectorDistance.COSINE,
         nlist: int = 100,
         m: int = 16,
@@ -116,10 +116,10 @@ class FaissStorage(BaseVectorStorage):
         self._index = self._create_index()
 
         # Storage for IDs and payloads (FAISS only stores vectors)
-        self._id_to_index: Dict[str, int] = {}
-        self._index_to_id: Dict[int, str] = {}
-        self._payloads: Dict[str, Dict[str, Any]] = {}
-        self._vectors: Dict[str, np.ndarray] = {}
+        self._id_to_index: dict[str, int] = {}
+        self._index_to_id: dict[int, str] = {}
+        self._payloads: dict[str, dict[str, Any]] = {}
+        self._vectors: dict[str, np.ndarray] = {}
 
         # Load existing index if it exists
         if self.storage_path:
@@ -284,7 +284,7 @@ class FaissStorage(BaseVectorStorage):
 
     def add(
         self,
-        records: List[VectorRecord],
+        records: list[VectorRecord],
         **kwargs,
     ) -> None:
         r"""Adds a list of vectors to the index.
@@ -351,7 +351,7 @@ class FaissStorage(BaseVectorStorage):
         self._save_to_disk()
 
     def update_payload(
-        self, ids: List[str], payload: Dict[str, Any], **kwargs: Any
+        self, ids: list[str], payload: dict[str, Any], **kwargs: Any
     ) -> None:
         r"""Updates the payload of the vectors identified by their IDs.
 
@@ -406,8 +406,8 @@ class FaissStorage(BaseVectorStorage):
 
     def delete(
         self,
-        ids: Optional[List[str]] = None,
-        payload_filter: Optional[Dict[str, Any]] = None,
+        ids: list[str] | None = None,
+        payload_filter: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
         r"""Deletes vectors from the index based on either IDs or payload
@@ -562,9 +562,9 @@ class FaissStorage(BaseVectorStorage):
     def query(
         self,
         query: VectorDBQuery,
-        filter_conditions: Optional[Dict[str, Any]] = None,
+        filter_conditions: dict[str, Any] | None = None,
         **kwargs: Any,
-    ) -> List[VectorDBQueryResult]:
+    ) -> list[VectorDBQueryResult]:
         r"""Searches for similar vectors in the storage based on the provided
         query.
 
@@ -649,7 +649,7 @@ class FaissStorage(BaseVectorStorage):
                     similarity=similarity,
                     id=vector_id,
                     payload=self._payloads.get(vector_id, {}),
-                    vector=cast(List[float], vector),
+                    vector=cast(list[float], vector),
                 )
             )
 
@@ -676,7 +676,7 @@ class FaissStorage(BaseVectorStorage):
         return self._faiss_client
 
     def _matches_filter(
-        self, vector_id: str, filter_conditions: Dict[str, Any]
+        self, vector_id: str, filter_conditions: dict[str, Any]
     ) -> bool:
         r"""Checks if a vector's payload matches the filter conditions.
 

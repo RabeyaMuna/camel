@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -29,10 +29,10 @@ class ToolCallingRecord(BaseModel):
     """
 
     tool_name: str
-    args: Dict[str, Any]
+    args: dict[str, Any]
     result: Any
     tool_call_id: str
-    images: Optional[List[str]] = None
+    images: list[str] | None = None
 
     def __str__(self) -> str:
         r"""Overridden version of the string function.

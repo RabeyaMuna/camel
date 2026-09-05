@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import json
-from typing import List, Optional
 
 from camel.logger import get_logger
 from camel.toolkits import FunctionTool
@@ -33,7 +32,7 @@ class SymPyToolkit(BaseToolkit):
     def __init__(
         self,
         default_variable: str = 'x',
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         r"""Initializes the toolkit with a default variable and logging.
 
@@ -119,7 +118,7 @@ class SymPyToolkit(BaseToolkit):
             return self.handle_exception("factor_expression", e)
 
     def solve_linear_system(
-        self, equations: List[str], variables: List[str]
+        self, equations: list[str], variables: list[str]
     ) -> str:
         r"""Solves a system of linear equations.
 
@@ -149,7 +148,7 @@ class SymPyToolkit(BaseToolkit):
             return self.handle_exception("solve_linear_system", e)
 
     def solve_nonlinear_system(
-        self, sympy_equations: List[str], variables: List[str]
+        self, sympy_equations: list[str], variables: list[str]
     ) -> str:
         r"""Solves a system of nonlinear equations.
 
@@ -208,7 +207,7 @@ class SymPyToolkit(BaseToolkit):
         except Exception as e:
             return self.handle_exception("solve_univariate_inequality", e)
 
-    def reduce_inequalities(self, inequalities: List[str]) -> str:
+    def reduce_inequalities(self, inequalities: list[str]) -> str:
         r"""Reduces a system of inequalities.
 
         Args:
@@ -313,7 +312,7 @@ class SymPyToolkit(BaseToolkit):
             return self.handle_exception("polynomial_coefficients", e)
 
     def solve_equation(
-        self, sympy_equation: str, variable: Optional[str] = None
+        self, sympy_equation: str, variable: str | None = None
     ) -> str:
         r"""Solves an equation for a specific variable.
 
@@ -372,7 +371,7 @@ class SymPyToolkit(BaseToolkit):
             return self.handle_exception("find_roots", e)
 
     def differentiate(
-        self, expression: str, variable: Optional[str] = None
+        self, expression: str, variable: str | None = None
     ) -> str:
         r"""Differentiates an expression with respect to a variable.
 
@@ -404,7 +403,7 @@ class SymPyToolkit(BaseToolkit):
             return self.handle_exception("differentiate", e)
 
     def integrate(
-        self, expression: str, variable: Optional[str] = None
+        self, expression: str, variable: str | None = None
     ) -> str:
         r"""Integrates an expression with respect to a variable.
 
@@ -595,7 +594,7 @@ class SymPyToolkit(BaseToolkit):
         except Exception as e:
             return self.handle_exception("check_continuity", e)
 
-    def compute_determinant(self, matrix: List[List[float]]) -> str:
+    def compute_determinant(self, matrix: list[list[float]]) -> str:
         r"""Computes the determinant of a matrix.
 
         Args:
@@ -617,7 +616,7 @@ class SymPyToolkit(BaseToolkit):
         except Exception as e:
             return self.handle_exception("compute_determinant", e)
 
-    def compute_inverse(self, matrix: List[List[float]]) -> str:
+    def compute_inverse(self, matrix: list[list[float]]) -> str:
         r"""Computes the inverse of a matrix.
 
         Args:
@@ -640,7 +639,7 @@ class SymPyToolkit(BaseToolkit):
         except Exception as e:
             return self.handle_exception("compute_inverse", e)
 
-    def compute_eigenvalues(self, matrix: List[List[float]]) -> str:
+    def compute_eigenvalues(self, matrix: list[list[float]]) -> str:
         r"""Computes the eigenvalues of a matrix.
 
         Args:
@@ -667,7 +666,7 @@ class SymPyToolkit(BaseToolkit):
         except Exception as e:
             return self.handle_exception("compute_eigenvalues", e)
 
-    def compute_eigenvectors(self, matrix: List[List[float]]) -> str:
+    def compute_eigenvectors(self, matrix: list[list[float]]) -> str:
         r"""Computes the eigenvectors of a matrix.
 
         Args:
@@ -704,7 +703,7 @@ class SymPyToolkit(BaseToolkit):
         except Exception as e:
             return self.handle_exception("compute_eigenvectors", e)
 
-    def compute_nullspace(self, matrix: List[List[float]]) -> str:
+    def compute_nullspace(self, matrix: list[list[float]]) -> str:
         r"""Computes the null space of a matrix.
 
         Args:
@@ -730,7 +729,7 @@ class SymPyToolkit(BaseToolkit):
         except Exception as e:
             return self.handle_exception("compute_nullspace", e)
 
-    def compute_rank(self, matrix: List[List[float]]) -> str:
+    def compute_rank(self, matrix: list[list[float]]) -> str:
         r"""Computes the rank of a matrix.
 
         Args:
@@ -753,7 +752,7 @@ class SymPyToolkit(BaseToolkit):
             return self.handle_exception("compute_rank", e)
 
     def compute_inner_product(
-        self, vector1: List[float], vector2: List[float]
+        self, vector1: list[float], vector2: list[float]
     ) -> str:
         r"""Computes the inner (dot) product of two vectors.
 
@@ -813,7 +812,7 @@ class SymPyToolkit(BaseToolkit):
             ensure_ascii=False,
         )
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Exposes the tool's methods to the agent framework.
 
         Returns:

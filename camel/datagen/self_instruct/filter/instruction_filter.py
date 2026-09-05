@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any
 
 from camel.logger import get_logger
 
@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 class InstructionFilter:
     def __init__(
         self,
-        filters_config: Dict[str, Dict[str, Any]],
+        filters_config: dict[str, dict[str, Any]],
         stop_on_first_failure: bool = False,
     ):
         r"""Initialize the InstructionFilter with a dictionary of filter
@@ -48,7 +48,7 @@ class InstructionFilter:
             stop_on_first_failure (bool): If True, stops checking filters after
                 the first failure.
         """
-        self.filters: List[FilterFunction] = []
+        self.filters: list[FilterFunction] = []
         for filter_name, params in filters_config.items():
             if filter_name not in FILTER_REGISTRY:
                 raise ValueError(f"Unknown filter function: {filter_name}")
@@ -66,7 +66,7 @@ class InstructionFilter:
 
     def filter(
         self, prompt: str, instruction: str, return_details: bool = False
-    ) -> Union[bool, Tuple[bool, List[str]]]:
+    ) -> bool | tuple[bool, list[str]]:
         r"""Check if the given instruction passes all filter functions.
 
         Args:

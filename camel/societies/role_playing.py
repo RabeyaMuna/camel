@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import logging
 import threading
-from typing import Dict, List, Optional, Sequence, Tuple, Union
+from collections.abc import Sequence
 
 from camel.agents import (
     ChatAgent,
@@ -93,19 +93,19 @@ class RolePlaying:
         with_task_specify: bool = True,
         with_task_planner: bool = False,
         with_critic_in_the_loop: bool = False,
-        critic_criteria: Optional[str] = None,
-        model: Optional[BaseModelBackend] = None,
+        critic_criteria: str | None = None,
+        model: BaseModelBackend | None = None,
         task_type: TaskType = TaskType.AI_SOCIETY,
-        assistant_agent_kwargs: Optional[Dict] = None,
-        user_agent_kwargs: Optional[Dict] = None,
-        task_specify_agent_kwargs: Optional[Dict] = None,
-        task_planner_agent_kwargs: Optional[Dict] = None,
-        critic_kwargs: Optional[Dict] = None,
-        sys_msg_generator_kwargs: Optional[Dict] = None,
-        extend_sys_msg_meta_dicts: Optional[List[Dict]] = None,
-        extend_task_specify_meta_dict: Optional[Dict] = None,
-        output_language: Optional[str] = None,
-        stop_event: Optional[threading.Event] = None,
+        assistant_agent_kwargs: dict | None = None,
+        user_agent_kwargs: dict | None = None,
+        task_specify_agent_kwargs: dict | None = None,
+        task_planner_agent_kwargs: dict | None = None,
+        critic_kwargs: dict | None = None,
+        sys_msg_generator_kwargs: dict | None = None,
+        extend_sys_msg_meta_dicts: list[dict] | None = None,
+        extend_task_specify_meta_dict: dict | None = None,
+        output_language: str | None = None,
+        stop_event: threading.Event | None = None,
     ) -> None:
         if model is not None:
             logger.warning(
@@ -123,7 +123,7 @@ class RolePlaying:
         self.task_specify_agent_kwargs = task_specify_agent_kwargs
         self.task_planner_agent_kwargs = task_planner_agent_kwargs
 
-        self.specified_task_prompt: Optional[TextPrompt] = None
+        self.specified_task_prompt: TextPrompt | None = None
         self._init_specified_task_prompt(
             assistant_role_name,
             user_role_name,
@@ -132,7 +132,7 @@ class RolePlaying:
             output_language=output_language,
         )
 
-        self.planned_task_prompt: Optional[TextPrompt] = None
+        self.planned_task_prompt: TextPrompt | None = None
         self._init_planned_task_prompt(
             task_planner_agent_kwargs=task_planner_agent_kwargs,
             output_language=output_language,
@@ -156,8 +156,8 @@ class RolePlaying:
 
         self.assistant_agent: ChatAgent
         self.user_agent: ChatAgent
-        self.assistant_sys_msg: Optional[BaseMessage]
-        self.user_sys_msg: Optional[BaseMessage]
+        self.assistant_sys_msg: BaseMessage | None
+        self.user_sys_msg: BaseMessage | None
         self._init_agents(
             init_assistant_sys_msg,
             init_user_sys_msg,
@@ -166,8 +166,8 @@ class RolePlaying:
             output_language=output_language,
             stop_event=stop_event,
         )
-        self.critic: Optional[Union[CriticAgent, Human]] = None
-        self.critic_sys_msg: Optional[BaseMessage] = None
+        self.critic: CriticAgent | Human | None = None
+        self.critic_sys_msg: BaseMessage | None = None
         self._init_critic(
             sys_msg_generator,
             sys_msg_meta_dicts,
@@ -180,9 +180,9 @@ class RolePlaying:
         self,
         assistant_role_name: str,
         user_role_name: str,
-        task_specify_agent_kwargs: Optional[Dict] = None,
-        extend_task_specify_meta_dict: Optional[Dict] = None,
-        output_language: Optional[str] = None,
+        task_specify_agent_kwargs: dict | None = None,
+        extend_task_specify_meta_dict: dict | None = None,
+        output_language: str | None = None,
     ) -> None:
         r"""Use a task specify agent to generate a specified task prompt.
         Generated specified task prompt will be used to replace original
@@ -228,8 +228,8 @@ class RolePlaying:
 
     def _init_planned_task_prompt(
         self,
-        task_planner_agent_kwargs: Optional[Dict] = None,
-        output_language: Optional[str] = None,
+        task_planner_agent_kwargs: dict | None = None,
+        output_language: str | None = None,
     ) -> None:
         r"""Use a task plan agent to append a planned task prompt to task
         prompt. The planned task prompt is generated based on the task
@@ -265,8 +265,8 @@ class RolePlaying:
         assistant_role_name: str,
         user_role_name: str,
         sys_msg_generator: SystemMessageGenerator,
-        extend_sys_msg_meta_dicts: Optional[List[Dict]] = None,
-    ) -> Tuple[BaseMessage, BaseMessage, List[Dict]]:
+        extend_sys_msg_meta_dicts: list[dict] | None = None,
+    ) -> tuple[BaseMessage, BaseMessage, list[dict]]:
         r"""Get initial assistant and user system message with a list of
         system message meta dicts.
 
@@ -322,10 +322,10 @@ class RolePlaying:
         self,
         init_assistant_sys_msg: BaseMessage,
         init_user_sys_msg: BaseMessage,
-        assistant_agent_kwargs: Optional[Dict] = None,
-        user_agent_kwargs: Optional[Dict] = None,
-        output_language: Optional[str] = None,
-        stop_event: Optional[threading.Event] = None,
+        assistant_agent_kwargs: dict | None = None,
+        user_agent_kwargs: dict | None = None,
+        output_language: str | None = None,
+        stop_event: threading.Event | None = None,
     ) -> None:
         r"""Initialize assistant and user agents with their system messages.
 
@@ -373,10 +373,10 @@ class RolePlaying:
     def _init_critic(
         self,
         sys_msg_generator: SystemMessageGenerator,
-        sys_msg_meta_dicts: List[Dict],
+        sys_msg_meta_dicts: list[dict],
         critic_role_name: str,
-        critic_criteria: Optional[str] = None,
-        critic_kwargs: Optional[Dict] = None,
+        critic_criteria: str | None = None,
+        critic_kwargs: dict | None = None,
     ) -> None:
         r"""Initialize critic agent. If critic role name is :obj:`"human"`,
         create a :obj:`Human` critic agent. Else, create a :obj:`CriticAgent`
@@ -452,7 +452,7 @@ class RolePlaying:
 
         return processed_msg
 
-    def init_chat(self, init_msg_content: Optional[str] = None) -> BaseMessage:
+    def init_chat(self, init_msg_content: str | None = None) -> BaseMessage:
         r"""Initializes the chat by resetting both of the assistant and user
         agents. Returns an initial message for the role-playing session.
 
@@ -484,7 +484,7 @@ class RolePlaying:
         return init_msg
 
     async def ainit_chat(
-        self, init_msg_content: Optional[str] = None
+        self, init_msg_content: str | None = None
     ) -> BaseMessage:
         r"""Asynchronously initializes the chat by resetting both of the
         assistant and user agents. Returns an initial message for the
@@ -522,7 +522,7 @@ class RolePlaying:
     def step(
         self,
         assistant_msg: BaseMessage,
-    ) -> Tuple[ChatAgentResponse, ChatAgentResponse]:
+    ) -> tuple[ChatAgentResponse, ChatAgentResponse]:
         r"""Advances the conversation by taking a message from the assistant,
         processing it using the user agent, and then processing the resulting
         message using the assistant agent. Returns a tuple containing the
@@ -597,7 +597,7 @@ class RolePlaying:
     async def astep(
         self,
         assistant_msg: BaseMessage,
-    ) -> Tuple[ChatAgentResponse, ChatAgentResponse]:
+    ) -> tuple[ChatAgentResponse, ChatAgentResponse]:
         r"""Asynchronously advances the conversation by taking a message from
         the assistant, processing it using the user agent, and then processing
         the resulting message using the assistant agent. Returns a tuple

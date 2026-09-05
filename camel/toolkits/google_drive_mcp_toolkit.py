@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List, Optional
 
 from camel.toolkits import BaseToolkit, FunctionTool
 
@@ -30,8 +29,8 @@ class GoogleDriveMCPToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
-        credentials_path: Optional[str] = None,
+        timeout: float | None = None,
+        credentials_path: str | None = None,
     ) -> None:
         r"""Initializes the GoogleDriveMCPToolkit.
 
@@ -64,7 +63,7 @@ class GoogleDriveMCPToolkit(BaseToolkit):
         r"""Explicitly disconnect from the Google Drive MCP server."""
         await self._mcp_toolkit.disconnect()
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of tools provided by the GoogleDriveMCPToolkit.
 
         Returns:

@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, cast
 
 import requests
 
@@ -38,16 +38,16 @@ class PubMedToolkit(BaseToolkit):
 
     BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 
-    def __init__(self, timeout: Optional[float] = None) -> None:
+    def __init__(self, timeout: float | None = None) -> None:
         r"""Initializes the PubMedToolkit."""
         super().__init__(timeout=timeout)
 
     def _make_request(
         self,
         endpoint: str,
-        params: Dict[str, Union[str, int]],
+        params: dict[str, str | int],
         retries: int = 3,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         r"""Makes a request to the PubMed/MEDLINE API with error handling and
         retries.
 
@@ -61,7 +61,7 @@ class PubMedToolkit(BaseToolkit):
             Optional[Dict[str, Any]]: JSON response if successful, else None.
         """
         url = f"{self.BASE_URL}/{endpoint}"
-        request_params = cast(Dict[str, Union[str, int]], params)
+        request_params = cast(dict[str, str | int], params)
 
         for attempt in range(retries):
             try:
@@ -92,9 +92,9 @@ class PubMedToolkit(BaseToolkit):
         query: str,
         max_results: int = 10,
         sort: str = "relevance",
-        date_range: Optional[Dict[str, str]] = None,
-        publication_type: Optional[List[str]] = None,
-    ) -> List[Dict[str, str]]:
+        date_range: dict[str, str] | None = None,
+        publication_type: list[str] | None = None,
+    ) -> list[dict[str, str]]:
         r"""Search for biomedical papers in MEDLINE via PubMed with advanced
         filtering options.
 
@@ -129,7 +129,7 @@ class PubMedToolkit(BaseToolkit):
             filtered_query = f"({filtered_query}) AND ({date_filter})"
 
         # Search for paper IDs
-        search_params: Dict[str, Union[str, int]] = {
+        search_params: dict[str, str | int] = {
             "db": "pubmed",
             "term": filtered_query,
             "retmax": max_results,
@@ -157,9 +157,9 @@ class PubMedToolkit(BaseToolkit):
 
     def get_paper_details(
         self,
-        paper_id: Union[str, int],
+        paper_id: str | int,
         include_references: bool = False,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         r"""Get detailed information about a specific biomedical paper from
         MEDLINE/PubMed.
 
@@ -173,7 +173,7 @@ class PubMedToolkit(BaseToolkit):
                 abstract, etc., or None if retrieval fails.
         """
         # Fetch summary
-        summary_params: Dict[str, Union[str, int]] = {
+        summary_params: dict[str, str | int] = {
             "db": "pubmed",
             "id": str(paper_id),
             "retmode": "json",
@@ -203,7 +203,7 @@ class PubMedToolkit(BaseToolkit):
         # Get references if requested
         references = []
         if include_references:
-            ref_params: Dict[str, Union[str, int]] = {
+            ref_params: dict[str, str | int] = {
                 "db": "pubmed",
                 "id": str(paper_id),
                 "linkname": "pubmed_pubmed_refs",
@@ -221,7 +221,7 @@ class PubMedToolkit(BaseToolkit):
                     )
 
         return cast(
-            Dict[str, Any],
+            dict[str, Any],
             {
                 "id": str(paper_id),
                 "title": paper_data.get("title", ""),
@@ -237,7 +237,7 @@ class PubMedToolkit(BaseToolkit):
             },
         )
 
-    def get_abstract(self, paper_id: Union[str, int]) -> str:
+    def get_abstract(self, paper_id: str | int) -> str:
         r"""Get the abstract of a specific biomedical paper from MEDLINE/
         PubMed.
 
@@ -247,7 +247,7 @@ class PubMedToolkit(BaseToolkit):
         Returns:
             str: The abstract text.
         """
-        params: Dict[str, Union[str, int]] = {
+        params: dict[str, str | int] = {
             "db": "pubmed",
             "id": str(paper_id),
             "rettype": "abstract",
@@ -266,7 +266,7 @@ class PubMedToolkit(BaseToolkit):
             )
             return ""
 
-    def get_citation_count(self, paper_id: Union[str, int]) -> int:
+    def get_citation_count(self, paper_id: str | int) -> int:
         r"""Get the number of citations for a biomedical paper in MEDLINE/
         PubMed.
 
@@ -276,7 +276,7 @@ class PubMedToolkit(BaseToolkit):
         Returns:
             int: Number of citations, or 0 if retrieval fails.
         """
-        params: Dict[str, Union[str, int]] = {
+        params: dict[str, str | int] = {
             "db": "pubmed",
             "id": str(paper_id),
             "linkname": "pubmed_pubmed_citedin",
@@ -294,9 +294,9 @@ class PubMedToolkit(BaseToolkit):
 
     def get_related_papers(
         self,
-        paper_id: Union[str, int],
+        paper_id: str | int,
         max_results: int = 10,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Get biomedical papers related to a specific paper in MEDLINE/
         PubMed.
 
@@ -308,7 +308,7 @@ class PubMedToolkit(BaseToolkit):
         Returns:
             List[Dict[str, Any]]: List of related papers with their metadata.
         """
-        params: Dict[str, Union[str, int]] = {
+        params: dict[str, str | int] = {
             "db": "pubmed",
             "id": str(paper_id),
             "linkname": "pubmed_pubmed",
@@ -323,7 +323,7 @@ class PubMedToolkit(BaseToolkit):
             related_ids = data["linksets"][0]["linksetdbs"][0]["links"][
                 :max_results
             ]
-            related_papers: List[Dict[str, Any]] = []
+            related_papers: list[dict[str, Any]] = []
 
             for pid in related_ids:
                 if paper := self.get_paper_details(pid):
@@ -333,7 +333,7 @@ class PubMedToolkit(BaseToolkit):
         except (KeyError, IndexError):
             return []
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of tools provided by the PubMed toolkit.
 
         Returns:

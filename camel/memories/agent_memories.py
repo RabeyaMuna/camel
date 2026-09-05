@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import warnings
-from typing import List, Optional
 
 from camel.memories.base import AgentMemory, BaseContextCreator
 from camel.memories.blocks import ChatHistoryBlock, VectorDBBlock
@@ -41,9 +40,9 @@ class ChatHistoryMemory(AgentMemory):
     def __init__(
         self,
         context_creator: BaseContextCreator,
-        storage: Optional[BaseKeyValueStorage] = None,
-        window_size: Optional[int] = None,
-        agent_id: Optional[str] = None,
+        storage: BaseKeyValueStorage | None = None,
+        window_size: int | None = None,
+        agent_id: str | None = None,
     ) -> None:
         if window_size is not None and not isinstance(window_size, int):
             raise TypeError("`window_size` must be an integer or None.")
@@ -55,14 +54,14 @@ class ChatHistoryMemory(AgentMemory):
         self._agent_id = agent_id
 
     @property
-    def agent_id(self) -> Optional[str]:
+    def agent_id(self) -> str | None:
         return self._agent_id
 
     @agent_id.setter
-    def agent_id(self, val: Optional[str]) -> None:
+    def agent_id(self, val: str | None) -> None:
         self._agent_id = val
 
-    def retrieve(self) -> List[ContextRecord]:
+    def retrieve(self) -> list[ContextRecord]:
         records = self._chat_history_block.retrieve(self._window_size)
         if self._window_size is not None and len(records) == self._window_size:
             warnings.warn(
@@ -75,7 +74,7 @@ class ChatHistoryMemory(AgentMemory):
             )
         return records
 
-    def write_records(self, records: List[MemoryRecord]) -> None:
+    def write_records(self, records: list[MemoryRecord]) -> None:
         for record in records:
             # assign the agent_id to the record
             if record.agent_id == "" and self.agent_id is not None:
@@ -108,9 +107,9 @@ class VectorDBMemory(AgentMemory):
     def __init__(
         self,
         context_creator: BaseContextCreator,
-        storage: Optional[BaseVectorStorage] = None,
+        storage: BaseVectorStorage | None = None,
         retrieve_limit: int = 3,
-        agent_id: Optional[str] = None,
+        agent_id: str | None = None,
     ) -> None:
         self._context_creator = context_creator
         self._retrieve_limit = retrieve_limit
@@ -120,20 +119,20 @@ class VectorDBMemory(AgentMemory):
         self._current_topic: str = ""
 
     @property
-    def agent_id(self) -> Optional[str]:
+    def agent_id(self) -> str | None:
         return self._agent_id
 
     @agent_id.setter
-    def agent_id(self, val: Optional[str]) -> None:
+    def agent_id(self, val: str | None) -> None:
         self._agent_id = val
 
-    def retrieve(self) -> List[ContextRecord]:
+    def retrieve(self) -> list[ContextRecord]:
         return self._vectordb_block.retrieve(
             self._current_topic,
             limit=self._retrieve_limit,
         )
 
-    def write_records(self, records: List[MemoryRecord]) -> None:
+    def write_records(self, records: list[MemoryRecord]) -> None:
         # Assume the last user input is the current topic.
         for record in records:
             if record.role_at_backend == OpenAIBackendRole.USER:
@@ -174,10 +173,10 @@ class LongtermAgentMemory(AgentMemory):
     def __init__(
         self,
         context_creator: BaseContextCreator,
-        chat_history_block: Optional[ChatHistoryBlock] = None,
-        vector_db_block: Optional[VectorDBBlock] = None,
+        chat_history_block: ChatHistoryBlock | None = None,
+        vector_db_block: VectorDBBlock | None = None,
         retrieve_limit: int = 3,
-        agent_id: Optional[str] = None,
+        agent_id: str | None = None,
     ) -> None:
         self.chat_history_block = chat_history_block or ChatHistoryBlock()
         self.vector_db_block = vector_db_block or VectorDBBlock()
@@ -187,11 +186,11 @@ class LongtermAgentMemory(AgentMemory):
         self._agent_id = agent_id
 
     @property
-    def agent_id(self) -> Optional[str]:
+    def agent_id(self) -> str | None:
         return self._agent_id
 
     @agent_id.setter
-    def agent_id(self, val: Optional[str]) -> None:
+    def agent_id(self, val: str | None) -> None:
         self._agent_id = val
 
     def get_context_creator(self) -> BaseContextCreator:
@@ -202,7 +201,7 @@ class LongtermAgentMemory(AgentMemory):
         """
         return self._context_creator
 
-    def retrieve(self) -> List[ContextRecord]:
+    def retrieve(self) -> list[ContextRecord]:
         r"""Retrieves context records from both the chat history and the vector
         database.
 
@@ -217,7 +216,7 @@ class LongtermAgentMemory(AgentMemory):
         )
         return chat_history[:1] + vector_db_retrieve + chat_history[1:]
 
-    def write_records(self, records: List[MemoryRecord]) -> None:
+    def write_records(self, records: list[MemoryRecord]) -> None:
         r"""Converts the provided chat messages into vector representations and
         writes them to the vector database.
 

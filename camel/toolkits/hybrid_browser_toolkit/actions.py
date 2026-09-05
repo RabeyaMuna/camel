@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import asyncio
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from playwright.async_api import Page
@@ -26,14 +26,14 @@ class ActionExecutor:
     SHORT_TIMEOUT = 2000  # 2 seconds
     MAX_SCROLL_AMOUNT = 5000  # Maximum scroll distance in pixels
 
-    def __init__(self, page: "Page", session: Optional[Any] = None):
+    def __init__(self, page: "Page", session: Any | None = None):
         self.page = page
         self.session = session  # HybridBrowserSession instance
 
     # ------------------------------------------------------------------
     # Public helpers
     # ------------------------------------------------------------------
-    async def execute(self, action: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute(self, action: dict[str, Any]) -> dict[str, Any]:
         r"""Execute an action and return detailed result information."""
         if not action:
             return {
@@ -87,7 +87,7 @@ class ActionExecutor:
     # ------------------------------------------------------------------
     # Internal handlers
     # ------------------------------------------------------------------
-    async def _click(self, action: Dict[str, Any]) -> Dict[str, Any]:
+    async def _click(self, action: dict[str, Any]) -> dict[str, Any]:
         r"""Handle click actions with new tab support for any clickable
         element."""
         ref = action.get("ref")
@@ -108,7 +108,7 @@ class ActionExecutor:
         if text:
             strategies.append(f'text="{text}"')
 
-        details: Dict[str, Any] = {
+        details: dict[str, Any] = {
             "ref": ref,
             "selector": selector,
             "text": text,
@@ -203,7 +203,7 @@ class ActionExecutor:
                 "details": details,
             }
 
-    async def _type(self, action: Dict[str, Any]) -> Dict[str, Any]:
+    async def _type(self, action: dict[str, Any]) -> dict[str, Any]:
         r"""Handle typing text into input fields."""
         ref = action.get("ref")
         selector = action.get("selector")
@@ -233,7 +233,7 @@ class ActionExecutor:
             details["error"] = str(exc)
             return {"message": f"Type failed: {exc}", "details": details}
 
-    async def _select(self, action: Dict[str, Any]) -> Dict[str, Any]:
+    async def _select(self, action: dict[str, Any]) -> dict[str, Any]:
         r"""Handle selecting options from dropdowns."""
         ref = action.get("ref")
         selector = action.get("selector")
@@ -264,9 +264,9 @@ class ActionExecutor:
             details["error"] = str(exc)
             return {"message": f"Select failed: {exc}", "details": details}
 
-    async def _wait(self, action: Dict[str, Any]) -> Dict[str, Any]:
+    async def _wait(self, action: dict[str, Any]) -> dict[str, Any]:
         r"""Handle wait actions."""
-        details: Dict[str, Any] = {
+        details: dict[str, Any] = {
             "wait_type": None,
             "timeout": None,
             "selector": None,
@@ -291,7 +291,7 @@ class ActionExecutor:
             "details": details,
         }
 
-    async def _extract(self, action: Dict[str, Any]) -> Dict[str, Any]:
+    async def _extract(self, action: dict[str, Any]) -> dict[str, Any]:
         r"""Handle text extraction from elements."""
         ref = action.get("ref")
         if not ref:
@@ -314,7 +314,7 @@ class ActionExecutor:
             "details": details,
         }
 
-    async def _scroll(self, action: Dict[str, Any]) -> Dict[str, Any]:
+    async def _scroll(self, action: dict[str, Any]) -> dict[str, Any]:
         r"""Handle page scrolling with safe parameter validation."""
         direction = action.get("direction", "down")
         amount = action.get("amount", 300)
@@ -360,7 +360,7 @@ class ActionExecutor:
             "details": details,
         }
 
-    async def _enter(self, action: Dict[str, Any]) -> Dict[str, Any]:
+    async def _enter(self, action: dict[str, Any]) -> dict[str, Any]:
         r"""Handle Enter key press on the currently focused element."""
         details = {"action_type": "enter", "target": "focused_element"}
 
@@ -394,7 +394,7 @@ class ActionExecutor:
 
     # static helpers
     @staticmethod
-    def should_update_snapshot(action: Dict[str, Any]) -> bool:
+    def should_update_snapshot(action: dict[str, Any]) -> bool:
         r"""Determine if an action requires a snapshot update."""
         change_types = {
             "click",

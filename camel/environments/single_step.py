@@ -14,7 +14,7 @@
 
 import asyncio
 import random
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from camel.datasets import BaseGenerator, DataPoint, StaticDataset
 from camel.logger import get_logger
@@ -57,9 +57,9 @@ class SingleStepEnv:
 
     def __init__(
         self,
-        dataset: Union[StaticDataset, BaseGenerator],
+        dataset: StaticDataset | BaseGenerator,
         verifier: BaseVerifier,
-        timeout: Optional[float] = 180.0,
+        timeout: float | None = 180.0,
         **kwargs,
     ) -> None:
         r"""Initialize the SingleStepEnv.
@@ -84,8 +84,8 @@ class SingleStepEnv:
 
         # State tracking
         self._is_setup: bool = False
-        self._states: List[DataPoint] = []
-        self._states_done: List[bool] = []
+        self._states: list[DataPoint] = []
+        self._states_done: list[bool] = []
         self.current_batch_size: int = 0
 
     async def setup(self) -> None:
@@ -139,8 +139,8 @@ class SingleStepEnv:
             raise
 
     async def reset(
-        self, batch_size: int = 1, seed: Optional[int] = None
-    ) -> Union[Observation, List[Observation]]:
+        self, batch_size: int = 1, seed: int | None = None
+    ) -> Observation | list[Observation]:
         r"""Resets the environment and starts a new episode.
 
         This method samples a new batch of data points from the dataset and
@@ -241,11 +241,8 @@ class SingleStepEnv:
             raise TypeError(f"Unsupported dataset type: {type(self.dataset)}")
 
     async def step(
-        self, action: Union[Action, List[Action], str, Dict[int, str]]
-    ) -> Union[
-        Tuple[Observation, float, bool, Dict[str, Any]],
-        List[Tuple[Observation, float, bool, Dict[str, Any]]],
-    ]:
+        self, action: Action | list[Action] | str | dict[int, str]
+    ) -> tuple[Observation, float, bool, dict[str, Any]] | list[tuple[Observation, float, bool, dict[str, Any]]]:
         r"""Execute one interaction step in the environment using the
         proposed solution.
 
@@ -314,7 +311,7 @@ class SingleStepEnv:
             )
 
         proposed_solutions = [act.llm_response for act in actions]
-        ground_truths: List[str] = [
+        ground_truths: list[str] = [
             self._states[idx].final_answer for idx in indices
         ]
 
@@ -424,8 +421,8 @@ class SingleStepEnv:
         return step_results[0] if len(step_results) == 1 else step_results
 
     def _normalize_actions(
-        self, action: Union[Action, List[Action], str, Dict[int, str]]
-    ) -> List[Action]:
+        self, action: Action | list[Action] | str | dict[int, str]
+    ) -> list[Action]:
         r"""Normalize the user-provided action(s) into a validated list
         of `Action` objects.
 
@@ -518,9 +515,9 @@ class SingleStepEnv:
 
     async def _compute_reward_batch(
         self,
-        proposed_solutions: List[str],
-        verification_results: List[VerificationResult],
-    ) -> Tuple[List[float], List[Dict[str, float]]]:
+        proposed_solutions: list[str],
+        verification_results: list[VerificationResult],
+    ) -> tuple[list[float], list[dict[str, float]]]:
         r"""Compute rewards for a batch of proposed solutions based on
         verification results.
 
@@ -547,7 +544,7 @@ class SingleStepEnv:
         for solution, verification_result in zip(
             proposed_solutions, verification_results
         ):
-            rewards: Dict[str, float] = {}
+            rewards: dict[str, float] = {}
 
             rewards["correctness"] = (
                 self.ACCURACY_REWARD if verification_result.status else 0.0
@@ -566,7 +563,7 @@ class SingleStepEnv:
 
     async def _compute_custom_reward(
         self, proposed_solution: str, verification_result: VerificationResult
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         r"""Compute additional custom reward components for a single solution.
 
         To be overridden by subclasses for domain-specific rewards.
@@ -598,7 +595,7 @@ class SingleStepEnv:
         return any(self._states_done)
 
     @property
-    def metadata(self) -> Dict[str, Any]:
+    def metadata(self) -> dict[str, Any]:
         r"""Retrieve the metadata of the environment.
 
         This provides additional parameters and configuration details.

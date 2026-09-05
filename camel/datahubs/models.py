@@ -11,14 +11,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, Optional
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
 
 class Record(BaseModel):
-    id: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
-    content: Optional[Dict[str, Any]] = None
+    id: str | None = None
+    metadata: dict[str, Any] | None = None
+    content: dict[str, Any] | None = None
 
     model_config = ConfigDict(extra="allow")

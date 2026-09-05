@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any
 
 from fastapi import APIRouter, FastAPI, HTTPException
 from pydantic import BaseModel
@@ -59,20 +59,20 @@ class InitRequest(BaseModel):
             > 1`, it allows up to N model calls. (default: :obj:`None`)
     """
 
-    model_type: Optional[str] = "gpt-4o-mini"
-    model_platform: Optional[str] = "openai"
+    model_type: str | None = "gpt-4o-mini"
+    model_platform: str | None = "openai"
 
-    tools_names: Optional[List[str]] = None
-    external_tools: Optional[List[Dict[str, Any]]] = None
+    tools_names: list[str] | None = None
+    external_tools: list[dict[str, Any]] | None = None
 
     agent_id: str  # Required: explicitly set agent_id to
     # support future multi-agent and permission control
 
-    system_message: Optional[str] = None
-    message_window_size: Optional[int] = None
-    token_limit: Optional[int] = None
-    output_language: Optional[str] = None
-    max_iteration: Optional[int] = None  # Changed from Optional[bool] = False
+    system_message: str | None = None
+    message_window_size: int | None = None
+    token_limit: int | None = None
+    output_language: str | None = None
+    max_iteration: int | None = None  # Changed from Optional[bool] = False
 
 
 class StepRequest(BaseModel):
@@ -89,8 +89,8 @@ class StepRequest(BaseModel):
             (default: :obj:`None`)
     """
 
-    input_message: Union[str, Dict[str, Any]]
-    response_format: Optional[str] = None  # reserved, not used yet
+    input_message: str | dict[str, Any]
+    response_format: str | None = None  # reserved, not used yet
 
 
 class ChatAgentOpenAPIServer:
@@ -111,8 +111,8 @@ class ChatAgentOpenAPIServer:
 
     def __init__(
         self,
-        tool_registry: Optional[Dict[str, List[FunctionTool]]] = None,
-        response_format_registry: Optional[Dict[str, Type[BaseModel]]] = None,
+        tool_registry: dict[str, list[FunctionTool]] | None = None,
+        response_format_registry: dict[str, type[BaseModel]] | None = None,
     ):
         r"""Initializes the OpenAPI server for managing ChatAgents.
 
@@ -132,13 +132,13 @@ class ChatAgentOpenAPIServer:
 
         # Initialize FastAPI app and agent
         self.app = FastAPI(title="CAMEL OpenAPI-compatible Server")
-        self.agents: Dict[str, ChatAgent] = {}
+        self.agents: dict[str, ChatAgent] = {}
         self.tool_registry = tool_registry or {}
         self.response_format_registry = response_format_registry or {}
         self._setup_routes()
 
     def _parse_input_message_for_step(
-        self, raw: Union[str, dict]
+        self, raw: str | dict
     ) -> BaseMessage:
         r"""Parses raw input into a BaseMessage object.
 
@@ -159,8 +159,8 @@ class ChatAgentOpenAPIServer:
         )
 
     def _resolve_response_format_for_step(
-        self, name: Optional[str]
-    ) -> Optional[Type[BaseModel]]:
+        self, name: str | None
+    ) -> type[BaseModel] | None:
         r"""Resolves the response format by name.
 
         Args:

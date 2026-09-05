@@ -16,7 +16,7 @@ import json
 import logging
 import random
 from pathlib import Path
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal
 
 import tree_sitter_python as tspython
 from tqdm import tqdm
@@ -243,8 +243,8 @@ class APIBenchBenchmark(BaseBenchmark):
         agent: ChatAgent,
         dataset_name: Literal["huggingface", "tensorflowhub", "torchhub"],
         randomize: bool = False,
-        subset: Optional[int] = None,
-    ) -> Dict[str, Any]:
+        subset: int | None = None,
+    ) -> dict[str, Any]:
         r"""Run the benchmark.
 
         Args:

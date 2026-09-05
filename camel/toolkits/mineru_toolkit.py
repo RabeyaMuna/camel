@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Dict, List, Optional
 
 from camel.loaders.mineru_extractor import MinerU
 from camel.toolkits.base import BaseToolkit
@@ -42,8 +41,8 @@ class MinerUToolkit(BaseToolkit):
     )
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        api_url: Optional[str] = "https://mineru.net/api/v4",
+        api_key: str | None = None,
+        api_url: str | None = "https://mineru.net/api/v4",
         is_ocr: bool = False,
         enable_formula: bool = False,
         enable_table: bool = True,
@@ -90,8 +89,8 @@ class MinerUToolkit(BaseToolkit):
 
     def extract_from_urls(
         self,
-        urls: str | List[str],
-    ) -> Dict:
+        urls: str | list[str],
+    ) -> dict:
         r"""Process and extract content from one or multiple URLs.
 
         Args:
@@ -116,7 +115,7 @@ class MinerUToolkit(BaseToolkit):
             return response
         else:
             # Multiple URLs case
-            files: List[Dict[str, str | bool]] = [
+            files: list[dict[str, str | bool]] = [
                 {"url": str(url)} for url in urls
             ]
             batch_id = self.client.batch_extract_urls(files=files)
@@ -129,7 +128,7 @@ class MinerUToolkit(BaseToolkit):
                 )
             return {"batch_id": batch_id}
 
-    def get_task_status(self, task_id: str) -> Dict:
+    def get_task_status(self, task_id: str) -> dict:
         r"""Retrieve current status of an individual extraction task.
 
         Args:
@@ -146,7 +145,7 @@ class MinerUToolkit(BaseToolkit):
         """
         return self.client.get_task_status(task_id)
 
-    def get_batch_status(self, batch_id: str) -> Dict:
+    def get_batch_status(self, batch_id: str) -> dict:
         r"""Retrieve current status of a batch extraction task.
 
         Args:
@@ -164,7 +163,7 @@ class MinerUToolkit(BaseToolkit):
         """
         return self.client.get_batch_status(batch_id)
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Retrieve available toolkit functions as FunctionTool objects.
 
         Returns:

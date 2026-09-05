@@ -16,7 +16,7 @@ import asyncio
 import math
 import os
 import re
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from camel.extractors.base import BaseExtractor
 from camel.logger import get_logger
@@ -51,7 +51,7 @@ class UnitParser:
         self._add_si_prefixes()
 
     @staticmethod
-    def _load_sympy_units() -> Dict[str, Any]:
+    def _load_sympy_units() -> dict[str, Any]:
         r"""Load all available units from sympy.physics.units.
 
         Returns:
@@ -91,7 +91,7 @@ class UnitParser:
         }
         self.allowed_units.update(prefixed_units)
 
-    def parse_unit(self, unit_str: str) -> Optional[Any]:
+    def parse_unit(self, unit_str: str) -> Any | None:
         r"""Parse a unit string into a SymPy expression using the appropriate
         method.
 
@@ -166,7 +166,7 @@ class UnitParser:
 
     def detect_scaling_factor(
         self, unit_expr: Any
-    ) -> Tuple[Union[int, float, Any], Any]:
+    ) -> tuple[int | float | Any, Any]:
         r"""Detect a scaling factor in the unit expression.
 
         Args:
@@ -216,7 +216,7 @@ class UnitParser:
         return unit_str
 
     @staticmethod
-    def unit_is_none(unit_str: Optional[str]) -> bool:
+    def unit_is_none(unit_str: str | None) -> bool:
         r"""Check if a unit string represents 'no unit' or is empty.
 
         Args:
@@ -239,7 +239,7 @@ class UnitParser:
     @staticmethod
     def extract_value_and_unit(
         expr: Any,
-    ) -> Tuple[Union[int, float, Any], Any]:
+    ) -> tuple[int | float | Any, Any]:
         r"""Extract numerical value and unit components from a SymPy
         expression.
 
@@ -254,8 +254,8 @@ class UnitParser:
         import sympy as sp
 
         factors = sp.Mul.make_args(expr)
-        numeric_terms: List[Any] = []
-        unit_terms: List[Any] = []
+        numeric_terms: list[Any] = []
+        unit_terms: list[Any] = []
 
         for term in factors:
             if isinstance(term, (int, float, sp.Number)):
@@ -275,7 +275,7 @@ class UnitParser:
         return value, unit_expr
 
     @staticmethod
-    def detect_unit_args(unit_expr: Any) -> List[Any]:
+    def detect_unit_args(unit_expr: Any) -> list[Any]:
         r"""Extract the base units from a composite SymPy unit expression.
 
         Args:
@@ -312,7 +312,7 @@ class PhysicsSolutionComparator:
         self,
         solution: str,
         reference_answer: str,
-        float_tolerance: Optional[float] = None,
+        float_tolerance: float | None = None,
     ) -> None:
         self.solution: str = solution
         self.reference_answer: str = reference_answer
@@ -330,7 +330,7 @@ class PhysicsSolutionComparator:
         self.sol_unit_expr: Any = None
 
     @staticmethod
-    def _split_value_unit(s: str) -> Tuple[str, str]:
+    def _split_value_unit(s: str) -> tuple[str, str]:
         r"""Split a string into value and unit components.
         Handles LaTeX-style units enclosed in dollar signs.
 
@@ -799,10 +799,10 @@ class PhysicsVerifier(PythonVerifier):
 
     def __init__(
         self,
-        extractor: Optional[BaseExtractor] = None,
-        timeout: Optional[float] = 30.0,
-        required_packages: Optional[List[str]] = None,
-        float_tolerance: Optional[float] = None,
+        extractor: BaseExtractor | None = None,
+        timeout: float | None = 30.0,
+        required_packages: list[str] | None = None,
+        float_tolerance: float | None = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -814,7 +814,7 @@ class PhysicsVerifier(PythonVerifier):
         self.tolerance = float_tolerance
 
     async def _verify_implementation(
-        self, solution: str, reference_answer: Optional[str]
+        self, solution: str, reference_answer: str | None
     ) -> VerificationResult:
         # Check for virtual environment setup
         if not self.venv_path:

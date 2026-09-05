@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict
+from typing import Any
 
 from camel.prompts.ai_society import (
     AISocietyPromptTemplateDict,
@@ -45,7 +45,7 @@ from camel.prompts.video_description_prompt import (
 from camel.types import TaskType
 
 
-class TaskPromptTemplateDict(Dict[Any, TextPromptDict]):
+class TaskPromptTemplateDict(dict[Any, TextPromptDict]):
     r"""A dictionary (:obj:`Dict[Any, TextPromptDict]`) of task prompt
     templates keyed by task type. This dictionary is used to map from
     a task type to its corresponding prompt template dictionary.

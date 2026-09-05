@@ -14,7 +14,6 @@
 
 import asyncio
 from datetime import datetime
-from typing import List
 
 from pydantic import BaseModel, Field, ValidationError
 
@@ -96,7 +95,7 @@ class FewShotGenerator(BaseGenerator):
     def _validate_seed_dataset(self) -> None:
         pass
 
-    def _construct_prompt(self, examples: List[DataPoint]) -> str:
+    def _construct_prompt(self, examples: list[DataPoint]) -> str:
         r"""Construct a prompt for generating new datapoints
         using a fixed sample of examples from the seed dataset.
 
@@ -166,7 +165,7 @@ class FewShotGenerator(BaseGenerator):
                 is raised.
             - Metadata includes a timestamp for tracking datapoint creation.
         """
-        valid_data_points: List[DataPoint] = []
+        valid_data_points: list[DataPoint] = []
         retries = 0
 
         while len(valid_data_points) < n and retries < max_retries:

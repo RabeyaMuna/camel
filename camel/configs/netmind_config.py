@@ -13,8 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Union
-
 from pydantic import Field
 
 from camel.configs.base_config import BaseConfig
@@ -67,16 +65,16 @@ class NetmindConfig(BaseConfig):
             generate for each input message. (default: :obj:`None`)
     """
 
-    stream: Optional[bool] = Field(default=None)
-    temperature: Optional[float] = Field(default=None)
-    top_p: Optional[float] = Field(default=None)
-    presence_penalty: Optional[float] = Field(default=None)
-    frequency_penalty: Optional[float] = Field(default=None)
-    repetition_penalty: Optional[float] = Field(default=None)
-    max_tokens: Optional[Union[int, NotGiven]] = Field(default=None)
-    stop: Optional[List[str]] = Field(default=None)
-    n: Optional[int] = Field(default=None)
-    logit_bias: Optional[Dict[str, float]] = Field(default=None)
+    stream: bool | None = Field(default=None)
+    temperature: float | None = Field(default=None)
+    top_p: float | None = Field(default=None)
+    presence_penalty: float | None = Field(default=None)
+    frequency_penalty: float | None = Field(default=None)
+    repetition_penalty: float | None = Field(default=None)
+    max_tokens: int | NotGiven | None = Field(default=None)
+    stop: list[str] | None = Field(default=None)
+    n: int | None = Field(default=None)
+    logit_bias: dict[str, float] | None = Field(default=None)
 
 
 NETMIND_API_PARAMS = {param for param in NetmindConfig.model_fields.keys()}

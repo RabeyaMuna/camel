@@ -15,7 +15,7 @@
 import asyncio
 import json
 import logging
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from camel.storages.key_value_storages import BaseKeyValueStorage
 
@@ -35,7 +35,7 @@ class RedisStorage(BaseKeyValueStorage):
         self,
         sid: str,
         url: str = "redis://localhost:6379",
-        loop: Optional[asyncio.AbstractEventLoop] = None,
+        loop: asyncio.AbstractEventLoop | None = None,
         **kwargs,
     ) -> None:
         r"""Initializes the RedisStorage instance with the provided URL and
@@ -60,7 +60,7 @@ class RedisStorage(BaseKeyValueStorage):
             )
             raise exc
 
-        self._client: Optional[aredis.Redis] = None
+        self._client: aredis.Redis | None = None
         self._url = url
         self._sid = sid
         self._loop = loop or asyncio.get_event_loop()
@@ -99,7 +99,7 @@ class RedisStorage(BaseKeyValueStorage):
         return self._client
 
     def save(
-        self, records: List[Dict[str, Any]], expire: Optional[int] = None
+        self, records: list[dict[str, Any]], expire: int | None = None
     ) -> None:
         r"""Saves a batch of records to the key-value storage system."""
         try:
@@ -107,7 +107,7 @@ class RedisStorage(BaseKeyValueStorage):
         except Exception as e:
             logger.error(f"Error in save: {e}")
 
-    def load(self) -> List[Dict[str, Any]]:
+    def load(self) -> list[dict[str, Any]]:
         r"""Loads all stored records from the key-value storage system.
 
         Returns:
@@ -128,7 +128,7 @@ class RedisStorage(BaseKeyValueStorage):
             logger.error(f"Error in clear: {e}")
 
     async def _async_save(
-        self, records: List[Dict[str, Any]], expire: Optional[int] = None
+        self, records: list[dict[str, Any]], expire: int | None = None
     ) -> None:
         if self._client is None:
             raise ValueError("Redis client is not initialized")
@@ -141,7 +141,7 @@ class RedisStorage(BaseKeyValueStorage):
         except Exception as e:
             logger.error(f"Error saving records: {e}")
 
-    async def _async_load(self) -> List[Dict[str, Any]]:
+    async def _async_load(self) -> list[dict[str, Any]]:
         if self._client is None:
             raise ValueError("Redis client is not initialized")
         try:

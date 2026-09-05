@@ -13,15 +13,10 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 import random
-from collections.abc import Sequence
+from collections.abc import Sequence, Sized
 from pathlib import Path
 from typing import (
     Any,
-    Dict,
-    List,
-    Optional,
-    Sized,
-    Union,
 )
 
 from datasets import Dataset as HFDataset
@@ -48,7 +43,7 @@ class StaticDataset(Dataset):
 
     def __init__(
         self,
-        data: Union[HFDataset, Dataset, Path, List[Dict[str, Any]]],
+        data: HFDataset | Dataset | Path | list[dict[str, Any]],
         seed: int = 42,
         min_samples: int = 1,
         strict: bool = False,
@@ -88,7 +83,7 @@ class StaticDataset(Dataset):
         self._rng = random.Random(seed)
         self._strict = strict
 
-        self.data: List[DataPoint] = self._init_data(data)
+        self.data: list[DataPoint] = self._init_data(data)
         self._length = len(self.data)
 
         if self._length < min_samples:
@@ -98,8 +93,8 @@ class StaticDataset(Dataset):
             )
 
     def _init_data(
-        self, data: Union[HFDataset, Dataset, Path, List[Dict[str, Any]]]
-    ) -> List[DataPoint]:
+        self, data: HFDataset | Dataset | Path | list[dict[str, Any]]
+    ) -> list[DataPoint]:
         r"""Convert input data from various formats into a list of
         :obj:`DataPoint` instances.
 
@@ -137,8 +132,8 @@ class StaticDataset(Dataset):
             raise TypeError("Unsupported data type")
 
         def create_datapoint(
-            item: Dict[str, Any], idx: int
-        ) -> Optional[DataPoint]:
+            item: dict[str, Any], idx: int
+        ) -> DataPoint | None:
             # Add type checks for required fields to make mypy happy
             question = item.get('question')
             if not isinstance(question, str):
@@ -198,8 +193,8 @@ class StaticDataset(Dataset):
         return self._length
 
     def __getitem__(
-        self, idx: Union[int, slice]
-    ) -> Union[DataPoint, List[DataPoint]]:
+        self, idx: int | slice
+    ) -> DataPoint | list[DataPoint]:
         r"""Retrieve a datapoint or a batch of datapoints by index or slice.
 
         Args:
@@ -246,7 +241,7 @@ class StaticDataset(Dataset):
         return sample
 
     @property
-    def metadata(self) -> Dict[str, Any]:
+    def metadata(self) -> dict[str, Any]:
         r"""Retrieve dataset metadata.
 
         Returns:
@@ -255,7 +250,7 @@ class StaticDataset(Dataset):
 
         return self._metadata.copy()
 
-    def _init_from_hf_dataset(self, data: HFDataset) -> List[Dict[str, Any]]:
+    def _init_from_hf_dataset(self, data: HFDataset) -> list[dict[str, Any]]:
         r"""Convert a Hugging Face dataset into a list of dictionaries.
 
         Args:
@@ -269,7 +264,7 @@ class StaticDataset(Dataset):
 
     def _init_from_pytorch_dataset(
         self, data: Dataset
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Convert a PyTorch dataset into a list of dictionaries.
 
         Args:
@@ -304,7 +299,7 @@ class StaticDataset(Dataset):
             raw_data.append(dict(item))
         return raw_data
 
-    def _init_from_json_path(self, data: Path) -> List[Dict[str, Any]]:
+    def _init_from_json_path(self, data: Path) -> list[dict[str, Any]]:
         r"""Load and parse a dataset from a JSON file.
 
         Args:
@@ -340,7 +335,7 @@ class StaticDataset(Dataset):
                 )
         return loaded_data
 
-    def _init_from_jsonl_path(self, data: Path) -> List[Dict[str, Any]]:
+    def _init_from_jsonl_path(self, data: Path) -> list[dict[str, Any]]:
         r"""Load and parse a dataset from a JSONL file.
 
         Args:
@@ -383,8 +378,8 @@ class StaticDataset(Dataset):
         return raw_data
 
     def _init_from_list(
-        self, data: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        self, data: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         r"""Validate and convert a list of dictionaries into a dataset.
 
         Args:
@@ -405,7 +400,7 @@ class StaticDataset(Dataset):
                 )
         return data
 
-    def save_to_json(self, file_path: Union[str, Path]) -> None:
+    def save_to_json(self, file_path: str | Path) -> None:
         r"""Save the dataset to a local JSON file.
 
         Args:
@@ -444,16 +439,16 @@ class StaticDataset(Dataset):
     def save_to_huggingface(
         self,
         dataset_name: str,
-        token: Optional[str] = None,
+        token: str | None = None,
         filepath: str = "records/records.json",
         private: bool = False,
-        description: Optional[str] = None,
-        license: Optional[str] = None,
-        version: Optional[str] = None,
-        tags: Optional[List[str]] = None,
-        language: Optional[List[str]] = None,
-        task_categories: Optional[List[str]] = None,
-        authors: Optional[List[str]] = None,
+        description: str | None = None,
+        license: str | None = None,
+        version: str | None = None,
+        tags: list[str] | None = None,
+        language: list[str] | None = None,
+        task_categories: list[str] | None = None,
+        authors: list[str] | None = None,
         **kwargs: Any,
     ) -> str:
         r"""Save the dataset to the Hugging Face Hub using the project's

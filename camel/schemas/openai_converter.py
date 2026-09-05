@@ -13,7 +13,8 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import Any, Callable, Dict, Optional, Type, Union
+from collections.abc import Callable
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -61,8 +62,8 @@ class OpenAISchemaConverter(BaseConverter):
     def __init__(
         self,
         model_type: ModelType = ModelType.GPT_4O_MINI,
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
     ):
         self.model_type = model_type
         self.model_config_dict = model_config_dict or {}
@@ -77,8 +78,8 @@ class OpenAISchemaConverter(BaseConverter):
     def convert(  # type: ignore[override]
         self,
         content: str,
-        output_schema: Union[Type[BaseModel], str, Callable],
-        prompt: Optional[str] = DEFAULT_CONVERTER_PROMPTS,
+        output_schema: type[BaseModel] | str | Callable,
+        prompt: str | None = DEFAULT_CONVERTER_PROMPTS,
     ) -> BaseModel:
         r"""Formats the input content into the expected BaseModel
 

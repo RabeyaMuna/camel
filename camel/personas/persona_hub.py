@@ -15,7 +15,7 @@ import json
 import re
 import uuid
 from functools import lru_cache
-from typing import Dict, List, Literal, Optional, Union
+from typing import Literal
 
 import numpy as np
 from pydantic import BaseModel, Field
@@ -58,10 +58,10 @@ class PersonaHub:
 
     def __init__(
         self,
-        model: Optional[BaseModelBackend] = None,
+        model: BaseModelBackend | None = None,
     ):
         self.model = model
-        self.personas: Dict[uuid.UUID, Persona] = {}
+        self.personas: dict[uuid.UUID, Persona] = {}
 
     def __setitem__(self, persona: Persona):
         r"""Add a persona to the group.
@@ -111,7 +111,7 @@ class PersonaHub:
         """
         persona = Persona()
 
-        text_to_persona_prompt: Union[TextPrompt, str] = (
+        text_to_persona_prompt: TextPrompt | str = (
             persona.text_to_persona_prompt
         )
         text_to_persona_prompt_instruction = text_to_persona_prompt.format(
@@ -138,7 +138,7 @@ class PersonaHub:
 
         return persona
 
-    def persona_to_persona(self, persona: Persona) -> Dict[uuid.UUID, Persona]:
+    def persona_to_persona(self, persona: Persona) -> dict[uuid.UUID, Persona]:
         r"""Derives additional personas based on interpersonal relationships
         from this persona.
 
@@ -149,7 +149,7 @@ class PersonaHub:
         Returns:
             Dict[uuid.UUID, Persona]: A dictionary of related personas.
         """
-        persona_to_persona_prompt: Union[TextPrompt, str] = (
+        persona_to_persona_prompt: TextPrompt | str = (
             persona.persona_to_persona_prompt
         )
         answer_template = """
@@ -183,7 +183,7 @@ persona_description: <BLANK>
             pattern = r"(\d+)\.\s*persona_name:\s*(.*?)\s*persona_description:\s*(.*?)\s*(?=\d+\.|$)"  # noqa: E501
             matches = re.findall(pattern, response.msg.content, re.DOTALL)
 
-            personas: Dict[uuid.UUID, Persona] = {}
+            personas: dict[uuid.UUID, Persona] = {}
             for match in matches:
                 name = match[1].strip()
                 description = match[2].strip()
@@ -196,7 +196,7 @@ persona_description: <BLANK>
 
     def deduplicate(
         self,
-        embedding_model: Optional[BaseEmbedding] = None,
+        embedding_model: BaseEmbedding | None = None,
         similarity_threshold: float = 0.85,
     ) -> None:
         r"""Remove similar personas from the group.
@@ -215,7 +215,7 @@ persona_description: <BLANK>
             from camel.embeddings import OpenAIEmbedding
 
             embedding_model = OpenAIEmbedding()
-        unique_personas: Dict[uuid.UUID, Persona] = {}
+        unique_personas: dict[uuid.UUID, Persona] = {}
         for persona_id, persona in self.personas.items():
             if not any(
                 self._is_similar(
@@ -229,7 +229,7 @@ persona_description: <BLANK>
     @staticmethod
     @lru_cache(maxsize=128)
     def _get_embedding(
-        embedding_model: BaseEmbedding, description: Optional[str]
+        embedding_model: BaseEmbedding, description: str | None
     ) -> list[float]:
         r"""Cache embeddings to reduce recomputation."""
         return embedding_model.embed(description)
@@ -288,6 +288,6 @@ persona_description: <BLANK>
     def __iter__(self):
         return iter(self.personas.values())
 
-    def get_all_personas(self) -> List[Persona]:
+    def get_all_personas(self) -> list[Persona]:
         r"""Return a list of all personas."""
         return list(self.personas.values())

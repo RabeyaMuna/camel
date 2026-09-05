@@ -14,7 +14,7 @@
 
 import logging
 import os
-from typing import Dict, List, Literal, Optional, Union
+from typing import Literal
 
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
@@ -40,8 +40,8 @@ class GithubToolkit(BaseToolkit):
     @dependencies_required('github')
     def __init__(
         self,
-        access_token: Optional[str] = None,
-        timeout: Optional[float] = None,
+        access_token: str | None = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initializes a new instance of the GitHubToolkit class.
 
@@ -152,7 +152,7 @@ class GithubToolkit(BaseToolkit):
 
     def get_issue_list(
         self, repo_name: str, state: Literal["open", "closed", "all"] = "all"
-    ) -> List[Dict[str, object]]:
+    ) -> list[dict[str, object]]:
         r"""Retrieves all issues from the GitHub repository.
 
         Args:
@@ -196,7 +196,7 @@ class GithubToolkit(BaseToolkit):
 
     def get_pull_request_list(
         self, repo_name: str, state: Literal["open", "closed", "all"] = "all"
-    ) -> List[Dict[str, object]]:
+    ) -> list[dict[str, object]]:
         r"""Retrieves all pull requests from the GitHub repository.
 
         Args:
@@ -223,7 +223,7 @@ class GithubToolkit(BaseToolkit):
 
     def get_pull_request_code(
         self, repo_name: str, pr_number: int
-    ) -> List[Dict[str, str]]:
+    ) -> list[dict[str, str]]:
         r"""Retrieves the code changes of a specific pull request.
 
         Args:
@@ -255,7 +255,7 @@ class GithubToolkit(BaseToolkit):
 
     def get_pull_request_comments(
         self, repo_name: str, pr_number: int
-    ) -> List[Dict[str, str]]:
+    ) -> list[dict[str, str]]:
         r"""Retrieves the comments from a specific pull request.
 
         Args:
@@ -278,7 +278,7 @@ class GithubToolkit(BaseToolkit):
 
         return comments
 
-    def get_all_file_paths(self, repo_name: str, path: str = "") -> List[str]:
+    def get_all_file_paths(self, repo_name: str, path: str = "") -> list[str]:
         r"""Recursively retrieves all file paths in the GitHub repository.
 
         Args:
@@ -295,10 +295,10 @@ class GithubToolkit(BaseToolkit):
 
         repo = self.github.get_repo(repo_name)
 
-        files: List[str] = []
+        files: list[str] = []
 
         # Retrieves all contents of the current directory
-        contents: Union[List[ContentFile], ContentFile] = repo.get_contents(
+        contents: list[ContentFile] | ContentFile = repo.get_contents(
             path
         )
 
@@ -334,7 +334,7 @@ class GithubToolkit(BaseToolkit):
         else:
             raise ValueError("PRs with multiple files aren't supported yet.")
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions
         in the toolkit.
 

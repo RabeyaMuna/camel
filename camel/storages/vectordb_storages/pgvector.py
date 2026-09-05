@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from camel.logger import get_logger
 from camel.storages.vectordb_storages import (
@@ -51,8 +51,8 @@ class PgVectorStorage(BaseVectorStorage):
     def __init__(
         self,
         vector_dim: int,
-        conn_info: Dict[str, Any],
-        table_name: Optional[str] = None,
+        conn_info: dict[str, Any],
+        table_name: str | None = None,
         distance: VectorDistance = VectorDistance.COSINE,
         **kwargs: Any,
     ) -> None:
@@ -131,7 +131,7 @@ class PgVectorStorage(BaseVectorStorage):
         except Exception as e:
             logger.warning(f"Failed to create vector index: {e}")
 
-    def add(self, records: List[VectorRecord], **kwargs: Any) -> None:
+    def add(self, records: list[VectorRecord], **kwargs: Any) -> None:
         r"""Add or update vector records in the database.
 
         Args:
@@ -180,7 +180,7 @@ class PgVectorStorage(BaseVectorStorage):
             logger.error(f"Failed to add records: {e}")
             raise
 
-    def delete(self, ids: List[str], **kwargs: Any) -> None:
+    def delete(self, ids: list[str], **kwargs: Any) -> None:
         r"""Delete vector records from the database by their IDs.
 
         Args:
@@ -205,7 +205,7 @@ class PgVectorStorage(BaseVectorStorage):
 
     def query(
         self, query: VectorDBQuery, **kwargs: Any
-    ) -> List[VectorDBQueryResult]:
+    ) -> list[VectorDBQueryResult]:
         r"""Query the database for the most similar vectors to the given
         query vector.
 
@@ -325,7 +325,6 @@ class PgVectorStorage(BaseVectorStorage):
         This method is provided for interface compatibility.
         """
         # For PostgreSQL local/managed instances, no loading is required
-        pass
 
     def close(self) -> None:
         r"""Close the database connection."""

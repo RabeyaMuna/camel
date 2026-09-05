@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Optional
 
 from camel.agents.chat_agent import ChatAgent
 from camel.messages import BaseMessage
@@ -45,7 +44,7 @@ class SearchAgent(ChatAgent):
 
     def __init__(
         self,
-        model: Optional[BaseModelBackend] = None,
+        model: BaseModelBackend | None = None,
     ) -> None:
         system_message = BaseMessage(
             role_name="Assistant",

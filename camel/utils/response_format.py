@@ -16,14 +16,15 @@ from __future__ import annotations
 
 import inspect
 import json
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from collections.abc import Callable
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field, create_model
 
 
 def get_pydantic_model(
-    input_data: Union[str, Type[BaseModel], Callable],
-) -> Type[BaseModel]:
+    input_data: str | type[BaseModel] | Callable,
+) -> type[BaseModel]:
     r"""A multi-purpose function that can be used as a normal function,
         a class decorator, or a function decorator.
 
@@ -75,8 +76,8 @@ TYPE_MAPPING = {
 
 def model_from_json_schema(
     name: str,
-    schema: Dict[str, Any],
-) -> Type[BaseModel]:
+    schema: dict[str, Any],
+) -> type[BaseModel]:
     r"""Create a Pydantic model from a JSON schema.
 
     Args:
@@ -88,7 +89,7 @@ def model_from_json_schema(
     """
     properties = schema.get("properties", {})
     required_fields = set(schema.get("required", []))
-    fields: Dict[str, Any] = {}
+    fields: dict[str, Any] = {}
 
     for field_name, field_schema in properties.items():
         json_type = field_schema.get("type", "string")
@@ -100,7 +101,7 @@ def model_from_json_schema(
         elif json_type == "array":
             # Process array items if available.
             items_schema = field_schema.get("items", {"type": "string"})
-            items_type: Type[Any] = TYPE_MAPPING.get(
+            items_type: type[Any] = TYPE_MAPPING.get(
                 items_schema.get("type", "string"), str
             )
             if (
@@ -110,7 +111,7 @@ def model_from_json_schema(
                 items_type = model_from_json_schema(
                     f"{name}_{field_name}_item", items_schema
                 )
-            py_type = List[items_type]  # type: ignore[assignment, valid-type]
+            py_type = list[items_type]  # type: ignore[assignment, valid-type]
         else:
             py_type = TYPE_MAPPING.get(json_type, str)
 

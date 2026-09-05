@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from camel.messages.conversion import (
     ToolCall,
@@ -27,13 +27,11 @@ from camel.messages.conversion.sharegpt.function_call_formatter import (
 class HermesToolResponse(ToolResponse):
     r"""Represents a single tool/function call with validation"""
 
-    pass
 
 
 class HermesToolCall(ToolCall):
     r"""Represents a single tool/function call with validation"""
 
-    pass
 
 
 class HermesFunctionFormatter(
@@ -41,7 +39,7 @@ class HermesFunctionFormatter(
 ):
     r"""Hermes-style function calling format implementation with validation"""
 
-    def extract_tool_calls(self, message: str) -> List[HermesToolCall]:
+    def extract_tool_calls(self, message: str) -> list[HermesToolCall]:
         r"""Extracts all tool calls from the provided message string.
 
         Args:
@@ -67,7 +65,7 @@ class HermesFunctionFormatter(
 
     def extract_tool_response(
         self, message: str
-    ) -> Optional[HermesToolResponse]:
+    ) -> HermesToolResponse | None:
         r"""Extracts a single tool response from the provided message string.
 
         Args:
@@ -92,7 +90,7 @@ class HermesFunctionFormatter(
         return None
 
     def format_tool_call(
-        self, content: str, func_name: str, args: Dict[str, Any]
+        self, content: str, func_name: str, args: dict[str, Any]
     ) -> str:
         r"""Formats a tool call message with the given content, function name,
         and arguments.

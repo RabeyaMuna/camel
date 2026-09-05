@@ -13,8 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import List, Optional, Union
-
 from camel.configs.base_config import BaseConfig
 
 
@@ -71,29 +69,29 @@ class LiteLLMConfig(BaseConfig):
             (default: :obj:`None`)
     """
 
-    timeout: Optional[Union[float, str]] = None
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    n: Optional[int] = None
-    stream: Optional[bool] = None
-    stream_options: Optional[dict] = None
-    stop: Optional[Union[str, List[str]]] = None
-    max_tokens: Optional[int] = None
-    presence_penalty: Optional[float] = None
-    frequency_penalty: Optional[float] = None
-    logit_bias: Optional[dict] = None
-    user: Optional[str] = None
-    response_format: Optional[dict] = None
-    seed: Optional[int] = None
-    tool_choice: Optional[Union[str, dict]] = None
-    logprobs: Optional[bool] = None
-    top_logprobs: Optional[int] = None
-    deployment_id: Optional[str] = None
-    extra_headers: Optional[dict] = None
-    api_version: Optional[str] = None
-    mock_response: Optional[str] = None
-    custom_llm_provider: Optional[str] = None
-    max_retries: Optional[int] = None
+    timeout: float | str | None = None
+    temperature: float | None = None
+    top_p: float | None = None
+    n: int | None = None
+    stream: bool | None = None
+    stream_options: dict | None = None
+    stop: str | list[str] | None = None
+    max_tokens: int | None = None
+    presence_penalty: float | None = None
+    frequency_penalty: float | None = None
+    logit_bias: dict | None = None
+    user: str | None = None
+    response_format: dict | None = None
+    seed: int | None = None
+    tool_choice: str | dict | None = None
+    logprobs: bool | None = None
+    top_logprobs: int | None = None
+    deployment_id: str | None = None
+    extra_headers: dict | None = None
+    api_version: str | None = None
+    mock_response: str | None = None
+    custom_llm_provider: str | None = None
+    max_retries: int | None = None
 
 
 LITELLM_API_PARAMS = {param for param in LiteLLMConfig.model_fields.keys()}

@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import time
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any
 
 from openai import AsyncStream, Stream
 from pydantic import BaseModel
@@ -31,7 +31,7 @@ from camel.utils import BaseTokenCounter
 
 
 class StubTokenCounter(BaseTokenCounter):
-    def count_tokens_from_messages(self, messages: List[OpenAIMessage]) -> int:
+    def count_tokens_from_messages(self, messages: list[OpenAIMessage]) -> int:
         r"""Token counting for STUB models, directly returning a constant.
 
         Args:
@@ -44,7 +44,7 @@ class StubTokenCounter(BaseTokenCounter):
         """
         return 10
 
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         r"""Encode text into token IDs for STUB models.
 
         Args:
@@ -57,7 +57,7 @@ class StubTokenCounter(BaseTokenCounter):
         # to text length
         return [0] * (len(text) // 4 + 1)  # Simple approximation
 
-    def decode(self, token_ids: List[int]) -> str:
+    def decode(self, token_ids: list[int]) -> str:
         r"""Decode token IDs back to text for STUB models.
 
         Args:
@@ -77,12 +77,12 @@ class StubModel(BaseModelBackend):
 
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        timeout: Optional[float] = None,
+        model_type: ModelType | str,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        timeout: float | None = None,
         max_retries: int = 3,
     ) -> None:
         r"""All arguments are unused for the dummy model."""
@@ -110,10 +110,10 @@ class StubModel(BaseModelBackend):
 
     async def _arun(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         r"""Run fake inference by returning a fixed string.
         All arguments are unused for the dummy model.
 
@@ -148,10 +148,10 @@ class StubModel(BaseModelBackend):
 
     def _run(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
         r"""Run fake inference by returning a fixed string.
         All arguments are unused for the dummy model.
 
@@ -185,4 +185,3 @@ class StubModel(BaseModelBackend):
 
     def check_model_config(self):
         r"""Directly pass the check on arguments to STUB model."""
-        pass

@@ -13,8 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import List, Optional
-
 from camel.configs.base_config import BaseConfig
 
 
@@ -66,16 +64,16 @@ class AnthropicConfig(BaseConfig):
             the Anthropic API.
     """
 
-    max_tokens: Optional[int] = None
-    stop_sequences: Optional[List[str]] = None
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    top_k: Optional[int] = None
-    stream: Optional[bool] = None
-    metadata: Optional[dict] = None
-    tool_choice: Optional[dict] = None
-    extra_headers: Optional[dict] = None
-    extra_body: Optional[dict] = None
+    max_tokens: int | None = None
+    stop_sequences: list[str] | None = None
+    temperature: float | None = None
+    top_p: float | None = None
+    top_k: int | None = None
+    stream: bool | None = None
+    metadata: dict | None = None
+    tool_choice: dict | None = None
+    extra_headers: dict | None = None
+    extra_body: dict | None = None
 
 
 ANTHROPIC_API_PARAMS = {param for param in AnthropicConfig.model_fields.keys()}
