@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from unstructured.documents.elements import Element
@@ -124,7 +124,7 @@ class KnowledgeGraphAgent(ChatAgent):
 
     def __init__(
         self,
-        model: Optional[BaseModelBackend] = None,
+        model: BaseModelBackend | None = None,
     ) -> None:
         r"""Initialize the `KnowledgeGraphAgent`.
 
@@ -149,8 +149,8 @@ class KnowledgeGraphAgent(ChatAgent):
         self,
         element: "Element",
         parse_graph_elements: bool = False,
-        prompt: Optional[str] = None,
-    ) -> Union[str, GraphElement]:
+        prompt: str | None = None,
+    ) -> str | GraphElement:
         r"""Run the agent to extract node and relationship information.
 
         Args:

@@ -17,7 +17,6 @@ Gradio-based web UI to explore the Camel dataset.
 
 import argparse
 import random
-from typing import Dict, List, Optional, Tuple
 
 import gradio as gr
 
@@ -78,7 +77,7 @@ def parse_arguments():
 
 
 def construct_ui(
-    blocks, datasets: Datasets, default_dataset: Optional[str] = None
+    blocks, datasets: Datasets, default_dataset: str | None = None
 ):
     """Build Gradio UI and populate with chat data from JSONs.
 
@@ -165,7 +164,7 @@ def construct_ui(
     chatbot = gr.Chatbot()
     accepted_st = gr.State(False)
 
-    def set_default_dataset() -> Dict:
+    def set_default_dataset() -> dict:
         """Trigger for app load.
 
         Returns:
@@ -175,7 +174,7 @@ def construct_ui(
 
     def check_if_misalignment(
         dataset_name: str, accepted: bool
-    ) -> Tuple[Dict, Dict, Dict]:
+    ) -> tuple[dict, dict, dict]:
         """Display AGREE/DECLINE if needed.
 
         Returns:
@@ -195,7 +194,7 @@ def construct_ui(
                 gr.update(visible=False),
             )
 
-    def enable_misalignment() -> Tuple[bool, Dict, Dict, Dict]:
+    def enable_misalignment() -> tuple[bool, dict, dict, dict]:
         """Update the state of the accepted disclaimer.
 
         Returns:
@@ -209,7 +208,7 @@ def construct_ui(
             gr.update(visible=False),
         )
 
-    def disable_misalignment() -> Tuple[bool, Dict, Dict, Dict]:
+    def disable_misalignment() -> tuple[bool, dict, dict, dict]:
         """Update the state of the accepted disclaimer.
 
         Returns:
@@ -225,7 +224,7 @@ def construct_ui(
 
     def update_dataset_selection(
         dataset_name: str, accepted: bool
-    ) -> Tuple[Dict, Dict]:
+    ) -> tuple[dict, dict]:
         """Update roles based on the selected dataset.
 
         Args:
@@ -258,7 +257,7 @@ def construct_ui(
 
     def roles_dd_change(
         dataset_name: str, assistant_role: str, user_role: str
-    ) -> Dict:
+    ) -> dict:
         """Update the displayed chat upon inputs change.
 
         Args:
@@ -270,7 +269,7 @@ def construct_ui(
         """
         matrix = datasets[dataset_name]['matrix']
         if (assistant_role, user_role) in matrix:
-            record: Dict[str, Dict] = matrix[(assistant_role, user_role)]
+            record: dict[str, dict] = matrix[(assistant_role, user_role)]
             original_task_options = list(record.keys())
             original_task = original_task_options[0]
         else:
@@ -284,7 +283,7 @@ def construct_ui(
         )
         return choices
 
-    def build_chat_history(messages: Dict[int, Dict]) -> List[Tuple]:
+    def build_chat_history(messages: dict[int, dict]) -> list[tuple]:
         """Structures chatbot contents from the loaded data.
 
         Args:
@@ -293,7 +292,7 @@ def construct_ui(
         Returns:
             List[Tuple]: Chat history in chatbot UI element format.
         """
-        history: List[Tuple] = []
+        history: list[tuple] = []
         curr_qa = (None, None)
         for k in sorted(messages.keys()):
             msg = messages[k]
@@ -317,7 +316,7 @@ def construct_ui(
         assistant_role: str,
         user_role: str,
         original_task: str,
-    ) -> Tuple[str, List]:
+    ) -> tuple[str, list]:
         """Load task details and chatbot history into UI elements.
 
         Args:
@@ -332,7 +331,7 @@ def construct_ui(
 
         matrix = datasets[dataset_name]['matrix']
         if (assistant_role, user_role) in matrix:
-            task_dict: Dict[str, Dict] = matrix[(assistant_role, user_role)]
+            task_dict: dict[str, dict] = matrix[(assistant_role, user_role)]
             if original_task in task_dict:
                 chat = task_dict[original_task]
                 specified_task = chat['specified_task']
@@ -398,7 +397,7 @@ def construct_ui(
     blocks.load(set_default_dataset, None, dataset_dd)
 
 
-def construct_blocks(data_path: str, default_dataset: Optional[str]):
+def construct_blocks(data_path: str, default_dataset: str | None):
     """Construct Blocks app but do not launch it.
 
     Args:

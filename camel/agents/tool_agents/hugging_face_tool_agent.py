@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Optional
+from typing import Any
 
 from camel.agents.tool_agents.base import BaseToolAgent
 
@@ -150,7 +150,7 @@ segmented_transformed_capybara_image = {name}.chat("Show me a mask of the snowy 
 segmented_transformed_capybara_image.save("./segmented_transformed_capybara_image.png")
 ```
 """
-        super(HuggingFaceToolAgent, self).__init__(name, description)
+        super().__init__(name, description)
         self.remote = remote
 
     def reset(self) -> None:
@@ -160,7 +160,7 @@ segmented_transformed_capybara_image.save("./segmented_transformed_capybara_imag
     def step(
         self,
         *args: Any,
-        remote: Optional[bool] = None,
+        remote: bool | None = None,
         **kwargs: Any,
     ) -> Any:
         r"""Runs the agent in single execution mode.
@@ -184,7 +184,7 @@ segmented_transformed_capybara_image.save("./segmented_transformed_capybara_imag
     def chat(
         self,
         *args: Any,
-        remote: Optional[bool] = None,
+        remote: bool | None = None,
         **kwargs: Any,
     ) -> Any:
         r"""Runs the agent in a chat conversation mode.

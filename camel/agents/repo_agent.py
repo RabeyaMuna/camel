@@ -14,7 +14,7 @@
 import time
 from enum import Enum, auto
 from string import Template
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from github.MainClass import Github
@@ -68,7 +68,7 @@ class RepositoryInfo(BaseModel):
 
     repo_name: str
     repo_url: str
-    contents: List[GitHubFile] = []
+    contents: list[GitHubFile] = []
 
 
 @track_agent(name="RepoAgent")
@@ -121,17 +121,15 @@ class RepoAgent(ChatAgent):
     def __init__(
         self,
         vector_retriever: VectorRetriever,
-        system_message: Optional[
-            str
-        ] = "You are a code assistant with repo context.",
-        repo_paths: Optional[List[str]] = None,
-        model: Optional[BaseModelBackend] = None,
+        system_message: str | None = "You are a code assistant with repo context.",
+        repo_paths: list[str] | None = None,
+        model: BaseModelBackend | None = None,
         max_context_tokens: int = 2000,
-        github_auth_token: Optional[str] = None,
-        chunk_size: Optional[int] = 8192,
-        top_k: Optional[int] = 5,
-        similarity: Optional[float] = 0.6,
-        collection_name: Optional[str] = None,
+        github_auth_token: str | None = None,
+        chunk_size: int | None = 8192,
+        top_k: int | None = 5,
+        similarity: float | None = 0.6,
+        collection_name: str | None = None,
         **kwargs,
     ):
         if model is None:
@@ -171,7 +169,7 @@ class RepoAgent(ChatAgent):
         )
         self.full_text = ""
         self.chunker = CodeChunker(chunk_size=chunk_size or 8192)
-        self.repos: List[RepositoryInfo] = []
+        self.repos: list[RepositoryInfo] = []
         if repo_paths:
             self.repos = self.load_repositories(repo_paths)
         if len(self.repos) > 0:
@@ -186,7 +184,7 @@ class RepoAgent(ChatAgent):
                     role=OpenAIBackendRole.SYSTEM,
                 )
 
-    def parse_url(self, url: str) -> Tuple[str, str]:
+    def parse_url(self, url: str) -> tuple[str, str]:
         r"""Parse the GitHub URL and return the (owner, repo_name) tuple.
 
         Args:
@@ -208,8 +206,8 @@ class RepoAgent(ChatAgent):
 
     def load_repositories(
         self,
-        repo_urls: List[str],
-    ) -> List[RepositoryInfo]:
+        repo_urls: list[str],
+    ) -> list[RepositoryInfo]:
         r"""Load the content of a GitHub repository.
 
         Args:
@@ -266,7 +264,7 @@ class RepoAgent(ChatAgent):
         )
 
         # Create a list to process repository contents
-        content_list: List[ContentFile] = []
+        content_list: list[ContentFile] = []
         if isinstance(contents, list):
             content_list = contents
         else:
@@ -383,7 +381,7 @@ class RepoAgent(ChatAgent):
             ),
         )
 
-    def add_repositories(self, repo_urls: List[str]):
+    def add_repositories(self, repo_urls: list[str]):
         r"""Add a GitHub repository to the list of repositories.
 
         Args:
@@ -441,7 +439,7 @@ class RepoAgent(ChatAgent):
         return False
 
     def step(
-        self, input_message: Union[BaseMessage, str], *args, **kwargs
+        self, input_message: BaseMessage | str, *args, **kwargs
     ) -> ChatAgentResponse:
         r"""Overrides `ChatAgent.step()` to first retrieve relevant context
         from the vector store before passing the input to the language model.

@@ -13,9 +13,10 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import abc
 import threading
+from collections.abc import Callable
 from enum import Enum
 from functools import wraps
-from typing import Any, Callable, Generic, Optional, TypeVar
+from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel, ConfigDict
 
@@ -158,7 +159,7 @@ class ProgrammableChatAgent(ChatAgent, AbstractProgrammableAgent):
         """
         super().__init__(**kwargs)
         self._operation_lock = threading.Lock()
-        self._last_message_role: Optional[str] = None
+        self._last_message_role: str | None = None
 
     def run_atomic(
         self, callback: Callable[[], ProgrammedAgentInstructionResult[T]]

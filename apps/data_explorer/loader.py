@@ -18,23 +18,23 @@ Everything related to parsing the data JSONs into UI-compatible format.
 import glob
 import os
 import re
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any
 
 from tqdm import tqdm
 
 from apps.common.auto_zip import AutoZip
 
-ChatHistory = Dict[str, Any]
-ParsedChatHistory = Dict[str, Any]
-AllChats = Dict[str, Any]
-Datasets = Dict[str, AllChats]
+ChatHistory = dict[str, Any]
+ParsedChatHistory = dict[str, Any]
+AllChats = dict[str, Any]
+Datasets = dict[str, AllChats]
 
 REPO_ROOT = os.path.realpath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
 )
 
 
-def parse(raw_chat: ChatHistory) -> Union[ParsedChatHistory, None]:
+def parse(raw_chat: ChatHistory) -> ParsedChatHistory | None:
     """Gets the JSON raw chat data, validates it and transforms
         into an easy to work with form.
 
@@ -119,7 +119,7 @@ def load_zip(zip_path: str) -> AllChats:
         user_roles_set.add(parsed['user_role'])
     assistant_roles = sorted(assistant_roles_set)
     user_roles = sorted(user_roles_set)
-    matrix: Dict[Tuple[str, str], Dict[str, Dict]] = dict()
+    matrix: dict[tuple[str, str], dict[str, dict]] = dict()
     for parsed in parsed_list:
         key = (parsed['assistant_role'], parsed['user_role'])
         original_task: str = parsed['original_task']
@@ -140,7 +140,7 @@ def load_zip(zip_path: str) -> AllChats:
     )
 
 
-def load_datasets(path: Optional[str] = None) -> Datasets:
+def load_datasets(path: str | None = None) -> Datasets:
     """Load all JSONs from a set of zip files and parse them.
 
     Args:

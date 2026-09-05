@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, List, Optional
+from typing import Any
 
 from colorama import Fore
 
@@ -66,10 +66,10 @@ class EmbodiedAgent(ChatAgent):
     def __init__(
         self,
         system_message: BaseMessage,
-        model: Optional[BaseModelBackend] = None,
-        message_window_size: Optional[int] = None,
-        tool_agents: Optional[List[BaseToolAgent]] = None,
-        code_interpreter: Optional[BaseInterpreter] = None,
+        model: BaseModelBackend | None = None,
+        message_window_size: int | None = None,
+        tool_agents: list[BaseToolAgent] | None = None,
+        code_interpreter: BaseInterpreter | None = None,
         verbose: bool = False,
         logger_color: Any = Fore.MAGENTA,
     ) -> None:
@@ -121,7 +121,7 @@ class EmbodiedAgent(ChatAgent):
         else:
             return ""
 
-    def get_tool_agent_names(self) -> List[str]:
+    def get_tool_agent_names(self) -> list[str]:
         r"""Returns the names of tool agents.
 
         Returns:
@@ -132,7 +132,6 @@ class EmbodiedAgent(ChatAgent):
         else:
             return []
 
-    # ruff: noqa: E501
     def step(self, input_message: BaseMessage) -> ChatAgentResponse:  # type: ignore[override]
         r"""Performs a step in the conversation.
 
