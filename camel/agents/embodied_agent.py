@@ -182,8 +182,7 @@ class EmbodiedAgent(ChatAgent):
                     )
             except InterruptedError as e:
                 content = (
-                    f"\n> Running code fail: {e}\n"
-                    "Please regenerate the code."
+                    f"\n> Running code fail: {e}\nPlease regenerate the code."
                 )
 
         # TODO: Handle errors

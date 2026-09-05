@@ -132,9 +132,7 @@ async def main() -> None:
         # Give Playwright time to fully shut down subprocesses
         await asyncio.sleep(0.5)
     except Exception as err:
-        logging.warning(
-            "Failed to close " "browser session explicitly: %s", err
-        )
+        logging.warning("Failed to close browser session explicitly: %s", err)
 
 
 if __name__ == "__main__":

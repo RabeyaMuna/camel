@@ -140,7 +140,7 @@ class E2BInterpreter(BaseInterpreter):
 
     def update_action_space(self, action_space: Dict[str, Any]) -> None:
         r"""Updates action space for *python* interpreter"""
-        raise RuntimeError("E2B doesn't support " "`action_space`.")
+        raise RuntimeError("E2B doesn't support `action_space`.")
 
     def execute_command(self, command: str) -> str:
         r"""Execute a command can be used to resolve the dependency of the

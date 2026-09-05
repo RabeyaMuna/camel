@@ -157,16 +157,22 @@ Here are practical usage patterns for each storage type—pick the ones you need
       from camel.storages import MilvusStorage, VectorDBQuery, VectorRecord
 
       milvus_storage = MilvusStorage(
-          url_and_api_key=("Your Milvus URI","Your Milvus Token"),
+          url_and_api_key=("Your Milvus URI", "Your Milvus Token"),
           vector_dim=4,
-          collection_name="my_collection"
+          collection_name="my_collection",
       )
-      milvus_storage.add([
-          VectorRecord(vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}),
-          VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
-      ])
+      milvus_storage.add(
+          [
+              VectorRecord(
+                  vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}
+              ),
+              VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
+          ]
+      )
       milvus_storage.load()
-      query_results = milvus_storage.query(VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1))
+      query_results = milvus_storage.query(
+          VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1)
+      )
       for result in query_results:
           print(result.record.payload, result.similarity)
       milvus_storage.clear()
@@ -196,14 +202,20 @@ Here are practical usage patterns for each storage type—pick the ones you need
       tidb_storage = TiDBStorage(
           url_and_api_key=(os.getenv("DATABASE_URL"), ''),
           vector_dim=4,
-          collection_name="my_collection"
+          collection_name="my_collection",
       )
-      tidb_storage.add([
-          VectorRecord(vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}),
-          VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
-      ])
+      tidb_storage.add(
+          [
+              VectorRecord(
+                  vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}
+              ),
+              VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
+          ]
+      )
       tidb_storage.load()
-      query_results = tidb_storage.query(VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1))
+      query_results = tidb_storage.query(
+          VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1)
+      )
       for result in query_results:
           print(result.record.payload, result.similarity)
       tidb_storage.clear()
@@ -231,13 +243,19 @@ Here are practical usage patterns for each storage type—pick the ones you need
       qdrant_storage = QdrantStorage(vector_dim=4, collection_name="my_collection")
 
       # Add two vector records
-      qdrant_storage.add([
-          VectorRecord(vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}),
-          VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
-      ])
+      qdrant_storage.add(
+          [
+              VectorRecord(
+                  vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}
+              ),
+              VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
+          ]
+      )
 
       # Query similar vectors
-      query_results = qdrant_storage.query(VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1))
+      query_results = qdrant_storage.query(
+          VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1)
+      )
       for result in query_results:
           print(result.record.payload, result.similarity)
 
@@ -274,13 +292,19 @@ Here are practical usage patterns for each storage type—pick the ones you need
       )
 
       # Add vector records
-      chroma_storage.add([
-          VectorRecord(vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}),
-          VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
-      ])
+      chroma_storage.add(
+          [
+              VectorRecord(
+                  vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}
+              ),
+              VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
+          ]
+      )
 
       # Query similar vectors
-      query_results = chroma_storage.query(VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1))
+      query_results = chroma_storage.query(
+          VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1)
+      )
       for result in query_results:
           print(result.record.payload, result.similarity)
 
@@ -319,6 +343,7 @@ Here are practical usage patterns for each storage type—pick the ones you need
       OB_PASSWORD = ""
       OB_DB_NAME = "oceanbase"
 
+
       def main():
           ob_storage = OceanBaseStorage(
               vector_dim=4,
@@ -352,7 +377,7 @@ Here are practical usage patterns for each storage type—pick the ones you need
               VectorDBQuery(query_vector=query_vector, top_k=5)
           )
           for i, result in enumerate(query_results):
-              print(f"Result {i+1}:")
+              print(f"Result {i + 1}:")
               print(f"  ID: {result.record.id}")
               print(f"  Payload: {result.record.payload}")
               print(f"  Similarity: {result.similarity}")
@@ -360,6 +385,7 @@ Here are practical usage patterns for each storage type—pick the ones you need
           ob_storage.clear()
           status = ob_storage.status()
           print(f"Vector count after clearing: {status.vector_count}")
+
 
       if __name__ == "__main__":
           main()
@@ -414,12 +440,18 @@ Here are practical usage patterns for each storage type—pick the ones you need
           distance_metric="cosine",
       )
 
-      weaviate_storage.add([
-          VectorRecord(vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}),
-          VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
-      ])
+      weaviate_storage.add(
+          [
+              VectorRecord(
+                  vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}
+              ),
+              VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
+          ]
+      )
 
-      query_results = weaviate_storage.query(VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1))
+      query_results = weaviate_storage.query(
+          VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1)
+      )
       for result in query_results:
           print(result.record.payload, result.similarity)
 
@@ -444,7 +476,9 @@ Here are practical usage patterns for each storage type—pick the ones you need
       ```python
       from camel.storages.graph_storages import NebulaGraph
 
-      nebula_graph = NebulaGraph("your_host", "your_username", "your_password", "your_space")
+      nebula_graph = NebulaGraph(
+          "your_host", "your_username", "your_password", "your_space"
+      )
 
       # Show existing tags
       query = 'SHOW TAGS;'
@@ -502,13 +536,19 @@ Here are practical usage patterns for each storage type—pick the ones you need
       )
 
       # Add vector records
-      pg_storage.add([
-          VectorRecord(vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}),
-          VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
-      ])
+      pg_storage.add(
+          [
+              VectorRecord(
+                  vector=[-0.1, 0.1, -0.1, 0.1], payload={'key1': 'value1'}
+              ),
+              VectorRecord(vector=[-0.1, 0.1, 0.1, 0.1], payload={'key2': 'value2'}),
+          ]
+      )
 
       # Query similar vectors
-      query_results = pg_storage.query(VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1))
+      query_results = pg_storage.query(
+          VectorDBQuery(query_vector=[0.1, 0.2, 0.1, 0.1], top_k=1)
+      )
       for result in query_results:
           print(result.record.payload, result.similarity)
 

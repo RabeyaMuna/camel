@@ -41,9 +41,16 @@ class FishAudioModel(BaseAudioModel):
 
         super().__init__(api_key, url)
         self._api_key = api_key or os.environ.get("FISHAUDIO_API_KEY")
+        if self._api_key is None:
+            raise ValueError(
+                "api_key is required. Either pass it directly or set the "
+                "FISHAUDIO_API_KEY environment variable."
+            )
         self._url = url or os.environ.get(
             "FISHAUDIO_API_BASE_URL", "https://api.fish.audio"
         )
+        if self._url is None:
+            self._url = "https://api.fish.audio"
         self.session = Session(apikey=self._api_key, base_url=self._url)
 
     def text_to_speech(

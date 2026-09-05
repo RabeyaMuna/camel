@@ -286,8 +286,7 @@ class Workforce(BaseNode):
             if coordinator_agent.system_message is not None:
                 user_sys_msg_content = coordinator_agent.system_message.content
                 combined_content = (
-                    f"{user_sys_msg_content}\n\n"
-                    f"{coord_agent_sys_msg.content}"
+                    f"{user_sys_msg_content}\n\n{coord_agent_sys_msg.content}"
                 )
                 combined_sys_msg = BaseMessage.make_assistant_message(
                     role_name=coordinator_agent.system_message.role_name,
@@ -357,8 +356,7 @@ class Workforce(BaseNode):
             if task_agent.system_message is not None:
                 user_task_sys_msg_content = task_agent.system_message.content
                 combined_task_content = (
-                    f"{user_task_sys_msg_content}\n\n"
-                    f"{task_sys_msg.content}"
+                    f"{user_task_sys_msg_content}\n\n{task_sys_msg.content}"
                 )
                 combined_task_sys_msg = BaseMessage.make_assistant_message(
                     role_name=task_agent.system_message.role_name,

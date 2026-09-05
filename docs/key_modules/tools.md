@@ -41,10 +41,10 @@ add_tool = FunctionTool(add)
 Inspect your tool’s properties—such as its name, description, and OpenAI-compatible schema—using built-in methods:
 <CodeGroup>
 ```python tool_properties.py
-print(add_tool.get_function_name())          # add
-print(add_tool.get_function_description())   # Adds two numbers.
-print(add_tool.get_openai_function_schema()) # OpenAI Functions schema
-print(add_tool.get_openai_tool_schema())     # OpenAI Tool format
+print(add_tool.get_function_name())  # add
+print(add_tool.get_function_description())  # Adds two numbers.
+print(add_tool.get_openai_function_schema())  # OpenAI Functions schema
+print(add_tool.get_openai_tool_schema())  # OpenAI Tool format
 ```
 ```text output.txt
 add
@@ -219,6 +219,7 @@ import asyncio
 from mcp.types import CallToolResult
 from camel.toolkits.mcp_toolkit import MCPToolkit, MCPClient
 
+
 async def run_example():
     mcp_toolkit = MCPToolkit(config_path="path/to/mcp_servers_config.json")
     await mcp_toolkit.connect()
@@ -237,6 +238,7 @@ async def run_example():
     print(result.content[0].text)
 
     await mcp_toolkit.disconnect()
+
 
 if __name__ == "__main__":
     asyncio.run(run_example())

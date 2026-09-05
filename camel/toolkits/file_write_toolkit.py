@@ -408,8 +408,7 @@ class FileWriteToolkit(BaseToolkit):
                         logger.error(f"Failed to create table: {e}")
                         # Fallback: render as text
                         table_error_msg = (
-                            f"Table data (error): "
-                            f"{tables[current_table_idx]}"
+                            f"Table data (error): {tables[current_table_idx]}"
                         )
                         story.append(
                             Paragraph(

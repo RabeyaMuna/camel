@@ -73,9 +73,10 @@ Image embeddings use neural networks (like CNNs) or vision-language models to tu
 from camel.embeddings import OpenAIEmbedding
 from camel.types import EmbeddingModelType
 
-openai_embedding = OpenAIEmbedding(model_type=EmbeddingModelType.TEXT_EMBEDDING_3_SMALL)
+openai_embedding = OpenAIEmbedding(
+    model_type=EmbeddingModelType.TEXT_EMBEDDING_3_SMALL
+)
 embeddings = openai_embedding.embed_list(["Hello, world!", "Another example"])
-
 ````
 </CodeGroup>
 </Card>
@@ -86,7 +87,9 @@ embeddings = openai_embedding.embed_list(["Hello, world!", "Another example"])
 from camel.embeddings import MistralEmbedding
 from camel.types import EmbeddingModelType
 
-mistral_embedding = MistralEmbedding(model_type=EmbeddingModelType.MISTRAL_EMBED)
+mistral_embedding = MistralEmbedding(
+    model_type=EmbeddingModelType.MISTRAL_EMBED
+)
 embeddings = mistral_embedding.embed_list(["Hello, world!", "Another example"])
 ````
 
@@ -98,9 +101,10 @@ embeddings = mistral_embedding.embed_list(["Hello, world!", "Another example"])
 ```python sentence_transformer_embed.py
 from camel.embeddings import SentenceTransformerEncoder
 
-sentence_encoder = SentenceTransformerEncoder(model_name='intfloat/e5-large-v2')
+sentence_encoder = SentenceTransformerEncoder(
+    model_name='intfloat/e5-large-v2'
+)
 embeddings = sentence_encoder.embed_list(["Hello, world!", "Another example"])
-
 ````
 </CodeGroup>
 </Card>
@@ -128,9 +132,12 @@ embeddings = vlm_embedding.embed_list(test_images)
 from camel.embeddings import AzureEmbedding
 from camel.types import EmbeddingModelType
 
-azure_openai_embedding = AzureEmbedding(model_type=EmbeddingModelType.TEXT_EMBEDDING_ADA_2)
-embeddings = azure_openai_embedding.embed_list(["Hello, world!", "Another example"])
-
+azure_openai_embedding = AzureEmbedding(
+    model_type=EmbeddingModelType.TEXT_EMBEDDING_ADA_2
+)
+embeddings = azure_openai_embedding.embed_list(
+    ["Hello, world!", "Another example"]
+)
 ````
 </CodeGroup>
 </Card>
@@ -140,8 +147,12 @@ embeddings = azure_openai_embedding.embed_list(["Hello, world!", "Another exampl
 ```python together_embed.py
 from camel.embeddings import TogetherEmbedding
 
-together_embedding = TogetherEmbedding(model_type="togethercomputer/m2-bert-80M-8k-retrieval")
-embeddings = together_embedding.embed_list(["Hello, world!", "Another example"])
+together_embedding = TogetherEmbedding(
+    model_type="togethercomputer/m2-bert-80M-8k-retrieval"
+)
+embeddings = together_embedding.embed_list(
+    ["Hello, world!", "Another example"]
+)
 ````
 
 </CodeGroup>

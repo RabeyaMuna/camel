@@ -144,7 +144,7 @@ class HybridRetriever(BaseRetriever):
         rrf_scores = vector_rrf_scores + bm25_rrf_scores
 
         for idx, (_, info) in enumerate(id_to_info.items()):
-            info['rrf_score'] = rrf_scores[idx]
+            info['rrf_score'] = rrf_scores[idx]  # type: ignore[index]
         sorted_results = sorted(
             id_to_info.values(), key=lambda x: x['rrf_score'], reverse=True
         )

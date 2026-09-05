@@ -715,8 +715,7 @@ class SearchToolkit(BaseToolkit):
             if response.status_code != 200:
                 return {
                     "error": (
-                        f"Bing returned status code: "
-                        f"{response.status_code}"
+                        f"Bing returned status code: {response.status_code}"
                     )
                 }
 

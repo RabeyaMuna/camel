@@ -869,8 +869,7 @@ class TerminalToolkit(BaseToolkit):
 
             detailed_error = traceback.format_exc()
             return (
-                f"Error: {error_msg}\n\n"
-                f"Detailed information: {detailed_error}"
+                f"Error: {error_msg}\n\nDetailed information: {detailed_error}"
             )
 
     def shell_view(self, id: str) -> str:
@@ -1133,12 +1132,12 @@ class TerminalToolkit(BaseToolkit):
 
             # Create clear banner message for user
             takeover_banner = (
-                f"\n{'='*60}\n"
+                f"\n{'=' * 60}\n"
                 f"🤖 CAMEL Agent needs human help! Session: {id}\n"
                 f"📂 Working directory: {self.working_dir}\n"
-                f"{'='*60}\n"
+                f"{'=' * 60}\n"
                 f"💡 Type commands or '/exit' to return control to agent.\n"
-                f"{'='*60}\n"
+                f"{'=' * 60}\n"
             )
 
             # Print once to console for immediate visibility
@@ -1197,11 +1196,11 @@ class TerminalToolkit(BaseToolkit):
                 finally:
                     # Notify completion clearly
                     finish_msg = (
-                        f"\n{'='*60}\n"
+                        f"\n{'=' * 60}\n"
                         f"✅ Human assistance completed! "
                         f"Commands: {command_count}\n"
                         f"🤖 Returning control to CAMEL agent...\n"
-                        f"{'='*60}\n"
+                        f"{'=' * 60}\n"
                     )
                     print(finish_msg, flush=True)
                     self._update_terminal_output(finish_msg)
@@ -1240,10 +1239,10 @@ class TerminalToolkit(BaseToolkit):
             logger.error(error_msg)
             # Notify user of the error clearly
             error_banner = (
-                f"\n{'='*60}\n"
+                f"\n{'=' * 60}\n"
                 f"❌ Error in human takeover! Session: {id}\n"
                 f"❗ {e}\n"
-                f"{'='*60}\n"
+                f"{'=' * 60}\n"
             )
             print(error_banner, flush=True)
             return error_msg

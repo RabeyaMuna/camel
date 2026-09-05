@@ -57,33 +57,34 @@ Prepare API keys: Azure OpenAI, Claude (Anthropic), and optionally Google Search
 ```python
 # Ensuring API Keys are set
 if not os.getenv("AZURE_OPENAI_API_KEY"):
-  print("AZURE OPENAI API KEY is required to proceed.")
-  azure_openai_api_key = getpass("Enter your Azure OpenAI API Key: ")
-  os.environ["AZURE_OPENAI_API_KEY"] = azure_openai_api_key
+    print("AZURE OPENAI API KEY is required to proceed.")
+    azure_openai_api_key = getpass("Enter your Azure OpenAI API Key: ")
+    os.environ["AZURE_OPENAI_API_KEY"] = azure_openai_api_key
 
 if not os.getenv("AZURE_OPENAI_ENDPOINT"):
-  print("Azure OpenAI Endpoint is required to proceed.")
-  azure_openai_endpoint = input("Enter your Azure OpenAI Endpoint: ")
-  os.environ["AZURE_OPENAI_ENDPOINT"] = azure_openai_endpoint
+    print("Azure OpenAI Endpoint is required to proceed.")
+    azure_openai_endpoint = input("Enter your Azure OpenAI Endpoint: ")
+    os.environ["AZURE_OPENAI_ENDPOINT"] = azure_openai_endpoint
 
 if not os.getenv("ANTHROPIC_API_KEY"):
-  print("ANTHROPIC API KEY is required to proceed.")
-  anthropic_api_key = getpass("Enter your Anthropic API Key: ")
-  os.environ["ANTHROPIC_API_KEY"] = anthropic_api_key
+    print("ANTHROPIC API KEY is required to proceed.")
+    anthropic_api_key = getpass("Enter your Anthropic API Key: ")
+    os.environ["ANTHROPIC_API_KEY"] = anthropic_api_key
 
-optional_keys_setup = input("Setup optional API Keys for Google search functionality?(y/n): ").lower()
+optional_keys_setup = input(
+    "Setup optional API Keys for Google search functionality?(y/n): "
+).lower()
 
 if "y" in optional_keys_setup:
-  if not os.getenv("GOOGLE_API_KEY"):
-    print("[OPTIONAL] Provide a GOOGLE CLOUD API KEY for google search.")
-    google_api_key = getpass("Enter your Google API KEY: ")
-    os.environ["GOOGLE_API_KEY"] = google_api_key
+    if not os.getenv("GOOGLE_API_KEY"):
+        print("[OPTIONAL] Provide a GOOGLE CLOUD API KEY for google search.")
+        google_api_key = getpass("Enter your Google API KEY: ")
+        os.environ["GOOGLE_API_KEY"] = google_api_key
 
-  if not os.getenv("SEARCH_ENGINE_ID"):
-    print("[OPTIONAL] Provide a search engine ID for google search.")
-    search_engine_id = getpass("Enter your Search Engine ID: ")
-    os.environ["SEARCH_ENGINE_ID"] = search_engine_id
-
+    if not os.getenv("SEARCH_ENGINE_ID"):
+        print("[OPTIONAL] Provide a search engine ID for google search.")
+        search_engine_id = getpass("Enter your Search Engine ID: ")
+        os.environ["SEARCH_ENGINE_ID"] = search_engine_id
 ```
 
 ### What this does:
@@ -134,7 +135,9 @@ def setup_api_keys(self):
         os.environ["AZURE_OPENAI_ENDPOINT"] = azure_endpoint
 
     if not os.getenv("AZURE_DEPLOYMENT_NAME"):
-        deployment_name = getpass("Please input your Azure deployment name (e.g., div-o4-mini): ")
+        deployment_name = getpass(
+            "Please input your Azure deployment name (e.g., div-o4-mini): "
+        )
         os.environ["AZURE_DEPLOYMENT_NAME"] = deployment_name
 
     # Set OPENAI_API_KEY for compatibility (use Azure key)
@@ -148,18 +151,26 @@ def setup_api_keys(self):
     # Optional: Google Search for research capabilities
     if not os.getenv("GOOGLE_API_KEY"):
         try:
-            google_api_key = getpass("Please input your Google API key (optional, press Enter to skip): ")
+            google_api_key = getpass(
+                "Please input your Google API key (optional, press Enter to skip): "
+            )
             if google_api_key:
                 os.environ["GOOGLE_API_KEY"] = google_api_key
-                search_engine_id = getpass("Please input your Search Engine ID: ")
+                search_engine_id = getpass(
+                    "Please input your Search Engine ID: "
+                )
                 if search_engine_id:  # Only set if provided
                     os.environ["SEARCH_ENGINE_ID"] = search_engine_id
                 else:
-                    print("⚠️ Search Engine ID not provided. Search functionality will be disabled.")
+                    print(
+                        "⚠️ Search Engine ID not provided. Search functionality will be disabled."
+                    )
         except KeyboardInterrupt:
             print("Skipping Google Search setup...")
 
     print("✅ API keys configured!")
+
+
 ARENAResearchSociety.setup_api_keys = setup_api_keys
 ```
 
@@ -175,7 +186,9 @@ Create specialized Azure OpenAI agents with custom personas:
 
 
 ```python
-def create_azure_agent(self, role_name: str, persona: str, specialization: str) -> ChatAgent:
+def create_azure_agent(
+    self, role_name: str, persona: str, specialization: str
+) -> ChatAgent:
     """Create an Azure OpenAI agent with specific role and persona"""
 
     msg_content = textwrap.dedent(f"""
@@ -211,13 +224,16 @@ def create_azure_agent(self, role_name: str, persona: str, specialization: str) 
         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
         url=os.getenv("AZURE_OPENAI_ENDPOINT"),
         api_version="2025-01-01-preview",  # Updated to support o4-mini
-        azure_deployment_name=os.getenv("AZURE_DEPLOYMENT_NAME") or "div-o4-mini"
+        azure_deployment_name=os.getenv("AZURE_DEPLOYMENT_NAME")
+        or "div-o4-mini",
     )
 
     return ChatAgent(
         system_message=sys_msg,
         model=model,
     )
+
+
 ARENAResearchSociety.create_azure_agent = create_azure_agent
 ```
 
@@ -233,7 +249,9 @@ Create Claude agents with complementary capabilities:
 
 
 ```python
-def create_claude_agent(self, role_name: str, persona: str, specialization: str, tools=None) -> ChatAgent:
+def create_claude_agent(
+    self, role_name: str, persona: str, specialization: str, tools=None
+) -> ChatAgent:
     """Create a Claude agent with specific role and persona"""
 
     msg_content = textwrap.dedent(f"""
@@ -276,6 +294,8 @@ def create_claude_agent(self, role_name: str, persona: str, specialization: str,
     )
 
     return agent
+
+
 ARENAResearchSociety.create_claude_agent = create_claude_agent
 ```
 
@@ -318,26 +338,26 @@ def create_research_workforce(self):
         role_name="Dr. Claude Alignment",
         persona="A thoughtful, methodical researcher who excels at synthesizing complex information and identifying key insights. Known for asking the right questions and seeing the bigger picture. Works with existing knowledge when search tools are unavailable.",
         specialization="AI safety frameworks, mechanistic interpretability, and curriculum analysis",
-        tools=search_tools
+        tools=search_tools,
     )
 
     claude_ethicist = self.create_claude_agent(
         role_name="Prof. Claude Ethics",
         persona="A philosophical thinker who deeply considers the ethical implications and long-term consequences of AI development. Bridges technical concepts with societal impact.",
-        specialization="AI governance, policy implications, and ethical frameworks in AI alignment"
+        specialization="AI governance, policy implications, and ethical frameworks in AI alignment",
     )
 
     # Create Azure OpenAI agents
     azure_technical = self.create_azure_agent(
         role_name="Dr. Azure Technical",
         persona="A detail-oriented technical expert who dives deep into implementation specifics and mathematical foundations. Excellent at breaking down complex algorithms.",
-        specialization="RLHF implementation, robustness techniques, and technical deep-dives"
+        specialization="RLHF implementation, robustness techniques, and technical deep-dives",
     )
 
     azure_practical = self.create_azure_agent(
         role_name="Dr. Azure Practical",
         persona="A pragmatic researcher focused on real-world applications and practical implementation. Bridges theory with practice.",
-        specialization="Practical AI safety applications, training methodologies, and hands-on exercises"
+        specialization="Practical AI safety applications, training methodologies, and hands-on exercises",
     )
 
     # Configure coordinator and task agents to use Azure OpenAI with correct API version
@@ -347,9 +367,10 @@ def create_research_workforce(self):
             api_key=os.getenv("AZURE_OPENAI_API_KEY"),
             url=os.getenv("AZURE_OPENAI_ENDPOINT"),
             api_version="2025-01-01-preview",
-            azure_deployment_name=os.getenv("AZURE_DEPLOYMENT_NAME") or "div-o4-mini"
+            azure_deployment_name=os.getenv("AZURE_DEPLOYMENT_NAME")
+            or "div-o4-mini",
         ),
-        'token_limit': 8000
+        'token_limit': 8000,
     }
 
     task_agent_kwargs = {
@@ -358,16 +379,17 @@ def create_research_workforce(self):
             api_key=os.getenv("AZURE_OPENAI_API_KEY"),
             url=os.getenv("AZURE_OPENAI_ENDPOINT"),
             api_version="2025-01-01-preview",
-            azure_deployment_name=os.getenv("AZURE_DEPLOYMENT_NAME") or "div-o4-mini"
+            azure_deployment_name=os.getenv("AZURE_DEPLOYMENT_NAME")
+            or "div-o4-mini",
         ),
-        'token_limit': 16000
+        'token_limit': 16000,
     }
 
     # Create the workforce with proper configuration
     self.workforce = Workforce(
         'ARENA AI Alignment Research Society',
         coordinator_agent_kwargs=coordinator_agent_kwargs,
-        task_agent_kwargs=task_agent_kwargs
+        task_agent_kwargs=task_agent_kwargs,
     )
 
     # Add agents with descriptive roles
@@ -387,6 +409,8 @@ def create_research_workforce(self):
 
     print("✅ ARENA Research Society created with 4 specialized agents!")
     return self.workforce
+
+
 ARENAResearchSociety.create_research_workforce = create_research_workforce
 ```
 
@@ -403,7 +427,9 @@ Define structured research tasks for the collaborative team:
 
 
 ```python
-def create_research_task(self, research_topic: str, specific_questions: str = None) -> Task:
+def create_research_task(
+    self, research_topic: str, specific_questions: str = None
+) -> Task:
     """Create a research task for the ARENA curriculum"""
 
     arena_context = {
@@ -412,14 +438,16 @@ def create_research_task(self, research_topic: str, specific_questions: str = No
             "Mechanistic Interpretability - Understanding how neural networks work internally",
             "Reinforcement Learning from Human Feedback (RLHF) - Training AI systems to be helpful and harmless",
             "AI Governance - Policy, regulation, and coordination for AI safety",
-            "Robustness & Adversarial Examples - Making AI systems robust to attacks and edge cases"
+            "Robustness & Adversarial Examples - Making AI systems robust to attacks and edge cases",
         ],
         "emphasis": "practical skills, hands-on exercises, and real-world applications",
-        "website": "https://www.arena.education/curriculum"
+        "website": "https://www.arena.education/curriculum",
     }
 
     # Check if search tools are available
-    has_search = bool(os.getenv("GOOGLE_API_KEY") and os.getenv("SEARCH_ENGINE_ID"))
+    has_search = bool(
+        os.getenv("GOOGLE_API_KEY") and os.getenv("SEARCH_ENGINE_ID")
+    )
 
     base_content = f"""
     Research Topic: {research_topic}
@@ -444,13 +472,17 @@ def create_research_task(self, research_topic: str, specific_questions: str = No
     """
 
     if specific_questions:
-        base_content += f"\n\nSpecific Research Questions:\n{specific_questions}"
+        base_content += (
+            f"\n\nSpecific Research Questions:\n{specific_questions}"
+        )
 
     return Task(
         content=base_content.strip(),
         additional_info=arena_context,
         id="arena_research_001",
     )
+
+
 ARENAResearchSociety.create_research_task = create_research_task
 ```
 
@@ -483,6 +515,8 @@ def run_research(self, research_topic: str, specific_questions: str = None):
     print(processed_task.result)
 
     return processed_task.result
+
+
 ARENAResearchSociety.run_research = run_research
 ```
 
@@ -500,74 +534,75 @@ Create an interactive interface for easy topic selection:
 
 ```python
 """Demonstrating the ARENA Research Society"""
+
 society = ARENAResearchSociety()
 
 # Example research topics related to ARENA curriculum
 sample_topics = {
-        1: {
-            "topic": "Mechanistic Interpretability in Large Language Models",
-            "questions": """
+    1: {
+        "topic": "Mechanistic Interpretability in Large Language Models",
+        "questions": """
             - How do the latest mechanistic interpretability techniques apply to understanding LLM behavior?
             - What are the most effective methods for interpreting attention patterns and residual streams?
             - How can mechanistic interpretability inform AI alignment strategies?
             - What are the current limitations and future directions in this field?
-            """
-        },
-        2: {
-            "topic": "RLHF Implementation Challenges and Best Practices",
-            "questions": """
+            """,
+    },
+    2: {
+        "topic": "RLHF Implementation Challenges and Best Practices",
+        "questions": """
             - What are the main technical challenges in implementing RLHF at scale?
             - How do different reward modeling approaches compare in effectiveness?
             - What are the alignment implications of various RLHF techniques?
             - How can we address issues like reward hacking and distributional shift?
-            """
-        },
-        3: {
-            "topic": "AI Governance Frameworks for Emerging Technologies",
-            "questions": """
+            """,
+    },
+    3: {
+        "topic": "AI Governance Frameworks for Emerging Technologies",
+        "questions": """
             - What governance frameworks are most suitable for rapidly advancing AI capabilities?
             - How can policy makers balance innovation with safety considerations?
             - What role should technical AI safety research play in policy development?
             - How can international coordination on AI governance be improved?
-            """
-        }
-    }
+            """,
+    },
+}
 
 print("🎯 ARENA AI Alignment Research Society")
 print("Choose a research topic or provide your own:")
 print()
 
 for num, info in sample_topics.items():
-        print(f"{num}. {info['topic']}")
+    print(f"{num}. {info['topic']}")
 print("4. Custom research topic")
 print()
 
 try:
-      choice = input("Enter your choice (1-4): ").strip()
+    choice = input("Enter your choice (1-4): ").strip()
 
-      if choice in ['1', '2', '3']:
-            topic_info = sample_topics[int(choice)]
-            result = society.run_research(
-                topic_info["topic"],
-                topic_info["questions"]
-            )
-      elif choice == '4':
-            custom_topic = input("Enter your research topic: ").strip()
-            custom_questions = input("Enter specific questions (optional): ").strip()
-            result = society.run_research(
-                custom_topic,
-                custom_questions if custom_questions else None
-            )
-      else:
-            print("Invalid choice. Running default research...")
-            result = society.run_research(sample_topics[1]["topic"], sample_topics[1]["questions"])
+    if choice in ['1', '2', '3']:
+        topic_info = sample_topics[int(choice)]
+        result = society.run_research(
+            topic_info["topic"], topic_info["questions"]
+        )
+    elif choice == '4':
+        custom_topic = input("Enter your research topic: ").strip()
+        custom_questions = input(
+            "Enter specific questions (optional): "
+        ).strip()
+        result = society.run_research(
+            custom_topic, custom_questions if custom_questions else None
+        )
+    else:
+        print("Invalid choice. Running default research...")
+        result = society.run_research(
+            sample_topics[1]["topic"], sample_topics[1]["questions"]
+        )
 
 except KeyboardInterrupt:
-        print("\n👋 Research session interrupted.")
+    print("\n👋 Research session interrupted.")
 except Exception as e:
-        print(f"❌ Error during research: {e}")
-
-
+    print(f"❌ Error during research: {e}")
 ```
 
 ## What this does:

@@ -341,8 +341,7 @@ class HybridBrowserToolkit(BaseToolkit):
                     if isinstance(outputs, dict):
                         for key, value in outputs.items():
                             logger.info(
-                                f"  - {key}: "
-                                f"{self._truncate_if_needed(value)}"
+                                f"  - {key}: {self._truncate_if_needed(value)}"
                             )
                     else:
                         logger.info(
@@ -753,15 +752,13 @@ class HybridBrowserToolkit(BaseToolkit):
             stability_time: float = 0.0
             if action_type in ["click", "type", "select", "enter"]:
                 logger.info(
-                    f"Waiting for page stability " f"after {action_type}..."
+                    f"Waiting for page stability after {action_type}..."
                 )
                 stability_start = time.time()
                 await self._wait_for_page_stability()
                 stability_time = time.time() - stability_start
                 logger.info(
-                    f"Page stability wait "
-                    f"completed in "
-                    f"{stability_time:.2f}s"
+                    f"Page stability wait completed in {stability_time:.2f}s"
                 )
                 page_load_time = stability_time
 
@@ -780,7 +777,7 @@ class HybridBrowserToolkit(BaseToolkit):
             )
             snapshot_time = time.time() - snapshot_start
             logger.info(
-                f"Post-action snapshot " f"captured in {snapshot_time:.2f}s"
+                f"Post-action snapshot captured in {snapshot_time:.2f}s"
             )
 
             # Check for snapshot quality and log warnings
@@ -1234,7 +1231,7 @@ class HybridBrowserToolkit(BaseToolkit):
         analysis_data = await self._get_unified_analysis()
         analysis_time = time.time() - analysis_start
         logger.info(
-            f"Page snapshot analysis " f"completed in {analysis_time:.2f}s"
+            f"Page snapshot analysis completed in {analysis_time:.2f}s"
         )
 
         snapshot_text = analysis_data.get("snapshotText", "")
@@ -1547,17 +1544,16 @@ class HybridBrowserToolkit(BaseToolkit):
                 logger.info(f"User input received after {wait_time:.2f}s")
                 result_msg = "User resumed."
             else:
-                logger.info("Waiting for user " "input (no timeout)")
+                logger.info("Waiting for user input (no timeout)")
                 start_time = time.time()
                 await _await_enter()
                 wait_time = time.time() - start_time
-                logger.info(f"User input received " f"after {wait_time:.2f}s")
+                logger.info(f"User input received after {wait_time:.2f}s")
                 result_msg = "User resumed."
         except asyncio.TimeoutError:
             wait_time = timeout_sec or 0.0
             logger.info(
-                f"User input timeout reached "
-                f"after {wait_time}s, auto-resuming"
+                f"User input timeout reached after {wait_time}s, auto-resuming"
             )
             result_msg = f"Timeout {timeout_sec}s reached, auto-resumed."
 

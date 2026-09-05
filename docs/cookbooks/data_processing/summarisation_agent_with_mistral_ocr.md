@@ -85,7 +85,6 @@ from getpass import getpass
 
 mistral_api_key = getpass('Enter your Mistral API key: ')
 os.environ['MISTRAL_API_KEY'] = mistral_api_key
-
 ```
 
 **Step 2: Upload your PDF or image file for OCR**
@@ -169,7 +168,7 @@ from camel.agents import ChatAgent
 # Initialize a ChatAgent
 agent = ChatAgent(
     system_message="You are a helpful document assistant.",  # Define the agent's role
-    model=mistral_model
+    model=mistral_model,
 )
 
 # Use the ChatAgent to generate insights based on the OCR output

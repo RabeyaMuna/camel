@@ -217,7 +217,7 @@ class OpenAIImageToolkit(BaseToolkit):
 
                 # Add index to filename when multiple images
                 if len(response.data) > 1:
-                    filename = f"{image_name}_{i+1}_{uuid.uuid4().hex}.png"
+                    filename = f"{image_name}_{i + 1}_{uuid.uuid4().hex}.png"
                 else:
                     filename = f"{image_name}_{uuid.uuid4().hex}.png"
 
@@ -228,9 +228,7 @@ class OpenAIImageToolkit(BaseToolkit):
 
                 results.append(f"Image saved to {image_path}")
             else:
-                error_msg = (
-                    f"No valid image data (URL or base64) found in image {i+1}"
-                )
+                error_msg = f"No valid image data (URL or base64) found in image {i + 1}"
                 logger.error(error_msg)
                 results.append(error_msg)
 
@@ -242,7 +240,7 @@ class OpenAIImageToolkit(BaseToolkit):
                 return (
                     f"{count} images {operation} successfully:\n"
                     + "\n".join(
-                        f"  {i+1}. {result}"
+                        f"  {i + 1}. {result}"
                         for i, result in enumerate(results)
                     )
                 )

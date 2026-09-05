@@ -95,6 +95,6 @@ def test_step(step_call_count=3):
                 f"it is a known issue of Huggingface ({ex!s})"
             )
             return
-        assert isinstance(response.msg, BaseMessage), f"Error in round {i+1}"
-        assert not response.terminated, f"Error in round {i+1}"
-        assert isinstance(response.info, dict), f"Error in round {i+1}"
+        assert isinstance(response.msg, BaseMessage), f"Error in round {i + 1}"
+        assert not response.terminated, f"Error in round {i + 1}"
+        assert isinstance(response.info, dict), f"Error in round {i + 1}"
