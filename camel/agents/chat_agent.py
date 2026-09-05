@@ -21,6 +21,7 @@ import uuid
 from collections import defaultdict
 from pathlib import Path
 from typing import (
+    cast,
     TYPE_CHECKING,
     Any,
     Callable,
@@ -36,6 +37,9 @@ from typing import (
 from openai import (
     AsyncStream,
     Stream,
+)
+from openai.types.chat import (
+    ChatCompletionMessageFunctionToolCall,
 )
 from pydantic import BaseModel, ValidationError
 
@@ -1402,9 +1406,15 @@ class ChatAgent(BaseAgent):
         if tool_calls := response.choices[0].message.tool_calls:
             tool_call_requests = []
             for tool_call in tool_calls:
-                tool_name = tool_call.function.name
-                tool_call_id = tool_call.id
-                args = json.loads(tool_call.function.arguments)
+                # Handle both FunctionToolCall and CustomToolCall
+                if not hasattr(tool_call, 'function'):
+                    continue
+                func_tool_call = cast(
+                    "ChatCompletionMessageFunctionToolCall", tool_call
+                )
+                tool_name = func_tool_call.function.name
+                tool_call_id = func_tool_call.id
+                args = json.loads(func_tool_call.function.arguments)
                 tool_call_request = ToolCallRequest(
                     tool_name=tool_name, args=args, tool_call_id=tool_call_id
                 )
@@ -1817,7 +1827,7 @@ class ChatAgent(BaseAgent):
         Returns:
             FastMCP: An MCP server instance that can be run.
         """
-        from mcp.server.fastmcp import FastMCP
+        from mcp.server.fastmcp import FastMCP  # type: ignore[attr-defined]
 
         # Combine dependencies
         all_dependencies = ["camel-ai[all]"]
