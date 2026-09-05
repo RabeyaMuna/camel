@@ -20,8 +20,8 @@ import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
 
-import mcp.types as types
 import pytest
+from mcp import types
 
 from camel.utils.mcp_client import (
     MCPClient,

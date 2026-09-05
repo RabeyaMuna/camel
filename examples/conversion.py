@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import List
 
 from camel.messages import BaseMessage, HermesFunctionFormatter
 from camel.messages.conversion import (
@@ -23,7 +22,7 @@ from camel.messages.func_message import FunctionCallingMessage
 
 def sharegpt_to_camel_messages(
     conversation: ShareGPTConversation,
-) -> List[BaseMessage]:
+) -> list[BaseMessage]:
     r"""Convert ShareGPT conversation to list of CAMEL messages"""
     return [
         BaseMessage.from_sharegpt(msg, HermesFunctionFormatter())
@@ -32,7 +31,7 @@ def sharegpt_to_camel_messages(
 
 
 def camel_messages_to_sharegpt(
-    messages: List[BaseMessage],
+    messages: list[BaseMessage],
 ) -> ShareGPTConversation:
     r"""Convert list of CAMEL messages to ShareGPT conversation"""
     sharegpt_messages = [

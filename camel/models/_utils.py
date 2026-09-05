@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import textwrap
-from typing import Optional, Type
 
 from pydantic import BaseModel
 
@@ -21,7 +20,7 @@ from camel.messages import OpenAIMessage
 
 def try_modify_message_with_format(
     message: OpenAIMessage,
-    response_format: Optional[Type[BaseModel]],
+    response_format: type[BaseModel] | None,
 ) -> None:
     r"""Modifies the content of the message to include the instruction of using
     the response format.

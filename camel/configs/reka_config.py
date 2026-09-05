@@ -13,8 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Optional, Union
-
 from camel.configs.base_config import BaseConfig
 
 
@@ -55,15 +53,15 @@ class RekaConfig(BaseConfig):
             (default: :obj:`None`)
     """
 
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    top_k: Optional[int] = None
-    max_tokens: Optional[int] = None
-    stop: Optional[Union[str, list[str]]] = None
-    seed: Optional[int] = None
-    frequency_penalty: Optional[float] = None
-    presence_penalty: Optional[float] = None
-    use_search_engine: Optional[bool] = None
+    temperature: float | None = None
+    top_p: float | None = None
+    top_k: int | None = None
+    max_tokens: int | None = None
+    stop: str | list[str] | None = None
+    seed: int | None = None
+    frequency_penalty: float | None = None
+    presence_penalty: float | None = None
+    use_search_engine: bool | None = None
 
 
 REKA_API_PARAMS = {param for param in RekaConfig.model_fields.keys()}

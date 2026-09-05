@@ -11,7 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 from colorama import Fore
 
@@ -48,7 +49,7 @@ class Human:
         self.logger_color = logger_color
         self.input_button = f"Input by {self.name}."
         self.kill_button = "Stop!!!"
-        self.options_dict: Dict[str, str] = dict()
+        self.options_dict: dict[str, str] = dict()
 
     def display_options(self, messages: Sequence[BaseMessage]) -> None:
         r"""Displays the options to the user.

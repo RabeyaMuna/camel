@@ -12,7 +12,8 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from collections.abc import Callable
+from typing import Any, Optional
 
 from openai import AsyncAzureOpenAI, AsyncStream, AzureOpenAI, Stream
 from pydantic import BaseModel
@@ -87,16 +88,16 @@ class AzureOpenAIModel(BaseModelBackend):
 
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        timeout: Optional[float] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        api_version: Optional[str] = None,
-        azure_deployment_name: Optional[str] = None,
+        model_type: ModelType | str,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        timeout: float | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        api_version: str | None = None,
+        azure_deployment_name: str | None = None,
         azure_ad_token_provider: Optional["AzureADTokenProvider"] = None,
-        azure_ad_token: Optional[str] = None,
+        azure_ad_token: str | None = None,
         max_retries: int = 3,
         **kwargs: Any,
     ) -> None:
@@ -194,10 +195,10 @@ class AzureOpenAIModel(BaseModelBackend):
     @observe()
     def _run(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
         r"""Runs inference of Azure OpenAI chat completion.
 
         Args:
@@ -230,7 +231,7 @@ class AzureOpenAIModel(BaseModelBackend):
             "response_format", None
         )
         if response_format:
-            result: Union[ChatCompletion, Stream[ChatCompletionChunk]] = (
+            result: ChatCompletion | Stream[ChatCompletionChunk] = (
                 self._request_parse(messages, response_format, tools)
             )
         else:
@@ -241,10 +242,10 @@ class AzureOpenAIModel(BaseModelBackend):
     @observe()
     async def _arun(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         r"""Runs inference of Azure OpenAI chat completion.
 
         Args:
@@ -277,9 +278,7 @@ class AzureOpenAIModel(BaseModelBackend):
             "response_format", None
         )
         if response_format:
-            result: Union[
-                ChatCompletion, AsyncStream[ChatCompletionChunk]
-            ] = await self._arequest_parse(messages, response_format, tools)
+            result: ChatCompletion | AsyncStream[ChatCompletionChunk] = await self._arequest_parse(messages, response_format, tools)
         else:
             result = await self._arequest_chat_completion(messages, tools)
 
@@ -287,9 +286,9 @@ class AzureOpenAIModel(BaseModelBackend):
 
     def _request_chat_completion(
         self,
-        messages: List[OpenAIMessage],
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
         request_config = self.model_config_dict.copy()
 
         if tools:
@@ -303,9 +302,9 @@ class AzureOpenAIModel(BaseModelBackend):
 
     async def _arequest_chat_completion(
         self,
-        messages: List[OpenAIMessage],
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         request_config = self.model_config_dict.copy()
 
         if tools:
@@ -319,9 +318,9 @@ class AzureOpenAIModel(BaseModelBackend):
 
     def _request_parse(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Type[BaseModel],
-        tools: Optional[List[Dict[str, Any]]] = None,
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel],
+        tools: list[dict[str, Any]] | None = None,
     ) -> ChatCompletion:
         import copy
 
@@ -342,9 +341,9 @@ class AzureOpenAIModel(BaseModelBackend):
 
     async def _arequest_parse(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Type[BaseModel],
-        tools: Optional[List[Dict[str, Any]]] = None,
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel],
+        tools: list[dict[str, Any]] | None = None,
     ) -> ChatCompletion:
         import copy
 

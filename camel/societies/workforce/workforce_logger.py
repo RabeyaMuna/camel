@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from camel.logger import get_logger
 from camel.types.agents import ToolCallingRecord
@@ -31,10 +31,10 @@ class WorkforceLogger:
             workforce_id (str): The unique identifier for the workforce.
         """
         self.workforce_id: str = workforce_id
-        self.log_entries: List[Dict[str, Any]] = []
-        self._task_hierarchy: Dict[str, Dict[str, Any]] = {}
-        self._worker_information: Dict[str, Dict[str, Any]] = {}
-        self._initial_worker_logs: List[Dict[str, Any]] = []
+        self.log_entries: list[dict[str, Any]] = []
+        self._task_hierarchy: dict[str, dict[str, Any]] = {}
+        self._worker_information: dict[str, dict[str, Any]] = {}
+        self._initial_worker_logs: list[dict[str, Any]] = []
 
     def _log_event(self, event_type: str, **kwargs: Any) -> None:
         r"""Internal method to create and store a log entry.
@@ -57,9 +57,9 @@ class WorkforceLogger:
         self,
         task_id: str,
         description: str,
-        parent_task_id: Optional[str] = None,
-        task_type: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        parent_task_id: str | None = None,
+        task_type: str | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         r"""Logs the creation of a new task."""
         self._log_event(
@@ -84,8 +84,8 @@ class WorkforceLogger:
     def log_task_decomposed(
         self,
         parent_task_id: str,
-        subtask_ids: List[str],
-        metadata: Optional[Dict[str, Any]] = None,
+        subtask_ids: list[str],
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         r"""Logs the decomposition of a task into subtasks."""
         self._log_event(
@@ -101,9 +101,9 @@ class WorkforceLogger:
         self,
         task_id: str,
         worker_id: str,
-        queue_time_seconds: Optional[float] = None,
-        dependencies: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        queue_time_seconds: float | None = None,
+        dependencies: list[str] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         r"""Logs the assignment of a task to a worker."""
         self._log_event(
@@ -126,7 +126,7 @@ class WorkforceLogger:
         self,
         task_id: str,
         worker_id: str,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         r"""Logs when a worker starts processing a task."""
         self._log_event(
@@ -142,10 +142,10 @@ class WorkforceLogger:
         self,
         task_id: str,
         worker_id: str,
-        result_summary: Optional[str] = None,
-        processing_time_seconds: Optional[float] = None,
-        token_usage: Optional[Dict[str, int]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        result_summary: str | None = None,
+        processing_time_seconds: float | None = None,
+        token_usage: dict[str, int] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         r"""Logs the successful completion of a task."""
         self._log_event(
@@ -181,8 +181,8 @@ class WorkforceLogger:
         task_id: str,
         error_message: str,
         error_type: str,
-        worker_id: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        worker_id: str | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         r"""Logs the failure of a task."""
         self._log_event(
@@ -209,7 +209,7 @@ class WorkforceLogger:
         worker_id: str,
         worker_type: str,
         role: str,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         r"""Logs the creation of a new worker."""
         self._log_event(
@@ -232,8 +232,8 @@ class WorkforceLogger:
     def log_worker_deleted(
         self,
         worker_id: str,
-        reason: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        reason: str | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         r"""Logs the deletion of a worker."""
         self._log_event(
@@ -269,8 +269,8 @@ class WorkforceLogger:
         self,
         queue_name: str,
         length: int,
-        pending_task_ids: Optional[List[str]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        pending_task_ids: list[str] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         r"""Logs the status of a task queue."""
         self._log_event(
@@ -305,17 +305,17 @@ class WorkforceLogger:
                     indent=4,
                     default=json_serializer_default,
                 )
-        except IOError as e:
+        except OSError as e:
             # Consider using camel.logger for this kind of internal error
             logger.error(f"Error dumping logs to JSON: {e}")
 
     def _get_all_tasks_in_hierarchy(
         self, task_id: str
-    ) -> Dict[str, Dict[str, Any]]:
+    ) -> dict[str, dict[str, Any]]:
         r"""Recursively collect all tasks in the hierarchy starting from
         task_id.
         """
-        result: Dict[str, Dict[str, Any]] = {}
+        result: dict[str, dict[str, Any]] = {}
         if task_id not in self._task_hierarchy:
             return result
 
@@ -478,9 +478,9 @@ class WorkforceLogger:
                 )
         return output_str
 
-    def get_kpis(self) -> Dict[str, Any]:
+    def get_kpis(self) -> dict[str, Any]:
         r"""Calculates and returns key performance indicators from the logs."""
-        kpis: Dict[str, Any] = {
+        kpis: dict[str, Any] = {
             'total_tasks_created': 0,
             'total_tasks_completed': 0,
             'total_tasks_failed': 0,
@@ -490,13 +490,13 @@ class WorkforceLogger:
             'total_workforce_running_time_seconds': 0.0,
         }
 
-        task_start_times: Dict[str, float] = {}
-        task_creation_timestamps: Dict[str, datetime] = {}
-        task_assignment_timestamps: Dict[str, datetime] = {}
-        first_timestamp: Optional[datetime] = None
-        last_timestamp: Optional[datetime] = None
+        task_start_times: dict[str, float] = {}
+        task_creation_timestamps: dict[str, datetime] = {}
+        task_assignment_timestamps: dict[str, datetime] = {}
+        first_timestamp: datetime | None = None
+        last_timestamp: datetime | None = None
 
-        tasks_handled_by_worker: Dict[str, int] = {}
+        tasks_handled_by_worker: dict[str, int] = {}
 
         # Helper function to check if a task is the main task (has no parent)
         def is_main_task(task_id: str) -> bool:

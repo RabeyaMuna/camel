@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
+from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel
 
@@ -94,12 +94,12 @@ class MistralModel(BaseModelBackend):
     @dependencies_required('mistralai')
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        timeout: Optional[float] = None,
+        model_type: ModelType | str,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        timeout: float | None = None,
         max_retries: int = 3,
         **kwargs: Any,
     ) -> None:
@@ -176,8 +176,8 @@ class MistralModel(BaseModelBackend):
 
     def _to_mistral_chatmessage(
         self,
-        messages: List[OpenAIMessage],
-    ) -> List["Messages"]:
+        messages: list[OpenAIMessage],
+    ) -> list["Messages"]:
         import uuid
 
         from mistralai.models import (
@@ -208,8 +208,8 @@ class MistralModel(BaseModelBackend):
                 )
                 for tool_call in tool_calls_list:
                     mistral_function_call = FunctionCall(
-                        name=tool_call["function"].get("name"),  # type: ignore[attr-defined]
-                        arguments=tool_call["function"].get("arguments"),  # type: ignore[attr-defined]
+                        name=tool_call["function"].get("name"),  # type: ignore[attr-defined,index]
+                        arguments=tool_call["function"].get("arguments"),  # type: ignore[attr-defined,index]
                     )
 
             tool_calls = None
@@ -260,10 +260,10 @@ class MistralModel(BaseModelBackend):
     @observe(as_type="generation")
     async def _arun(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         logger.warning(
             "Mistral does not support async inference, using sync "
             "inference instead."
@@ -327,9 +327,9 @@ class MistralModel(BaseModelBackend):
     @observe(as_type="generation")
     def _run(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
     ) -> ChatCompletion:
         r"""Runs inference of Mistral chat completion.
 
@@ -401,10 +401,10 @@ class MistralModel(BaseModelBackend):
 
     def _prepare_request(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
         request_config = self.model_config_dict.copy()
         if tools:
             request_config["tools"] = tools

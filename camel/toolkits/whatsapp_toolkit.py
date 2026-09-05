@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import requests
 
@@ -37,7 +37,7 @@ class WhatsAppToolkit(BaseToolkit):
         version (str): API version.
     """
 
-    def __init__(self, timeout: Optional[float] = None):
+    def __init__(self, timeout: float | None = None):
         r"""Initializes the WhatsAppToolkit."""
         super().__init__(timeout=timeout)
         self.base_url = "https://graph.facebook.com"
@@ -56,7 +56,7 @@ class WhatsAppToolkit(BaseToolkit):
     @retry_on_error()
     def send_message(
         self, to: str, message: str
-    ) -> Union[Dict[str, Any], str]:
+    ) -> dict[str, Any] | str:
         r"""Sends a text message to a specified WhatsApp number.
 
         Args:
@@ -90,7 +90,7 @@ class WhatsAppToolkit(BaseToolkit):
             return f"Failed to send message: {e!s}"
 
     @retry_on_error()
-    def get_message_templates(self) -> Union[List[Dict[str, Any]], str]:
+    def get_message_templates(self) -> list[dict[str, Any]] | str:
         r"""Retrieves all message templates for the WhatsApp Business account.
 
         Returns:
@@ -112,7 +112,7 @@ class WhatsAppToolkit(BaseToolkit):
             return f"Failed to retrieve message templates: {e!s}"
 
     @retry_on_error()
-    def get_business_profile(self) -> Union[Dict[str, Any], str]:
+    def get_business_profile(self) -> dict[str, Any] | str:
         r"""Retrieves the WhatsApp Business profile information.
 
         Returns:
@@ -143,7 +143,7 @@ class WhatsAppToolkit(BaseToolkit):
         except Exception as e:
             return f"Failed to retrieve business profile: {e!s}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

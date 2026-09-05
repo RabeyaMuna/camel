@@ -18,7 +18,6 @@ from __future__ import annotations
 import io
 import tempfile
 from pathlib import Path
-from typing import List, Optional
 from urllib.parse import urlparse
 
 from PIL import Image
@@ -74,9 +73,9 @@ class VideoDownloaderToolkit(BaseToolkit):
     @dependencies_required("yt_dlp", "ffmpeg")
     def __init__(
         self,
-        download_directory: Optional[str] = None,
-        cookies_path: Optional[str] = None,
-        timeout: Optional[float] = None,
+        download_directory: str | None = None,
+        cookies_path: str | None = None,
+        timeout: float | None = None,
     ) -> None:
         super().__init__(timeout=timeout)
         self._cleanup = download_directory is None
@@ -173,7 +172,7 @@ class VideoDownloaderToolkit(BaseToolkit):
 
     def get_video_screenshots(
         self, video_path: str, amount: int
-    ) -> List[Image.Image]:
+    ) -> list[Image.Image]:
         r"""Capture screenshots from the video at specified timestamps or by
         dividing the video into equal parts if an integer is provided.
 
@@ -207,7 +206,7 @@ class VideoDownloaderToolkit(BaseToolkit):
 
         return images
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

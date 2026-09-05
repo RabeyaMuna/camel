@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import Any, Dict, Optional
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -32,8 +32,8 @@ class Firecrawl:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        api_url: Optional[str] = None,
+        api_key: str | None = None,
+        api_url: str | None = None,
     ) -> None:
         from firecrawl import FirecrawlApp
 
@@ -45,7 +45,7 @@ class Firecrawl:
     def crawl(
         self,
         url: str,
-        params: Optional[Dict[str, Any]] = None,
+        params: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> Any:
         r"""Crawl a URL and all accessible subpages. Customize the crawl by
@@ -77,7 +77,7 @@ class Firecrawl:
         except Exception as e:
             raise RuntimeError(f"Failed to crawl the URL: {e}")
 
-    def check_crawl_job(self, job_id: str) -> Dict:
+    def check_crawl_job(self, job_id: str) -> dict:
         r"""Check the status of a crawl job.
 
         Args:
@@ -98,8 +98,8 @@ class Firecrawl:
     def scrape(
         self,
         url: str,
-        params: Optional[Dict[str, str]] = None,
-    ) -> Dict[str, str]:
+        params: dict[str, str] | None = None,
+    ) -> dict[str, str]:
         r"""To scrape a single URL. This function supports advanced scraping
         by setting different parameters and returns the full scraped data as a
         dictionary.
@@ -122,7 +122,7 @@ class Firecrawl:
         except Exception as e:
             raise RuntimeError(f"Failed to scrape the URL: {e}")
 
-    def structured_scrape(self, url: str, response_format: BaseModel) -> Dict:
+    def structured_scrape(self, url: str, response_format: BaseModel) -> dict:
         r"""Use LLM to extract structured data from given URL.
 
         Args:
@@ -151,7 +151,7 @@ class Firecrawl:
             raise RuntimeError(f"Failed to perform structured scrape: {e}")
 
     def map_site(
-        self, url: str, params: Optional[Dict[str, Any]] = None
+        self, url: str, params: dict[str, Any] | None = None
     ) -> list:
         r"""Map a website to retrieve all accessible URLs.
 

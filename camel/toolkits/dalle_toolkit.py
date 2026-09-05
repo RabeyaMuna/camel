@@ -19,7 +19,6 @@ import base64
 import os
 import uuid
 from io import BytesIO
-from typing import List, Optional
 
 from openai import OpenAI
 from PIL import Image
@@ -40,7 +39,7 @@ class DalleToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         r"""Initializes a new instance of the DalleToolkit class.
 
@@ -51,7 +50,7 @@ class DalleToolkit(BaseToolkit):
         """
         super().__init__(timeout=timeout)
 
-    def base64_to_image(self, base64_string: str) -> Optional[Image.Image]:
+    def base64_to_image(self, base64_string: str) -> Image.Image | None:
         r"""Converts a base64 encoded string into a PIL Image object.
 
         Args:
@@ -164,7 +163,7 @@ class DalleToolkit(BaseToolkit):
 
         return image_path
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

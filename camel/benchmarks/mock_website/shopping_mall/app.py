@@ -17,12 +17,12 @@ import logging
 import os
 import sys  # Import the sys module
 from logging.handlers import RotatingFileHandler
-from typing import Any, Dict, List
+from typing import Any
 
 app = None
-products: List[Dict[str, Any]] = []
-products_by_id: Dict[int, Dict[str, Any]] = {}
-cart: List[Dict[str, Any]] = []
+products: list[dict[str, Any]] = []
+products_by_id: dict[int, dict[str, Any]] = {}
+cart: list[dict[str, Any]] = []
 ACTION_COUNT: int = 0
 
 
@@ -116,7 +116,7 @@ def check_task_completion(current_cart_raw, ground_truth_spec):
     # ground_truth_dict (already covered by length check if all ground truth
     # items are found)
     # For robustness, explicitly check this too:
-    for pid_current in current_cart_grouped.keys():
+    for pid_current in current_cart_grouped:
         if pid_current not in ground_truth_dict:
             return False
 

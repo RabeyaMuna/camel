@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import asyncio
-from typing import Optional
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -32,7 +31,7 @@ class TestVerifier(BaseVerifier):
         self.cleanup_called = True
 
     async def _verify_implementation(
-        self, solution: str, ground_truth: Optional[str] = None
+        self, solution: str, ground_truth: str | None = None
     ) -> VerificationResult:
         r"""Simple implementation that returns success or failure based on
         input.

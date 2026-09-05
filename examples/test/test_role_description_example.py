@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from mock import patch
+from unittest.mock import patch
 
 import examples.role_description.role_generation
 import examples.role_description.role_playing_with_role_description

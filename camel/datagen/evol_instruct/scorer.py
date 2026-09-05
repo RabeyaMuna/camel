@@ -14,7 +14,6 @@
 
 import json
 from abc import ABC, abstractmethod
-from typing import Dict, Optional
 
 from pydantic import BaseModel, Field
 
@@ -28,16 +27,15 @@ class BaseScorer(ABC):
     @abstractmethod
     def score(
         self, reference_prompt: str, candidate_prompt: str
-    ) -> Dict[str, int]:
+    ) -> dict[str, int]:
         r"""Compare a candidate prompt against a reference prompt and
         return a tuple of scores. The higher the score, the better.
         For example, (diversity, difficulty, feasibility).
         """
-        pass
 
 
 class MathScorer(BaseScorer):
-    def __init__(self, agent: Optional[ChatAgent] = None):
+    def __init__(self, agent: ChatAgent | None = None):
         self.system_msg = """
 You are an evaluator for math problems. Your task is to compare a new math 
 problem against a reference math problem by trying to solve it, and rate it 
@@ -79,7 +77,7 @@ Respond with a JSON object like:
 
     def score(
         self, reference_problem: str, new_problem: str
-    ) -> Dict[str, int]:
+    ) -> dict[str, int]:
         r"""Evaluates the new math problem relative to the reference math
         problem.
 
@@ -102,7 +100,7 @@ Respond with a JSON object like:
 
 
 class GeneralScorer(BaseScorer):
-    def __init__(self, agent: Optional[ChatAgent] = None):
+    def __init__(self, agent: ChatAgent | None = None):
         self.system_msg = (
             "You are an evaluator for problems in various domains. Your task "
             "is to compare a new problem against a reference problem, and rate"
@@ -141,7 +139,7 @@ class GeneralScorer(BaseScorer):
 
     def score(
         self, reference_problem: str, new_problem: str
-    ) -> Dict[str, int]:
+    ) -> dict[str, int]:
         r"""Evaluates the new problem against the reference problem using
         structured scoring.
 

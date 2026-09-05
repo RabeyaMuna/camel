@@ -11,16 +11,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
+from collections.abc import Callable
 from functools import wraps
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Union
 
 if TYPE_CHECKING:
     from pandas import DataFrame
     from pandasai import SmartDataframe
 
 
-def check_suffix(valid_suffixs: List[str]) -> Callable:
+def check_suffix(valid_suffixs: list[str]) -> Callable:
     r"""A decorator to check the file suffix of a given file path.
 
     Args:
@@ -33,7 +34,7 @@ def check_suffix(valid_suffixs: List[str]) -> Callable:
     def decorator(func: Callable):
         @wraps(func)
         def wrapper(
-            self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+            self, file_path: str, *args: Any, **kwargs: dict[str, Any]
         ) -> "DataFrame":
             suffix = Path(file_path).suffix
             if suffix not in valid_suffixs:
@@ -48,7 +49,7 @@ def check_suffix(valid_suffixs: List[str]) -> Callable:
 
 
 class PandasReader:
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         r"""Initializes the PandasReader class.
 
         Args:
@@ -80,7 +81,7 @@ class PandasReader:
         self,
         data: Union["DataFrame", str],
         *args: Any,
-        **kwargs: Dict[str, Any],
+        **kwargs: dict[str, Any],
     ) -> Union["DataFrame", "SmartDataframe"]:
         r"""Loads a file or DataFrame and returns a DataFrame or
         SmartDataframe object.
@@ -124,7 +125,7 @@ class PandasReader:
 
     @check_suffix([".csv"])
     def read_csv(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads a CSV file and returns a DataFrame.
 
@@ -142,7 +143,7 @@ class PandasReader:
 
     @check_suffix([".xlsx", ".xls"])
     def read_excel(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads an Excel file and returns a DataFrame.
 
@@ -160,7 +161,7 @@ class PandasReader:
 
     @check_suffix([".json"])
     def read_json(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads a JSON file and returns a DataFrame.
 
@@ -178,7 +179,7 @@ class PandasReader:
 
     @check_suffix([".parquet"])
     def read_parquet(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads a Parquet file and returns a DataFrame.
 
@@ -194,7 +195,7 @@ class PandasReader:
 
         return pd.read_parquet(file_path, *args, **kwargs)
 
-    def read_sql(self, *args: Any, **kwargs: Dict[str, Any]) -> "DataFrame":
+    def read_sql(self, *args: Any, **kwargs: dict[str, Any]) -> "DataFrame":
         r"""Reads a SQL file and returns a DataFrame.
 
         Args:
@@ -209,7 +210,7 @@ class PandasReader:
         return pd.read_sql(*args, **kwargs)
 
     def read_table(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads a table and returns a DataFrame.
 
@@ -226,7 +227,7 @@ class PandasReader:
         return pd.read_table(file_path, *args, **kwargs)
 
     def read_clipboard(
-        self, *args: Any, **kwargs: Dict[str, Any]
+        self, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads a clipboard and returns a DataFrame.
 
@@ -243,7 +244,7 @@ class PandasReader:
 
     @check_suffix([".html"])
     def read_html(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads an HTML file and returns a DataFrame.
 
@@ -261,7 +262,7 @@ class PandasReader:
 
     @check_suffix([".feather"])
     def read_feather(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads a Feather file and returns a DataFrame.
 
@@ -279,7 +280,7 @@ class PandasReader:
 
     @check_suffix([".dta"])
     def read_stata(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads a Stata file and returns a DataFrame.
 
@@ -297,7 +298,7 @@ class PandasReader:
 
     @check_suffix([".sas"])
     def read_sas(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads a SAS file and returns a DataFrame.
 
@@ -315,7 +316,7 @@ class PandasReader:
 
     @check_suffix([".pkl"])
     def read_pickle(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads a Pickle file and returns a DataFrame.
 
@@ -333,7 +334,7 @@ class PandasReader:
 
     @check_suffix([".h5"])
     def read_hdf(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads an HDF file and returns a DataFrame.
 
@@ -351,7 +352,7 @@ class PandasReader:
 
     @check_suffix([".orc"])
     def read_orc(
-        self, file_path: str, *args: Any, **kwargs: Dict[str, Any]
+        self, file_path: str, *args: Any, **kwargs: dict[str, Any]
     ) -> "DataFrame":
         r"""Reads an ORC file and returns a DataFrame.
 

@@ -11,12 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import List
 
 import pytest
 from _pytest.config import Config
 from _pytest.nodes import Item
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # type: ignore[import-not-found]
 
 load_dotenv()
 
@@ -47,7 +46,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     )
 
 
-def pytest_collection_modifyitems(config: Config, items: List[Item]) -> None:
+def pytest_collection_modifyitems(config: Config, items: list[Item]) -> None:
     if config.getoption("--llm-test-only"):
         skip_fast = pytest.mark.skip(reason="Skipped for llm test only")
         for item in items:

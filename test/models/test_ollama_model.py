@@ -48,10 +48,10 @@ def test_ollama_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into Ollama model backend."
-            )
+            
         ),
     ):
         _ = OllamaModel(model_type, model_config_dict)

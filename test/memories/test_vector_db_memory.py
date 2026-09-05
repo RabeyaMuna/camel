@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import random
 from datetime import datetime
-from typing import Dict, List, Tuple
 
 import pytest
 
@@ -145,8 +144,8 @@ def memory_and_message(request):
     indirect=True,
 )
 def test_vector_db_memory(
-    memory_and_message: Tuple[
-        VectorDBMemory, List[Dict[str, str]], List[Dict[str, str]]
+    memory_and_message: tuple[
+        VectorDBMemory, list[dict[str, str]], list[dict[str, str]]
     ],
 ):
     memory, messages, questions = memory_and_message

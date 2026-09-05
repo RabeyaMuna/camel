@@ -47,8 +47,7 @@ def test_base64_to_image_valid(dalle_toolkit):
     valid_base64_string = "iVBORw0KGgoAAAANSUhEUgAAAAUA\
                             AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO\
                             9TXL0Y4OHwAAAABJRU5ErkJggg=="
-    if valid_base64_string.startswith('data:image/png;base64,'):
-        valid_base64_string = valid_base64_string[22:]
+    valid_base64_string = valid_base64_string.removeprefix('data:image/png;base64,')
 
     image = dalle_toolkit.base64_to_image(valid_base64_string)
 

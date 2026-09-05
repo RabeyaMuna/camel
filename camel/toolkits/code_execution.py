@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import List, Literal, Optional, Union
+from typing import Literal
 
 from camel.interpreters import (
     DockerInterpreter,
@@ -52,9 +52,9 @@ class CodeExecutionToolkit(BaseToolkit):
         ] = "subprocess",
         verbose: bool = False,
         unsafe_mode: bool = False,
-        import_white_list: Optional[List[str]] = None,
+        import_white_list: list[str] | None = None,
         require_confirm: bool = False,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ) -> None:
         super().__init__(timeout=timeout)
         self.verbose = verbose
@@ -62,13 +62,7 @@ class CodeExecutionToolkit(BaseToolkit):
         self.import_white_list = import_white_list or list()
 
         # Type annotation for interpreter to allow all possible types
-        self.interpreter: Union[
-            InternalPythonInterpreter,
-            JupyterKernelInterpreter,
-            DockerInterpreter,
-            SubprocessInterpreter,
-            E2BInterpreter,
-        ]
+        self.interpreter: InternalPythonInterpreter | JupyterKernelInterpreter | DockerInterpreter | SubprocessInterpreter | E2BInterpreter
 
         if sandbox == "internal_python":
             self.interpreter = InternalPythonInterpreter(
@@ -120,7 +114,7 @@ class CodeExecutionToolkit(BaseToolkit):
             print(content)
         return content
 
-    def execute_command(self, command: str) -> Union[str, tuple[str, str]]:
+    def execute_command(self, command: str) -> str | tuple[str, str]:
         r"""Execute a command can be used to resolve the dependency of the
         code. Useful if there's dependency issues when you try to execute code.
 
@@ -139,7 +133,7 @@ class CodeExecutionToolkit(BaseToolkit):
             print(content)
         return content
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

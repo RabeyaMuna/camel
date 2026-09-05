@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import uuid
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import pytest
 
@@ -84,7 +84,7 @@ def test_parse_file_or_url(unstructured_instance: UnstructuredIO):
 # Test the clean_text_data method
 def test_clean_text_data(unstructured_instance: UnstructuredIO):
     # Test with a valid cleaning option
-    test_options: List[Tuple[str, Dict[str, Any]]] = [
+    test_options: list[tuple[str, dict[str, Any]]] = [
         ("clean_extra_whitespace", {})
     ]
     cleaned_text = unstructured_instance.clean_text_data(

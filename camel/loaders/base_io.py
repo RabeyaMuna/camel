@@ -17,7 +17,7 @@ from abc import ABC, abstractmethod
 from copy import deepcopy
 from hashlib import md5
 from io import BytesIO
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from camel.utils import dependencies_required
 
@@ -81,8 +81,8 @@ class File(ABC):
         self,
         name: str,
         file_id: str,
-        metadata: Optional[Dict[str, Any]] = None,
-        docs: Optional[List[Dict[str, Any]]] = None,
+        metadata: dict[str, Any] | None = None,
+        docs: list[dict[str, Any]] | None = None,
         raw_bytes: bytes = b"",
     ):
         self.name = name
@@ -104,7 +104,6 @@ class File(ABC):
         Returns:
             File: A File object.
         """
-        pass
 
     @classmethod
     def from_raw_bytes(cls, raw_bytes: bytes, filename: str) -> "File":

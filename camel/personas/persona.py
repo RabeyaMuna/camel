@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 import uuid
-from typing import ClassVar, Optional, Union
+from typing import ClassVar
 
 from pydantic import BaseModel, ConfigDict, Field, PrivateAttr
 
@@ -39,20 +39,20 @@ class Persona(BaseModel):
             settings.
     """
 
-    name: Optional[str] = None
-    description: Optional[str] = None
+    name: str | None = None
+    description: str | None = None
     _id: uuid.UUID = PrivateAttr(default_factory=uuid.uuid4)
 
     # Field with default_factory to avoid circular import issues
     # Union type allows either TextPrompt or str
-    text_to_persona_prompt: Union[TextPrompt, str] = Field(
+    text_to_persona_prompt: TextPrompt | str = Field(
         default_factory=lambda: PersonaHubPrompt.TEXT_TO_PERSONA,
         description="Text to Persona Prompt",
     )
 
     # Similar to text_to_persona_prompt, using default_factory for lazy
     # evaluation
-    persona_to_persona_prompt: Union[TextPrompt, str] = Field(
+    persona_to_persona_prompt: TextPrompt | str = Field(
         default_factory=lambda: PersonaHubPrompt.PERSONA_TO_PERSONA,
         description="Persona to Persona Prompt",
     )

@@ -14,7 +14,6 @@
 
 import os
 import tempfile
-from typing import List, Union
 
 from camel.agents import ChatAgent
 from camel.configs import ChatGPTConfig
@@ -51,7 +50,7 @@ agent = ChatAgent(
 
 # --- 1. Create a new workbook ---
 print("--- 1. Creating a new workbook ---")
-initial_data: List[List[Union[str, int]]] = [
+initial_data: list[list[str | int]] = [
     ['Name', 'Age', 'City', 'Department'],
     ['Alice', 25, 'New York', 'Engineering'],
     ['Bob', 30, 'San Francisco', 'Marketing'],

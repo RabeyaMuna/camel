@@ -14,7 +14,6 @@
 import copy
 import json
 from datetime import datetime
-from typing import List
 
 import pytest
 from jsonschema.exceptions import SchemaError
@@ -29,7 +28,7 @@ def test_get_openai_tool_schema():
         any_para,
         str_para: str,
         int_para: int,
-        list_para: List[int],
+        list_para: list[int],
         float_para: float,
         datatime_para: datetime,
         *args,

@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from mistralai.models import OCRResponse
@@ -33,8 +33,8 @@ class MistralReader:
     )
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        model: Optional[str] = "mistral-ocr-latest",
+        api_key: str | None = None,
+        model: str | None = "mistral-ocr-latest",
     ) -> None:
         r"""Initialize the MistralReader.
 
@@ -76,8 +76,8 @@ class MistralReader:
         self,
         file_path: str,
         is_image: bool = False,
-        pages: Optional[List[int]] = None,
-        include_image_base64: Optional[bool] = None,
+        pages: list[int] | None = None,
+        include_image_base64: bool | None = None,
     ) -> "OCRResponse":
         r"""Converts the given file to Markdown format.
 

@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Dict, List, Optional
 
 from camel.loaders.markitdown import MarkItDownLoader
 from camel.logger import get_logger
@@ -29,11 +28,11 @@ class MarkItDownToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         super().__init__(timeout=timeout)
 
-    def load_files(self, file_paths: List[str]) -> Dict[str, str]:
+    def load_files(self, file_paths: list[str]) -> dict[str, str]:
         r"""Scrapes content from a list of files and converts it to Markdown.
 
         This function takes a list of local file paths, attempts to convert
@@ -65,7 +64,7 @@ class MarkItDownToolkit(BaseToolkit):
             file_paths=file_paths, parallel=True
         )
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

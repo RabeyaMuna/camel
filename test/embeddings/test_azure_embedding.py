@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 
-from typing import List
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -23,12 +22,12 @@ from camel.types import EmbeddingModelType
 
 
 class MockEmbeddingData:
-    def __init__(self, embedding: List[float]):
+    def __init__(self, embedding: list[float]):
         self.embedding = embedding
 
 
 class MockResponse:
-    def __init__(self, data: List[MockEmbeddingData]):
+    def __init__(self, data: list[MockEmbeddingData]):
         self.data = data
 
 

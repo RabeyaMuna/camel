@@ -52,10 +52,10 @@ def test_anthropic_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into Anthropic model backend."
-            )
+            
         ),
     ):
         _ = AnthropicModel(model_type, model_config_dict)

@@ -20,7 +20,7 @@ import re
 import string
 import uuid
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Protocol, Union
+from typing import Any, Literal, Protocol
 
 from tqdm import tqdm
 
@@ -38,8 +38,8 @@ class RetrieverProtocol(Protocol):
     """
 
     def retrieve(
-        self, query: str, contents: List[str], **kwargs: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, query: str, contents: list[str], **kwargs: dict[str, Any]
+    ) -> dict[str, Any]:
         r"""Retrieve the relevant content for the query.
 
         Args:
@@ -73,8 +73,8 @@ class DefaultGAIARetriever(AutoRetriever):
     """
 
     def retrieve(
-        self, query: str, contents: List[str], **kwargs: Any
-    ) -> Dict[str, Any]:
+        self, query: str, contents: list[str], **kwargs: Any
+    ) -> dict[str, Any]:
         r"""Retrieve the content based on the query.
 
         Args:
@@ -131,7 +131,7 @@ class GAIABenchmark(BaseBenchmark):
         self,
         data_dir: str,
         save_to: str,
-        retriever: Optional[RetrieverProtocol] = None,
+        retriever: RetrieverProtocol | None = None,
         processes: int = 1,
     ):
         r"""Initialize the GAIA benchmark.
@@ -201,10 +201,10 @@ class GAIABenchmark(BaseBenchmark):
         self,
         agent: ChatAgent,
         on: Literal["train", "valid", "test"],
-        level: Union[int, List[int], Literal["all"]],
+        level: int | list[int] | Literal["all"],
         randomize: bool = False,
-        subset: Optional[int] = None,
-    ) -> Dict[str, Any]:
+        subset: int | None = None,
+    ) -> dict[str, Any]:
         r"""Run the benchmark.
 
         Args:
@@ -271,7 +271,7 @@ class GAIABenchmark(BaseBenchmark):
 
         return self._generate_summary()
 
-    def _prepare_task(self, task: Dict[str, Any]) -> bool:
+    def _prepare_task(self, task: dict[str, Any]) -> bool:
         r"""Prepare the task by validating and enriching its data."""
         if task["file_name"]:
             file_path = Path(task["file_name"])
@@ -300,7 +300,7 @@ class GAIABenchmark(BaseBenchmark):
                 return False
         return True
 
-    def _create_user_message(self, task: Dict[str, Any]) -> BaseMessage:
+    def _create_user_message(self, task: dict[str, Any]) -> BaseMessage:
         r"""Create a user message from a task."""
         return BaseMessage.make_user_message(
             role_name="User",
@@ -310,7 +310,7 @@ class GAIABenchmark(BaseBenchmark):
     def _process_result(
         self,
         agent: ChatAgent,
-        task: Dict[str, Any],
+        task: dict[str, Any],
         result: Any,
         file_obj: Any,
     ) -> None:
@@ -338,7 +338,7 @@ class GAIABenchmark(BaseBenchmark):
         file_obj.flush()
 
     def _handle_error(
-        self, task: Dict[str, Any], error: Exception, file_obj: Any
+        self, task: dict[str, Any], error: Exception, file_obj: Any
     ) -> None:
         r"""Handle errors encountered during task processing."""
         logger.warning(f"Error processing task {task['task_id']}: {error}")
@@ -358,7 +358,7 @@ class GAIABenchmark(BaseBenchmark):
         )
         file_obj.flush()
 
-    def _generate_summary(self) -> Dict[str, Any]:
+    def _generate_summary(self) -> dict[str, Any]:
         r"""Generate and return a summary of the benchmark results."""
         return {
             "total": len(self._results),
@@ -433,7 +433,7 @@ class GAIABenchmark(BaseBenchmark):
             return float("inf")
 
     def split_string(
-        self, s: str, char_list: Optional[List[str]] = None
+        self, s: str, char_list: list[str] | None = None
     ) -> list[str]:
         r"""Split a string based on a list of characters.
 

@@ -13,8 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import List, Optional, Union
-
 from pydantic import BaseModel, ConfigDict, Field
 
 try:
@@ -33,7 +31,7 @@ class Node(BaseModel):
             the node.
     """
 
-    id: Union[str, int]
+    id: str | int
     type: str = "Node"
     properties: dict = Field(default_factory=dict)
 
@@ -53,7 +51,7 @@ class Relationship(BaseModel):
     subj: Node
     obj: Node
     type: str = "Relationship"
-    timestamp: Optional[str] = None
+    timestamp: str | None = None
     properties: dict = Field(default_factory=dict)
 
 
@@ -70,8 +68,8 @@ class GraphElement(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    nodes: List[Node]
-    relationships: List[Relationship]
+    nodes: list[Node]
+    relationships: list[Relationship]
     source: Element
 
     def __post_init__(self):

@@ -15,7 +15,7 @@ import json
 import os
 import time
 import uuid
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any
 
 import httpx
 from openai import AsyncOpenAI, AsyncStream, OpenAI, Stream
@@ -101,12 +101,12 @@ class SambaModel(BaseModelBackend):
     )
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        timeout: Optional[float] = None,
+        model_type: ModelType | str,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        timeout: float | None = None,
         max_retries: int = 3,
         **kwargs: Any,
     ) -> None:
@@ -189,10 +189,10 @@ class SambaModel(BaseModelBackend):
     @observe(as_type="generation")
     async def _arun(  # type: ignore[misc]
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         r"""Runs SambaNova's service.
 
         Args:
@@ -242,10 +242,10 @@ class SambaModel(BaseModelBackend):
     @observe(as_type="generation")
     def _run(  # type: ignore[misc]
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
         r"""Runs SambaNova's service.
 
         Args:
@@ -291,7 +291,7 @@ class SambaModel(BaseModelBackend):
             return response
 
     def _run_streaming(
-        self, messages: List[OpenAIMessage]
+        self, messages: list[OpenAIMessage]
     ) -> Stream[ChatCompletionChunk]:
         r"""Handles streaming inference with SambaNova's API.
 
@@ -340,7 +340,7 @@ class SambaModel(BaseModelBackend):
         raise RuntimeError(f"Unknown URL: {self._url}")
 
     def _run_non_streaming(
-        self, messages: List[OpenAIMessage]
+        self, messages: list[OpenAIMessage]
     ) -> ChatCompletion:
         r"""Handles non-streaming inference with SambaNova's API.
 
@@ -463,7 +463,7 @@ class SambaModel(BaseModelBackend):
                 raise RuntimeError(f"HTTP request failed: {raw_text}")
 
     def _sambaverse_to_openai_response(
-        self, samba_response: Dict[str, Any]
+        self, samba_response: dict[str, Any]
     ) -> ChatCompletion:
         r"""Converts SambaVerse API response into an OpenAI-compatible
         response.
@@ -522,7 +522,7 @@ class SambaModel(BaseModelBackend):
         return self.model_config_dict.get('stream', False)
 
     async def _arun_streaming(
-        self, messages: List[OpenAIMessage]
+        self, messages: list[OpenAIMessage]
     ) -> AsyncStream[ChatCompletionChunk]:
         r"""Handles streaming inference with SambaNova's API.
 
@@ -571,7 +571,7 @@ class SambaModel(BaseModelBackend):
         raise RuntimeError(f"Unknown URL: {self._url}")
 
     async def _arun_non_streaming(
-        self, messages: List[OpenAIMessage]
+        self, messages: list[OpenAIMessage]
     ) -> ChatCompletion:
         r"""Handles non-streaming inference with SambaNova's API.
 

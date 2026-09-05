@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Dict, Generator, List, Optional, Set, Tuple
+from collections.abc import Generator
 
 from camel.messages import BaseMessage
 from camel.prompts import PromptTemplateGenerator, TextPrompt
@@ -34,10 +34,10 @@ class SystemMessageGenerator:
     def __init__(
         self,
         task_type: TaskType = TaskType.AI_SOCIETY,
-        sys_prompts: Optional[Dict[RoleType, str]] = None,
-        sys_msg_meta_dict_keys: Optional[Set[str]] = None,
+        sys_prompts: dict[RoleType, str] | None = None,
+        sys_msg_meta_dict_keys: set[str] | None = None,
     ) -> None:
-        self.sys_prompts: Dict[RoleType, str]
+        self.sys_prompts: dict[RoleType, str]
 
         if sys_prompts is not None:
             self.sys_prompts = sys_prompts
@@ -82,7 +82,7 @@ class SystemMessageGenerator:
         if RoleType.DEFAULT not in self.sys_prompts:
             self.sys_prompts[RoleType.DEFAULT] = "You are a helpful assistant."
 
-    def validate_meta_dict_keys(self, meta_dict: Dict[str, str]) -> None:
+    def validate_meta_dict_keys(self, meta_dict: dict[str, str]) -> None:
         r"""Validates the keys of the meta_dict.
 
         Args:
@@ -97,8 +97,8 @@ class SystemMessageGenerator:
 
     def from_dict(
         self,
-        meta_dict: Dict[str, str],
-        role_tuple: Tuple[str, RoleType] = ("", RoleType.DEFAULT),
+        meta_dict: dict[str, str],
+        role_tuple: tuple[str, RoleType] = ("", RoleType.DEFAULT),
     ) -> BaseMessage:
         r"""Generates a system message from a dictionary.
 
@@ -124,9 +124,9 @@ class SystemMessageGenerator:
 
     def from_dicts(
         self,
-        meta_dicts: List[Dict[str, str]],
-        role_tuples: List[Tuple[str, RoleType]],
-    ) -> List[BaseMessage]:
+        meta_dicts: list[dict[str, str]],
+        role_tuples: list[tuple[str, RoleType]],
+    ) -> list[BaseMessage]:
         r"""Generates a list of system messages from a list of dictionaries.
 
         Args:
@@ -173,12 +173,12 @@ class RoleNameGenerator:
         self,
         assistant_role_names_path: str = "data/ai_society/assistant_roles.txt",
         user_role_names_path: str = "data/ai_society/user_roles.txt",
-        assistant_role_names: Optional[List[str]] = None,
-        user_role_names: Optional[List[str]] = None,
+        assistant_role_names: list[str] | None = None,
+        user_role_names: list[str] | None = None,
     ) -> None:
         if assistant_role_names is None:
             with open(assistant_role_names_path, "r") as f:
-                assistant_role_names_: List[str] = f.read().splitlines()
+                assistant_role_names_: list[str] = f.read().splitlines()
                 self.assistant_role_names = [
                     " ".join(name.split(" ")[1:])
                     for name in assistant_role_names_
@@ -188,14 +188,14 @@ class RoleNameGenerator:
 
         if user_role_names is None:
             with open(user_role_names_path, "r") as f:
-                user_role_names_: List[str] = f.read().splitlines()
+                user_role_names_: list[str] = f.read().splitlines()
                 self.user_role_names = [
                     " ".join(name.split(" ")[1:]) for name in user_role_names_
                 ]
         else:
             self.user_role_names = user_role_names
 
-    def from_role_files(self) -> Generator[Tuple, None, None]:
+    def from_role_files(self) -> Generator[tuple, None, None]:
         r"""Generate role names from the file.
 
         Returns:
@@ -232,7 +232,7 @@ class AISocietyTaskPromptGenerator:
         self,
         assistant_role_names_path: str = "data/ai_society/assistant_roles.txt",
         user_role_names_path: str = "data/ai_society/user_roles.txt",
-    ) -> Generator[Tuple[str, Tuple[str, str]], None, None]:
+    ) -> Generator[tuple[str, tuple[str, str]], None, None]:
         r"""Generate tasks from role files.
 
         Args:
@@ -260,8 +260,8 @@ class AISocietyTaskPromptGenerator:
             yield (generate_tasks_prompt, (role_1, role_2))
 
     def from_role_generator(
-        self, role_generator: Generator[Tuple, None, None]
-    ) -> Generator[Tuple[str, Tuple[str, str]], None, None]:
+        self, role_generator: Generator[tuple, None, None]
+    ) -> Generator[tuple[str, tuple[str, str]], None, None]:
         r"""Generate tasks from a role generator.
 
         Args:
@@ -294,7 +294,7 @@ class SingleTxtGenerator:
         text_file_path: str,
     ) -> None:
         with open(text_file_path, "r") as f:
-            data_list: List[str] = f.read().splitlines()
+            data_list: list[str] = f.read().splitlines()
             self.data_list = [
                 " ".join(name.split(" ")[1:]) for name in data_list
             ]
@@ -331,7 +331,7 @@ class CodeTaskPromptGenerator:
         self,
         languages_path: str = "data/code/languages.txt",
         domains_path: str = "data/code/domains.txt",
-    ) -> Generator[Tuple[TextPrompt, str, str], None, None]:
+    ) -> Generator[tuple[TextPrompt, str, str], None, None]:
         r"""Generate tasks from role files.
 
         Args:
@@ -360,7 +360,7 @@ class CodeTaskPromptGenerator:
                 yield generated_tasks_prompt, language, domain
 
     def from_role_generator(
-        self, role_generator: Generator[Tuple, None, None]
+        self, role_generator: Generator[tuple, None, None]
     ) -> Generator[str, None, None]:
         r"""Generate tasks from a role generator.
 

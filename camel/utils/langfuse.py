@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
 import threading
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from camel.logger import get_logger
 from camel.utils import dependencies_required
@@ -35,11 +35,11 @@ except ImportError:
 
 @dependencies_required('langfuse')
 def configure_langfuse(
-    public_key: Optional[str] = None,
-    secret_key: Optional[str] = None,
-    host: Optional[str] = None,
-    debug: Optional[bool] = None,
-    enabled: Optional[bool] = None,
+    public_key: str | None = None,
+    secret_key: str | None = None,
+    host: str | None = None,
+    debug: bool | None = None,
+    enabled: bool | None = None,
 ):
     r"""Configure Langfuse for CAMEL models.
 
@@ -127,7 +127,7 @@ def set_current_agent_session_id(session_id: str) -> None:
     _local.agent_session_id = session_id
 
 
-def get_current_agent_session_id() -> Optional[str]:
+def get_current_agent_session_id() -> str | None:
     r"""Get the session ID for the current agent from thread-local storage.
 
     Returns:
@@ -139,10 +139,10 @@ def get_current_agent_session_id() -> Optional[str]:
 
 
 def update_langfuse_trace(
-    session_id: Optional[str] = None,
-    user_id: Optional[str] = None,
-    metadata: Optional[Dict[str, Any]] = None,
-    tags: Optional[List[str]] = None,
+    session_id: str | None = None,
+    user_id: str | None = None,
+    metadata: dict[str, Any] | None = None,
+    tags: list[str] | None = None,
 ) -> bool:
     r"""Update the current Langfuse trace with session ID and metadata.
 
@@ -165,7 +165,7 @@ def update_langfuse_trace(
     # Use provided session_id or get from thread-local storage
     final_session_id = session_id or get_current_agent_session_id()
 
-    update_data: Dict[str, Any] = {}
+    update_data: dict[str, Any] = {}
     if final_session_id:
         update_data["session_id"] = final_session_id
     if user_id:
@@ -183,11 +183,11 @@ def update_langfuse_trace(
 
 
 def update_current_observation(
-    input: Optional[Dict[str, Any]] = None,
-    output: Optional[Dict[str, Any]] = None,
-    model: Optional[str] = None,
-    model_parameters: Optional[Dict[str, Any]] = None,
-    usage_details: Optional[Dict[str, Any]] = None,
+    input: dict[str, Any] | None = None,
+    output: dict[str, Any] | None = None,
+    model: str | None = None,
+    model_parameters: dict[str, Any] | None = None,
+    usage_details: dict[str, Any] | None = None,
     **kwargs,
 ) -> None:
     r"""Update the current Langfuse observation with input, output,
@@ -220,7 +220,7 @@ def update_current_observation(
     )
 
 
-def get_langfuse_status() -> Dict[str, Any]:
+def get_langfuse_status() -> dict[str, Any]:
     r"""Get detailed Langfuse configuration status for debugging.
 
     Returns:

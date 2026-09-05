@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-import apps.agents.text_utils as text_utils
+from apps.agents import text_utils
 
 
 def test_split_markdown_code_newline():

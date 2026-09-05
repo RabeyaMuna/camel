@@ -12,10 +12,10 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import asyncio
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from playwright.async_api import Page
+    from playwright.async_api import Page  # type: ignore[import-not-found]
 
 
 class ActionExecutor:
@@ -31,7 +31,7 @@ class ActionExecutor:
     # ------------------------------------------------------------------
     # Public helpers
     # ------------------------------------------------------------------
-    async def execute(self, action: Dict[str, Any]) -> str:
+    async def execute(self, action: dict[str, Any]) -> str:
         if not action:
             return "No action to execute"
 
@@ -63,7 +63,7 @@ class ActionExecutor:
     # ------------------------------------------------------------------
     # Internal handlers
     # ------------------------------------------------------------------
-    async def _click(self, action: Dict[str, Any]) -> str:
+    async def _click(self, action: dict[str, Any]) -> str:
         ref = action.get("ref")
         text = action.get("text")
         selector = action.get("selector")
@@ -89,7 +89,7 @@ class ActionExecutor:
                 pass
         return "Error: Could not click element"
 
-    async def _type(self, action: Dict[str, Any]) -> str:
+    async def _type(self, action: dict[str, Any]) -> str:
         ref = action.get("ref")
         selector = action.get("selector")
         text = action.get("text", "")
@@ -102,7 +102,7 @@ class ActionExecutor:
         except Exception as exc:
             return f"Type failed: {exc}"
 
-    async def _select(self, action: Dict[str, Any]) -> str:
+    async def _select(self, action: dict[str, Any]) -> str:
         ref = action.get("ref")
         selector = action.get("selector")
         value = action.get("value", "")
@@ -117,7 +117,7 @@ class ActionExecutor:
         except Exception as exc:
             return f"Select failed: {exc}"
 
-    async def _wait(self, action: Dict[str, Any]) -> str:
+    async def _wait(self, action: dict[str, Any]) -> str:
         if "timeout" in action:
             ms = action["timeout"]
             await asyncio.sleep(ms / 1000)
@@ -130,7 +130,7 @@ class ActionExecutor:
             return f"Waited for {sel}"
         return "Error: wait requires timeout/selector"
 
-    async def _extract(self, action: Dict[str, Any]) -> str:
+    async def _extract(self, action: dict[str, Any]) -> str:
         ref = action.get("ref")
         if not ref:
             return "Error: extract requires ref"
@@ -139,7 +139,7 @@ class ActionExecutor:
         txt = await self.page.text_content(target)
         return f"Extracted: {txt[:100] if txt else 'None'}"
 
-    async def _scroll(self, action: Dict[str, Any]) -> str:
+    async def _scroll(self, action: dict[str, Any]) -> str:
         direction = action.get("direction", "down")
         amount = action.get("amount", 300)
 
@@ -162,7 +162,7 @@ class ActionExecutor:
         await asyncio.sleep(0.5)
         return f"Scrolled {direction} by {abs(amount_int)}px"
 
-    async def _enter(self, action: Dict[str, Any]) -> str:
+    async def _enter(self, action: dict[str, Any]) -> str:
         ref = action.get("ref")
         selector = action.get("selector")
         if ref:
@@ -184,7 +184,7 @@ class ActionExecutor:
 
     # static helpers
     @staticmethod
-    def should_update_snapshot(action: Dict[str, Any]) -> bool:
+    def should_update_snapshot(action: dict[str, Any]) -> bool:
         change_types = {
             "click",
             "type",

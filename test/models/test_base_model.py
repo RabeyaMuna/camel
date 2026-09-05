@@ -118,7 +118,6 @@ class TestBaseModelBackend:
             def run(self, messages):
                 nonlocal processed_messages
                 processed_messages = messages
-                return None
 
             def check_model_config(self):
                 pass

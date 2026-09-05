@@ -47,10 +47,10 @@ def test_internlm_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into InternLM model backend."
-            )
+            
         ),
     ):
         _ = InternLMModel(model_type, model_config_dict)

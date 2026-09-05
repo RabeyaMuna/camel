@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List
 from unittest.mock import patch
 
 from pydantic import BaseModel, Field
@@ -127,7 +126,7 @@ class ArticleSchema(BaseModel):
 
 
 class TopArticlesSchema(BaseModel):
-    top: List[ArticleSchema] = Field(
+    top: list[ArticleSchema] = Field(
         ..., max_length=5, description="Top 5 stories"
     )
 

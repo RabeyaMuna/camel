@@ -90,10 +90,10 @@ def test_sglang_model_unexpected_argument(sglang_model_cleanup):
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into SGLang model backend."
-            )
+            
         ),
     ):
         _ = sglang_model_cleanup(model_type, model_config_dict)

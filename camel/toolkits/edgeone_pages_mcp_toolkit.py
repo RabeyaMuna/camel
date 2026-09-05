@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List, Optional
 
 from camel.toolkits import BaseToolkit, FunctionTool
 
@@ -30,7 +29,7 @@ class EdgeOnePagesMCPToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initializes the EdgeOnePagesMCPToolkit.
 
@@ -60,7 +59,7 @@ class EdgeOnePagesMCPToolkit(BaseToolkit):
         r"""Explicitly disconnect from the EdgeOne Pages MCP server."""
         await self._mcp_toolkit.disconnect()
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of tools provided by the EdgeOnePagesMCPToolkit.
 
         Returns:

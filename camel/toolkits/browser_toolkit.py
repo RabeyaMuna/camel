@@ -26,12 +26,7 @@ from copy import deepcopy
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
     Literal,
-    Optional,
-    Tuple,
-    Union,
     cast,
 )
 
@@ -97,7 +92,7 @@ def _get_str(d: Any, k: str) -> str:
     )
 
 
-def _get_number(d: Any, k: str) -> Union[int, float]:
+def _get_number(d: Any, k: str) -> int | float:
     r"""Safely retrieve a number (int or float) from a dictionary"""
     val = d[k]
     if isinstance(val, (int, float)):
@@ -122,10 +117,10 @@ class BaseBrowser:
     def __init__(
         self,
         headless=True,
-        cache_dir: Optional[str] = None,
+        cache_dir: str | None = None,
         channel: Literal["chrome", "msedge", "chromium"] = "chromium",
-        cookie_json_path: Optional[str] = None,
-        user_data_dir: Optional[str] = None,
+        cookie_json_path: str | None = None,
+        user_data_dir: str | None = None,
     ):
         r"""Initialize the WebBrowser instance.
 
@@ -151,12 +146,12 @@ class BaseBrowser:
             sync_playwright,
         )
 
-        self.history: List[Any] = []
+        self.history: list[Any] = []
         self.headless = headless
         self.channel = channel
         self._ensure_browser_installed()
         self.playwright: Playwright = sync_playwright().start()
-        self.page_history: List[
+        self.page_history: list[
             str
         ] = []  # stores the history of visited pages
         self.cookie_json_path = cookie_json_path
@@ -182,11 +177,11 @@ class BaseBrowser:
             raise FileNotFoundError(
                 f"Page script file not found at path: {page_script_path}"
             )
-        self.browser: Optional[Browser] = None
-        self.context: Optional[BrowserContext] = None
-        self.page: Optional[Page] = None
-        self.page_url: Optional[str] = None
-        self.web_agent_model: Optional[BaseModelBackend] = (
+        self.browser: Browser | None = None
+        self.context: BrowserContext | None = None
+        self.page: Page | None = None
+        self.page_url: str | None = None
+        self.web_agent_model: BaseModelBackend | None = (
             None  # Added for type hinting
         )
 
@@ -229,7 +224,7 @@ class BaseBrowser:
                 args=browser_launch_args,
             )
 
-            new_context_kwargs: Dict[str, Any] = {
+            new_context_kwargs: dict[str, Any] = {
                 "accept_downloads": True,
                 "user_agent": user_agent_string,
                 "java_script_enabled": True,
@@ -308,7 +303,7 @@ class BaseBrowser:
     @retry_on_error()
     def get_screenshot(
         self, save_image: bool = False
-    ) -> Tuple[Image.Image, Union[str, None]]:
+    ) -> tuple[Image.Image, str | None]:
         r"""Get a screenshot of the current page.
 
         Args:
@@ -345,7 +340,7 @@ class BaseBrowser:
 
     def capture_full_page_screenshots(
         self, scroll_ratio: float = 0.8
-    ) -> List[str]:
+    ) -> list[str]:
         r"""Capture full page screenshots by scrolling the page with a buffer
         zone.
 
@@ -356,7 +351,7 @@ class BaseBrowser:
         Returns:
             List[str]: A list of paths to the screenshot files.
         """
-        screenshots: List[str] = []  # Ensure screenshots is typed
+        screenshots: list[str] = []  # Ensure screenshots is typed
         assert self.page is not None
         scroll_height_eval = self.page.evaluate("document.body.scrollHeight")
         scroll_height = cast(
@@ -417,10 +412,10 @@ class BaseBrowser:
             "MultimodalWebSurfer.getVisualViewport();"
         )
         return visual_viewport_from_dict(
-            cast(Dict[str, Any], visual_viewport_eval)
+            cast(dict[str, Any], visual_viewport_eval)
         )
 
-    def get_interactive_elements(self) -> Dict[str, InteractiveRegion]:
+    def get_interactive_elements(self) -> dict[str, InteractiveRegion]:
         r"""Get the interactive elements of the current page.
 
         Returns:
@@ -433,11 +428,11 @@ class BaseBrowser:
             logger.warning(f"Error evaluating page script: {e}")
 
         result = cast(
-            Dict[str, Dict[str, Any]],
+            dict[str, dict[str, Any]],
             self.page.evaluate("MultimodalWebSurfer.getInteractiveRects();"),
         )
 
-        typed_results: Dict[str, InteractiveRegion] = {}
+        typed_results: dict[str, InteractiveRegion] = {}
         for k in result:
             typed_results[k] = interactive_region_from_dict(result[k])
 
@@ -446,7 +441,7 @@ class BaseBrowser:
     def get_som_screenshot(
         self,
         save_image: bool = False,
-    ) -> Tuple[Image.Image, Union[str, None]]:
+    ) -> tuple[Image.Image, str | None]:
         r"""Get a screenshot of the current viewport with interactive elements
         marked.
 
@@ -501,7 +496,7 @@ class BaseBrowser:
         assert self.page is not None
         return self.page.url
 
-    def click_id(self, identifier: Union[str, int]) -> None:
+    def click_id(self, identifier: str | int) -> None:
         r"""Click an element with the given identifier."""
         assert self.page is not None
         if isinstance(identifier, int):
@@ -520,7 +515,7 @@ class BaseBrowser:
         new_page = None
         try:
             with self.page.expect_event("popup", timeout=1000) as page_info:
-                box: Optional[FloatRect] = target.bounding_box()
+                box: FloatRect | None = target.bounding_box()
                 if box is None:
                     logger.warning(
                         f"Bounding box not found for element '{identifier}'. "
@@ -540,7 +535,6 @@ class BaseBrowser:
         except Exception as e:  # Consider using playwright specific
             # TimeoutError
             logger.debug(f"Error during click operation: {e}")
-            pass
 
         self._wait_for_load()
 
@@ -550,7 +544,7 @@ class BaseBrowser:
         content = self.page.content()
         return content
 
-    def download_file_id(self, identifier: Union[str, int]) -> str:
+    def download_file_id(self, identifier: str | int) -> str:
         r"""Download a file with the given selector.
 
         Args:
@@ -593,7 +587,7 @@ class BaseBrowser:
             logger.debug(f"Error during download operation: {e}")
             return f"Failed to download file with identifier '{identifier}'."
 
-    def fill_input_id(self, identifier: Union[str, int], text: str) -> str:
+    def fill_input_id(self, identifier: str | int, text: str) -> str:
         r"""Fill an input field with the given text, and then press Enter.
 
         Args:
@@ -645,7 +639,7 @@ class BaseBrowser:
         self._wait_for_load()
         return "Scrolled to the top of the page."
 
-    def hover_id(self, identifier: Union[str, int]) -> str:
+    def hover_id(self, identifier: str | int) -> str:
         r"""Hover over an element with the given identifier.
 
         Args:
@@ -677,7 +671,6 @@ class BaseBrowser:
         targeted text. It is equivalent to pressing Ctrl + F and searching for
         the text.
         """
-        # ruff: noqa: E501
         assert self.page is not None
         script = f"""
         (function() {{ 
@@ -737,7 +730,6 @@ class BaseBrowser:
         if self.playwright:
             self.playwright.stop()  # Stop playwright instance
 
-    # ruff: noqa: E501
     def show_interactive_elements(self):
         r"""Show simple interactive elements on the current page."""
         assert self.page is not None
@@ -816,14 +808,14 @@ class BrowserToolkit(BaseToolkit):
     def __init__(
         self,
         headless: bool = False,
-        cache_dir: Optional[str] = None,
+        cache_dir: str | None = None,
         channel: Literal["chrome", "msedge", "chromium"] = "chromium",
         history_window: int = 5,
-        web_agent_model: Optional[BaseModelBackend] = None,
-        planning_agent_model: Optional[BaseModelBackend] = None,
+        web_agent_model: BaseModelBackend | None = None,
+        planning_agent_model: BaseModelBackend | None = None,
         output_language: str = "en",
-        cookie_json_path: Optional[str] = None,
-        user_data_dir: Optional[str] = None,
+        cookie_json_path: str | None = None,
+        user_data_dir: str | None = None,
     ):
         r"""Initialize the BrowserToolkit instance.
 
@@ -867,7 +859,7 @@ class BrowserToolkit(BaseToolkit):
         self.planning_agent_model = planning_agent_model
         self.output_language = output_language
 
-        self.history: List[Dict[str, Any]] = []  # Typed history list
+        self.history: list[dict[str, Any]] = []  # Typed history list
         self.web_agent: ChatAgent
         self.planning_agent: ChatAgent
         self.web_agent, self.planning_agent = self._initialize_agent(
@@ -882,9 +874,9 @@ class BrowserToolkit(BaseToolkit):
 
     def _initialize_agent(
         self,
-        web_agent_model_backend: Optional[BaseModelBackend],
-        planning_agent_model_backend: Optional[BaseModelBackend],
-    ) -> Tuple[ChatAgent, ChatAgent]:
+        web_agent_model_backend: BaseModelBackend | None,
+        planning_agent_model_backend: BaseModelBackend | None,
+    ) -> tuple[ChatAgent, ChatAgent]:
         r"""Initialize the agent."""
         from camel.agents import ChatAgent
 
@@ -924,8 +916,8 @@ class BrowserToolkit(BaseToolkit):
         return web_agent, planning_agent
 
     def _observe(
-        self, task_prompt: str, detailed_plan: Optional[str] = None
-    ) -> Tuple[str, str, str]:
+        self, task_prompt: str, detailed_plan: str | None = None
+    ) -> tuple[str, str, str]:
         r"""Let agent observe the current environment, and get the next
         action."""
 
@@ -988,7 +980,7 @@ Here is a plan about how to solve the task step-by-step which you must follow:
 
         return observation_result, reasoning_result, action_code
 
-    def _act(self, action_code: str) -> Tuple[bool, str]:
+    def _act(self, action_code: str) -> tuple[bool, str]:
         r"""Let agent act based on the given action code.
         Args:
             action_code (str): The action code to act.
@@ -1119,7 +1111,7 @@ Here is a plan about how to solve the task step-by-step which you must follow:
 
     def _task_replanning(
         self, task_prompt: str, detailed_plan: str
-    ) -> Tuple[bool, str]:
+    ) -> tuple[bool, str]:
         r"""Replan the task based on the given task prompt.
 
         Args:
@@ -1185,7 +1177,7 @@ Here is a plan about how to solve the task step-by-step which you must follow:
             logger.debug(f"Observation: {observation}")
             logger.debug(f"Reasoning: {reasoning}")
             logger.debug(f"Action code: {action_code}")
-            trajectory_info: Dict[str, Any]
+            trajectory_info: dict[str, Any]
             if "stop" in action_code:
                 task_completed = True
                 trajectory_info = {  # Typed trajectory_info
@@ -1240,5 +1232,5 @@ Here is a plan about how to solve the task step-by-step which you must follow:
         # reached
         return simulation_result
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         return [FunctionTool(self.browse_url)]

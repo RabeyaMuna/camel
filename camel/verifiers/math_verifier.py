@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Optional
 
 from camel.extractors.base import BaseExtractor
 from camel.logger import get_logger
@@ -35,11 +34,11 @@ class MathVerifier(BaseVerifier):
 
     def __init__(
         self,
-        extractor: Optional[BaseExtractor] = None,
-        timeout: Optional[float] = 30.0,
+        extractor: BaseExtractor | None = None,
+        timeout: float | None = 30.0,
         float_rounding: int = 6,
         numeric_precision: int = 15,
-        enable_wrapping: Optional[bool] = False,
+        enable_wrapping: bool | None = False,
         **kwargs,
     ):
         r"""Initializes the MathVerifier.
@@ -89,14 +88,12 @@ class MathVerifier(BaseVerifier):
 
     async def _setup(self, **kwargs) -> None:
         r"""No special setup needed for math verification."""
-        pass
 
     async def _cleanup(self) -> None:
         r"""No cleanup needed for math verification."""
-        pass
 
     async def _verify_implementation(
-        self, solution: str, reference_answer: Optional[str]
+        self, solution: str, reference_answer: str | None
     ) -> VerificationResult:
         r"""Verify mathematical expressions using Math-Verify.
 

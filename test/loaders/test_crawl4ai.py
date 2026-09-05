@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Optional
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -24,7 +23,7 @@ from camel.loaders import Crawl4AI
 # Dummy CrawlResult to simulate the results from AsyncWebCrawler.arun
 class DummyCrawlResult:
     def __init__(
-        self, markdown: str, cleaned_html: str, links: Optional[dict] = None
+        self, markdown: str, cleaned_html: str, links: dict | None = None
     ):
         self.markdown = markdown
         self.cleaned_html = cleaned_html

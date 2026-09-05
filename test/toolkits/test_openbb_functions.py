@@ -47,12 +47,10 @@ def mock_dependencies(mock_openbb):
     """Mock dependencies and environment for OpenBBToolkit."""
     openbb_module = MagicMock()
     openbb_module.obb = mock_openbb
-    with patch.dict(sys.modules, {'openbb': openbb_module}):
-        with patch(
-            'camel.utils.commons.is_module_available', return_value=True
-        ):
-            with patch.dict(os.environ, {'OPENBB_TOKEN': 'test_token'}):
-                yield mock_openbb
+    with patch.dict(sys.modules, {'openbb': openbb_module}), patch(
+        'camel.utils.commons.is_module_available', return_value=True
+    ), patch.dict(os.environ, {'OPENBB_TOKEN': 'test_token'}):
+        yield mock_openbb
 
 
 def test_init_api_keys(mock_dependencies, monkeypatch):

@@ -24,12 +24,12 @@ This example shows:
 """
 
 import os
-from typing import Any, Dict
+from typing import Any
 
 from camel.loaders.scrapegraph_reader import ScrapeGraphAI
 
 
-def search_example(api_key: str) -> Dict[str, Any]:
+def search_example(api_key: str) -> dict[str, Any]:
     r"""Example of performing an AI-powered web search."""
     # Initialize the ScrapeGraphAI reader
     scraper = ScrapeGraphAI(api_key=api_key)
@@ -51,7 +51,7 @@ def search_example(api_key: str) -> Dict[str, Any]:
         scraper.close()
 
 
-def scrape_example(api_key: str) -> Dict[str, Any]:
+def scrape_example(api_key: str) -> dict[str, Any]:
     r"""Example of scraping a website with specific instructions."""
     # Initialize the ScrapeGraphAI reader
     scraper = ScrapeGraphAI(api_key=api_key)

@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from collections import defaultdict
-from typing import Dict, List, Optional, Tuple
 
 from pydantic import BaseModel
 
@@ -64,8 +63,8 @@ class ScoreBasedContextCreator(BaseContextCreator):
 
     def create_context(
         self,
-        records: List[ContextRecord],
-    ) -> Tuple[List[OpenAIMessage], int]:
+        records: list[ContextRecord],
+    ) -> tuple[list[OpenAIMessage], int]:
         r"""Constructs conversation context from chat history while respecting
         token limits.
 
@@ -187,8 +186,8 @@ class ScoreBasedContextCreator(BaseContextCreator):
         return self._assemble_output(final_units, system_unit)
 
     def _group_tool_calls_and_responses(
-        self, units: List[_ContextUnit]
-    ) -> Dict[str, List[_ContextUnit]]:
+        self, units: list[_ContextUnit]
+    ) -> dict[str, list[_ContextUnit]]:
         r"""Groups tool calls with their corresponding responses based on
         `tool_call_id`.
 
@@ -202,7 +201,7 @@ class ScoreBasedContextCreator(BaseContextCreator):
             Dict[str, List[_ContextUnit]]: Mapping from `tool_call_id` to a
                 list of related units.
         """
-        tool_call_groups: Dict[str, List[_ContextUnit]] = defaultdict(list)
+        tool_call_groups: dict[str, list[_ContextUnit]] = defaultdict(list)
 
         for unit in units:
             # FunctionCallingMessage stores tool_call_id.
@@ -218,10 +217,10 @@ class ScoreBasedContextCreator(BaseContextCreator):
 
     def _truncate_with_tool_call_awareness(
         self,
-        regular_units: List[_ContextUnit],
-        tool_call_groups: Dict[str, List[_ContextUnit]],
+        regular_units: list[_ContextUnit],
+        tool_call_groups: dict[str, list[_ContextUnit]],
         system_tokens: int,
-    ) -> List[_ContextUnit]:
+    ) -> list[_ContextUnit]:
         r"""Truncates messages while preserving tool call-response pairs.
         This method implements a more sophisticated truncation strategy:
         1. It treats tool call groups (request + responses) and standalone
@@ -257,7 +256,7 @@ class ScoreBasedContextCreator(BaseContextCreator):
         ]
 
         # Prepare all items (standalone units and groups) for sorting
-        all_potential_items: List[Dict] = []
+        all_potential_items: list[dict] = []
         for unit in standalone_units:
             all_potential_items.append(
                 {
@@ -282,7 +281,7 @@ class ScoreBasedContextCreator(BaseContextCreator):
         # Sort all potential items by score (high to low), then timestamp
         all_potential_items.sort(key=lambda x: (-x["score"], -x["timestamp"]))
 
-        remaining_units: List[_ContextUnit] = []
+        remaining_units: list[_ContextUnit] = []
         current_tokens = system_tokens
 
         for item_dict in all_potential_items:
@@ -300,8 +299,8 @@ class ScoreBasedContextCreator(BaseContextCreator):
 
             elif item_type == "group":
                 # The group does not fit completely; try partial inclusion.
-                request_unit: Optional[_ContextUnit] = None
-                response_units: List[_ContextUnit] = []
+                request_unit: _ContextUnit | None = None
+                response_units: list[_ContextUnit] = []
 
                 for unit in item:
                     # Assistant msg with `args` is the request
@@ -351,8 +350,8 @@ class ScoreBasedContextCreator(BaseContextCreator):
         return remaining_units
 
     def _extract_system_message(
-        self, records: List[ContextRecord]
-    ) -> Tuple[Optional[_ContextUnit], List[_ContextUnit]]:
+        self, records: list[ContextRecord]
+    ) -> tuple[_ContextUnit | None, list[_ContextUnit]]:
         r"""Extracts the system message from records and validates it.
 
         Args:
@@ -387,7 +386,7 @@ class ScoreBasedContextCreator(BaseContextCreator):
 
     def _conversation_sort_key(
         self, unit: _ContextUnit
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         r"""Defines the sorting key for assembling the final output.
 
         Sorting priority:
@@ -408,9 +407,9 @@ class ScoreBasedContextCreator(BaseContextCreator):
 
     def _assemble_output(
         self,
-        context_units: List[_ContextUnit],
-        system_unit: Optional[_ContextUnit],
-    ) -> Tuple[List[OpenAIMessage], int]:
+        context_units: list[_ContextUnit],
+        system_unit: _ContextUnit | None,
+    ) -> tuple[list[OpenAIMessage], int]:
         r"""Assembles final message list with proper ordering and token count.
 
         Args:

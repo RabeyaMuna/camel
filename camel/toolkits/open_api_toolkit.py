@@ -13,7 +13,8 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 import os
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from collections.abc import Callable
+from typing import Any
 
 import requests
 
@@ -32,7 +33,7 @@ class OpenAPIToolkit:
 
     def parse_openapi_file(
         self, openapi_spec_path: str
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         r"""Load and parse an OpenAPI specification file.
 
         This function utilizes the `prance.ResolvingParser` to parse and
@@ -71,8 +72,8 @@ class OpenAPIToolkit:
         return openapi_spec
 
     def openapi_spec_to_openai_schemas(
-        self, api_name: str, openapi_spec: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+        self, api_name: str, openapi_spec: dict[str, Any]
+    ) -> list[dict[str, Any]]:
         r"""Convert OpenAPI specification to OpenAI schema format.
 
         This function iterates over the paths and operations defined in an
@@ -136,7 +137,7 @@ class OpenAPIToolkit:
 
                 # Get the parameters for the operation, if any
                 params = op.get('parameters', [])
-                properties: Dict[str, Any] = {}
+                properties: dict[str, Any] = {}
                 required = []
 
                 for param in params:
@@ -211,9 +212,9 @@ class OpenAPIToolkit:
         base_url: str,
         path: str,
         method: str,
-        openapi_security: List[Dict[str, Any]],
-        sec_schemas: Dict[str, Dict[str, Any]],
-        operation: Dict[str, Any],
+        openapi_security: list[dict[str, Any]],
+        sec_schemas: dict[str, dict[str, Any]],
+        operation: dict[str, Any],
     ) -> Callable:
         r"""Decorate a function to make HTTP requests based on OpenAPI
         specification details.
@@ -372,8 +373,8 @@ class OpenAPIToolkit:
         return inner_decorator
 
     def generate_openapi_funcs(
-        self, api_name: str, openapi_spec: Dict[str, Any]
-    ) -> List[Callable]:
+        self, api_name: str, openapi_spec: dict[str, Any]
+    ) -> list[Callable]:
         r"""Generates a list of Python functions based on
         OpenAPI specification.
 
@@ -449,8 +450,8 @@ class OpenAPIToolkit:
 
     def apinames_filepaths_to_funs_schemas(
         self,
-        apinames_filepaths: List[Tuple[str, str]],
-    ) -> Tuple[List[Callable], List[Dict[str, Any]]]:
+        apinames_filepaths: list[tuple[str, str]],
+    ) -> tuple[list[Callable], list[dict[str, Any]]]:
         r"""Combines functions and schemas from multiple OpenAPI
         specifications, using API names as keys.
 
@@ -497,7 +498,7 @@ class OpenAPIToolkit:
 
         return combined_func_lst, combined_schemas_list
 
-    def generate_apinames_filepaths(self) -> List[Tuple[str, str]]:
+    def generate_apinames_filepaths(self) -> list[tuple[str, str]]:
         """Generates a list of tuples containing API names and their
         corresponding file paths.
 
@@ -526,7 +527,7 @@ class OpenAPIToolkit:
             apinames_filepaths.append((api_name.value, file_path))
         return apinames_filepaths
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

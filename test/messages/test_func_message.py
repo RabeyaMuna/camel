@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
-from typing import Dict, List
 
 import pytest
 
@@ -89,7 +88,7 @@ def test_function_func_message(
     assert function_result_message.func_name == "add"
     assert function_result_message.result == 3
 
-    msg_dict: Dict[str, str] = {
+    msg_dict: dict[str, str] = {
         "role": "tool",
         "content": str(3),
         "tool_call_id": "null",
@@ -100,7 +99,7 @@ def test_function_func_message(
 def test_assistant_func_message_to_openai_tool_message(
     assistant_func_call_message: FunctionCallingMessage,
 ):
-    expected_msg_dict: Dict[str, str] = {
+    expected_msg_dict: dict[str, str] = {
         "role": "tool",
         "content": str(None),
         "tool_call_id": "null",
@@ -136,7 +135,7 @@ def test_roleplay_conversion_with_tools():
     [assistant, _] = role_playing.step(input_msg)
     role_playing.step(assistant.msg)
 
-    records: List[ContextRecord] = (
+    records: list[ContextRecord] = (
         role_playing.assistant_agent.memory.retrieve()
     )
     original_messages = []

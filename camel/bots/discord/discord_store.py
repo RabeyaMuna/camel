@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Optional
 
 from .discord_installation import DiscordInstallation
 
@@ -27,21 +26,17 @@ class DiscordBaseInstallationStore:
 
     async def init(self):
         r"""Initializes the database connection or structure."""
-        pass
 
     async def save(self, installation: DiscordInstallation):
         r"""Saves or updates a Discord installation record."""
-        pass
 
     async def find_by_guild(
         self, guild_id: str
-    ) -> Optional[DiscordInstallation]:
+    ) -> DiscordInstallation | None:
         r"""Finds an installation record by guild ID."""
-        pass
 
     async def delete(self, guild_id: str):
         r"""Deletes an installation record by guild ID."""
-        pass
 
 
 class DiscordSQLiteInstallationStore(DiscordBaseInstallationStore):
@@ -114,7 +109,7 @@ class DiscordSQLiteInstallationStore(DiscordBaseInstallationStore):
 
     async def find_by_guild(
         self, guild_id: str
-    ) -> Optional[DiscordInstallation]:
+    ) -> DiscordInstallation | None:
         r"""Finds an installation record by guild ID.
 
         Args:
@@ -126,23 +121,22 @@ class DiscordSQLiteInstallationStore(DiscordBaseInstallationStore):
         """
         import aiosqlite
 
-        async with aiosqlite.connect(self.database) as db:
-            async with db.execute(
-                "SELECT guild_id, access_token, refresh_token, "
-                "installed_at, token_expires_at FROM discord_installations "
-                "WHERE guild_id = ?",
-                [guild_id],
-            ) as cursor:
-                row = await cursor.fetchone()
-                if row:
-                    return DiscordInstallation(
-                        guild_id=row[0],
-                        access_token=row[1],
-                        refresh_token=row[2],
-                        installed_at=row[3],
-                        token_expires_at=row[4],
-                    )
-                return None
+        async with aiosqlite.connect(self.database) as db, db.execute(
+            "SELECT guild_id, access_token, refresh_token, "
+            "installed_at, token_expires_at FROM discord_installations "
+            "WHERE guild_id = ?",
+            [guild_id],
+        ) as cursor:
+            row = await cursor.fetchone()
+            if row:
+                return DiscordInstallation(
+                    guild_id=row[0],
+                    access_token=row[1],
+                    refresh_token=row[2],
+                    installed_at=row[3],
+                    token_expires_at=row[4],
+                )
+            return None
 
     async def delete(self, guild_id: str):
         r"""Deletes an installation record by guild ID.

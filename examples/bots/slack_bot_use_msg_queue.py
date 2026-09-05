@@ -15,7 +15,7 @@ import asyncio
 import logging
 import queue
 import threading
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING, Union
 
 from slack_bolt.context.async_context import AsyncBoltContext
 from slack_bolt.context.say.async_say import AsyncSay
@@ -36,8 +36,8 @@ logger = logging.getLogger(__name__)
 class BotAgent:
     def __init__(
         self,
-        contents: Union[str, List[str], "Element", List["Element"]] = None,
-        auto_retriever: Optional[AutoRetriever] = None,
+        contents: Union[str, list[str], "Element", list["Element"]] = None,
+        auto_retriever: AutoRetriever | None = None,
         similarity_threshold: float = 0.5,
         vector_storage_local_path: str = "local_data/",
         top_k: int = 1,
@@ -165,11 +165,11 @@ class SlackBot(SlackApp):
     def __init__(
         self,
         msg_queue: queue.Queue,
-        token: Optional[str] = None,
-        scopes: Optional[str] = None,
-        signing_secret: Optional[str] = None,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
+        token: str | None = None,
+        scopes: str | None = None,
+        signing_secret: str | None = None,
+        client_id: str | None = None,
+        client_secret: str | None = None,
     ):
         r"""Initializes the SlackBot instance with a message queue and the
         required Slack authentication details.

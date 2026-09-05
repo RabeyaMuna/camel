@@ -70,7 +70,6 @@ def test_process(mock_unstructured_modules, monkeypatch):
     def mock_process(content, **kwargs):
         # Just verify that the content is correct and return
         assert content == "https://www.camel-ai.org/"
-        return None
 
     # Replace the process method with our mock
     monkeypatch.setattr(vector_retriever, 'process', mock_process)

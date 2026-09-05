@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import Any, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
@@ -34,7 +34,7 @@ class BaseConfig(ABC, BaseModel):
         protected_namespaces=(),
     )
 
-    tools: Optional[List[Any]] = None
+    tools: list[Any] | None = None
     """A list of tools the model may
     call. Currently, only functions are supported as a tool. Use this
     to provide a list of functions the model may generate JSON inputs

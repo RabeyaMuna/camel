@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Dict, Generator, List, Optional
+from collections.abc import Generator
 
 from camel.logger import get_logger
 from camel.toolkits.base import BaseToolkit
@@ -29,7 +29,7 @@ class ArxivToolkit(BaseToolkit):
     """
 
     @dependencies_required('arxiv')
-    def __init__(self, timeout: Optional[float] = None) -> None:
+    def __init__(self, timeout: float | None = None) -> None:
         r"""Initializes the ArxivToolkit and sets up the arXiv client."""
         super().__init__(timeout=timeout)
         import arxiv
@@ -39,8 +39,8 @@ class ArxivToolkit(BaseToolkit):
     def _get_search_results(
         self,
         query: str,
-        paper_ids: Optional[List[str]] = None,
-        max_results: Optional[int] = 5,
+        paper_ids: list[str] | None = None,
+        max_results: int | None = 5,
     ) -> Generator:
         r"""Retrieves search results from the arXiv API based on the provided
         query and optional paper IDs.
@@ -71,9 +71,9 @@ class ArxivToolkit(BaseToolkit):
     def search_papers(
         self,
         query: str,
-        paper_ids: Optional[List[str]] = None,
-        max_results: Optional[int] = 5,
-    ) -> List[Dict[str, str]]:
+        paper_ids: list[str] | None = None,
+        max_results: int | None = 5,
+    ) -> list[dict[str, str]]:
         r"""Searches for academic papers on arXiv using a query string and
         optional paper IDs.
 
@@ -128,9 +128,9 @@ class ArxivToolkit(BaseToolkit):
     def download_papers(
         self,
         query: str,
-        paper_ids: Optional[List[str]] = None,
-        max_results: Optional[int] = 5,
-        output_dir: Optional[str] = "./",
+        paper_ids: list[str] | None = None,
+        max_results: int | None = 5,
+        output_dir: str | None = "./",
     ) -> str:
         r"""Downloads PDFs of academic papers from arXiv based on the provided
         query.
@@ -160,7 +160,7 @@ class ArxivToolkit(BaseToolkit):
         except Exception as e:
             return f"An error occurred: {e}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

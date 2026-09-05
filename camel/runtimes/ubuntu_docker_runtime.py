@@ -15,8 +15,8 @@
 import logging
 import sys
 import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, List, Optional, Union
 
 from camel.runtimes.docker_runtime import DockerRuntime
 from camel.toolkits import FunctionTool
@@ -85,10 +85,10 @@ class UbuntuDockerRuntime(DockerRuntime):
 
     def add(
         self,
-        funcs: Union[FunctionTool, List[FunctionTool]],
+        funcs: FunctionTool | list[FunctionTool],
         entrypoint: str,
         redirect_stdout: bool = False,
-        arguments: Optional[dict] = None,
+        arguments: dict | None = None,
     ) -> "UbuntuDockerRuntime":
         r"""Add functions to the runtime with Ubuntu-specific modifications.
 
@@ -128,7 +128,6 @@ class UbuntuDockerRuntime(DockerRuntime):
 
         This method can be extended to add Ubuntu-specific volume mounts.
         """
-        pass
 
     def build(self, time_out: int = 15) -> "UbuntuDockerRuntime":
         r"""Build and initialize the Ubuntu container with proper setup.
@@ -228,10 +227,10 @@ class UbuntuDockerRuntime(DockerRuntime):
     def exec_python_file(
         self,
         local_file_path: str,
-        container_path: Optional[str] = None,
-        args: Optional[List[str]] = None,
-        env: Optional[dict] = None,
-        callback: Optional[Callable[[str], None]] = None,
+        container_path: str | None = None,
+        args: list[str] | None = None,
+        env: dict | None = None,
+        callback: Callable[[str], None] | None = None,
     ) -> None:
         r"""Execute a Python file inside the Docker container.
 
@@ -318,7 +317,7 @@ class UbuntuDockerRuntime(DockerRuntime):
             logger.error(f"Error during execution: {e}")
             raise
 
-    def _create_archive_from_file(self, file_path: Union[str, Path]) -> bytes:
+    def _create_archive_from_file(self, file_path: str | Path) -> bytes:
         r"""Create a tar archive from a single file for docker.put_archive().
 
         Args:

@@ -24,19 +24,12 @@ import subprocess
 import threading
 import time
 import zipfile
+from collections.abc import Callable, Mapping
 from functools import wraps
 from http import HTTPStatus
 from pathlib import Path
 from typing import (
     Any,
-    Callable,
-    Dict,
-    List,
-    Mapping,
-    Optional,
-    Set,
-    Tuple,
-    Type,
     TypeVar,
     cast,
 )
@@ -70,7 +63,7 @@ def print_text_animated(text, delay: float = 0.02, end: str = ""):
         time.sleep(delay)
 
 
-def get_prompt_template_key_words(template: str) -> Set[str]:
+def get_prompt_template_key_words(template: str) -> set[str]:
     r"""Given a string template containing curly braces {}, return a set of
     the words inside the braces.
 
@@ -87,7 +80,7 @@ def get_prompt_template_key_words(template: str) -> Set[str]:
     return set(re.findall(r'{([^}]*)}', template))
 
 
-def get_first_int(string: str) -> Optional[int]:
+def get_first_int(string: str) -> int | None:
     r"""Returns the first integer number found in the given string.
 
     If no integer number is found, returns None.
@@ -139,7 +132,7 @@ def download_tasks(task: TaskType, folder_path: str) -> None:
     os.remove(zip_file_path)
 
 
-def get_task_list(task_response: str) -> List[str]:
+def get_task_list(task_response: str) -> list[str]:
     r"""Parse the response of the Agent and return task list.
 
     Args:
@@ -241,7 +234,7 @@ def is_module_available(module_name: str) -> bool:
 
 
 def api_keys_required(
-    param_env_list: List[Tuple[Optional[str], str]],
+    param_env_list: list[tuple[str | None, str]],
 ) -> Callable[[F], F]:
     r"""A decorator to check if the required API keys are provided in the
     environment variables or as function arguments.
@@ -423,7 +416,7 @@ def get_pydantic_major_version() -> int:
         return 0
 
 
-def get_pydantic_object_schema(pydantic_params: Type[BaseModel]) -> Dict:
+def get_pydantic_object_schema(pydantic_params: type[BaseModel]) -> dict:
     r"""Get the JSON schema of a Pydantic model.
 
     Args:
@@ -452,7 +445,7 @@ def func_string_to_callable(code: str):
     return func
 
 
-def json_to_function_code(json_obj: Dict) -> str:
+def json_to_function_code(json_obj: dict) -> str:
     r"""Generate a Python function code from a JSON schema.
 
     Args:
@@ -540,7 +533,7 @@ def text_extract_from_web(url: str) -> str:
     return text
 
 
-def create_chunks(text: str, n: int) -> List[str]:
+def create_chunks(text: str, n: int) -> list[str]:
     r"""Returns successive n-sized chunks from provided text. Split a text
     into smaller chunks of size n".
 
@@ -726,8 +719,8 @@ class BatchProcessor:
 
     def __init__(
         self,
-        max_workers: Optional[int] = None,
-        initial_batch_size: Optional[int] = None,
+        max_workers: int | None = None,
+        initial_batch_size: int | None = None,
         monitoring_interval: float = 5.0,
         cpu_threshold: float = 80.0,
         memory_threshold: float = 85.0,
@@ -758,7 +751,7 @@ class BatchProcessor:
         # Initialize performance metrics
         self.total_processed = 0
         self.total_errors = 0
-        self.processing_times: List = []
+        self.processing_times: list = []
 
         if max_workers is None:
             self.max_workers = self._calculate_optimal_workers()
@@ -807,7 +800,7 @@ class BatchProcessor:
         return time.time() - self.last_check_time >= self.monitoring_interval
 
     def adjust_batch_size(
-        self, success: bool, processing_time: Optional[float] = None
+        self, success: bool, processing_time: float | None = None
     ) -> None:
         r"""Adjust batch size based on success/failure and system resources.
 
@@ -849,7 +842,7 @@ class BatchProcessor:
                 int(self.batch_size * self.backoff_factor), self.min_batch_size
             )
 
-    def get_performance_metrics(self) -> Dict[str, Any]:
+    def get_performance_metrics(self) -> dict[str, Any]:
         r"""Get current performance metrics.
 
         Returns:
@@ -922,7 +915,7 @@ def download_github_subdirectory(
 
 
 def generate_prompt_for_structured_output(
-    response_format: Optional[Type[BaseModel]],
+    response_format: type[BaseModel] | None,
     user_message: str,
 ) -> str:
     """

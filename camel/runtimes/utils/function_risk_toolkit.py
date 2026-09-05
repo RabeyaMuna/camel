@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import List, Optional
 
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
@@ -25,7 +24,7 @@ class FunctionRiskToolkit(BaseToolkit):
             (default: :obj:`False`)
     """
 
-    def __init__(self, verbose: Optional[bool] = False):
+    def __init__(self, verbose: bool | None = False):
         self.verbose = verbose
 
     def function_risk(self, score: int, reason: str):
@@ -47,7 +46,7 @@ class FunctionRiskToolkit(BaseToolkit):
         if self.verbose:
             print(f"Function risk assessment: {reason} (score: {score})")
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

@@ -12,7 +12,8 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Any, Callable, Dict, List, Literal, Optional, Sequence
+from collections.abc import Callable, Sequence
+from typing import Any, Literal
 
 import numpy as np
 from datasets import Dataset, load_dataset
@@ -35,8 +36,8 @@ class RagasFields:
 
 def annotate_dataset(
     dataset: Dataset,
-    context_call: Optional[Callable[[Dict[str, Any]], List[str]]],
-    answer_call: Optional[Callable[[Dict[str, Any]], str]],
+    context_call: Callable[[dict[str, Any]], list[str]] | None,
+    answer_call: Callable[[dict[str, Any]], str] | None,
 ) -> Dataset:
     r"""Annotate the dataset by adding context and answers using the provided
     functions.
@@ -52,7 +53,7 @@ def annotate_dataset(
         Dataset: The annotated dataset with added contexts and/or answers.
     """
 
-    def process_example(example: Dict[str, Any]) -> Dict[str, Any]:
+    def process_example(example: dict[str, Any]) -> dict[str, Any]:
         if context_call:
             example["contexts"] = context_call(example)
         if answer_call:
@@ -65,7 +66,7 @@ def annotate_dataset(
 def rmse(
     input_trues: Sequence[float],
     input_preds: Sequence[float],
-) -> Optional[float]:
+) -> float | None:
     r"""Calculate Root Mean Squared Error (RMSE).
 
     Args:
@@ -118,12 +119,12 @@ def auroc(trues: Sequence[bool], preds: Sequence[float]) -> float:
 
 def ragas_calculate_metrics(
     dataset: Dataset,
-    pred_context_relevance_field: Optional[str],
-    pred_faithfulness_field: Optional[str],
-    metrics_to_evaluate: Optional[List[str]] = None,
+    pred_context_relevance_field: str | None,
+    pred_faithfulness_field: str | None,
+    metrics_to_evaluate: list[str] | None = None,
     ground_truth_context_relevance_field: str = "relevance_score",
     ground_truth_faithfulness_field: str = "adherence_score",
-) -> Dict[str, Optional[float]]:
+) -> dict[str, float | None]:
     r"""Calculate RAGAS evaluation metrics.
 
     Args:
@@ -145,7 +146,7 @@ def ragas_calculate_metrics(
         "context_relevancy",
         "faithfulness",
     ]
-    calculated_metrics: Dict[str, Optional[float]] = {}
+    calculated_metrics: dict[str, float | None] = {}
 
     if (
         "context_relevancy" in metrics_to_evaluate
@@ -173,9 +174,9 @@ def ragas_calculate_metrics(
 
 def ragas_evaluate_dataset(
     dataset: Dataset,
-    contexts_field_name: Optional[str],
-    answer_field_name: Optional[str],
-    metrics_to_evaluate: Optional[List[str]] = None,
+    contexts_field_name: str | None,
+    answer_field_name: str | None,
+    metrics_to_evaluate: list[str] | None = None,
 ) -> Dataset:
     r"""Evaluate the dataset using RAGAS metrics.
 
@@ -258,7 +259,7 @@ class RAGBenchBenchmark(BaseBenchmark):
         super().__init__("ragbench", "rag_bench", "", processes)
         self.subset = subset
         self.split = split
-        self.dataset: Optional[Dataset] = None
+        self.dataset: Dataset | None = None
 
     def download(self):
         r"""Download the RAGBench dataset."""
@@ -288,7 +289,7 @@ class RAGBenchBenchmark(BaseBenchmark):
         self,
         agent: ChatAgent,
         auto_retriever: AutoRetriever,
-    ) -> Dict[str, Optional[float]]:
+    ) -> dict[str, float | None]:
         r"""Run the benchmark evaluation.
 
         Args:
@@ -310,7 +311,7 @@ class RAGBenchBenchmark(BaseBenchmark):
             )
             return [c['text'] for c in retrieved_info['Retrieved Context']]
 
-        def answer_call(example: Dict[str, Any]) -> str:
+        def answer_call(example: dict[str, Any]) -> str:
             user_msg = str(example)
             assistant_response = agent.step(user_msg)
             return assistant_response.msg.content

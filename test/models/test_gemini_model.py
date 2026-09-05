@@ -52,10 +52,10 @@ def test_gemini_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into Gemini model backend."
-            )
+            
         ),
     ):
         _ = GeminiModel(model_type, model_config_dict)

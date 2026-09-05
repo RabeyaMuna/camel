@@ -93,7 +93,7 @@ class TestLongtermAgentMemory:
                     "user",
                     RoleType.USER,
                     None,
-                    "test message {}".format(i),
+                    f"test message {i}",
                 ),
                 role_at_backend=OpenAIBackendRole.USER,
                 timestamp=datetime.now().timestamp(),

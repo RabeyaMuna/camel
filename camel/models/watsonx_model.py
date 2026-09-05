@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -78,13 +78,13 @@ class WatsonXModel(BaseModelBackend):
     )
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        project_id: Optional[str] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        timeout: Optional[float] = None,
+        model_type: ModelType | str,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        project_id: str | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        timeout: float | None = None,
         **kwargs: Any,
     ):
         from ibm_watsonx_ai import APIClient, Credentials
@@ -114,7 +114,7 @@ class WatsonXModel(BaseModelBackend):
             params=model_config_dict,
         )
 
-    def _to_openai_response(self, response: Dict[str, Any]) -> ChatCompletion:
+    def _to_openai_response(self, response: dict[str, Any]) -> ChatCompletion:
         r"""Convert WatsonX response to OpenAI format."""
         if not response:
             raise ValueError("Empty response from WatsonX API")
@@ -149,10 +149,10 @@ class WatsonXModel(BaseModelBackend):
 
     def _prepare_request(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
         import copy
 
         request_config = copy.deepcopy(self.model_config_dict)
@@ -168,9 +168,9 @@ class WatsonXModel(BaseModelBackend):
     @observe(as_type='generation')
     def _run(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
     ) -> ChatCompletion:
         r"""Runs inference of WatsonX chat completion.
 
@@ -231,9 +231,9 @@ class WatsonXModel(BaseModelBackend):
     @observe(as_type='generation')
     async def _arun(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
     ) -> ChatCompletion:
         r"""Runs inference of WatsonX chat completion asynchronously.
 

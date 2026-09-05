@@ -14,7 +14,7 @@
 import json
 import logging
 import re
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from camel.models import BaseModelBackend, ModelFactory
 from camel.types import ModelPlatformType, ModelType
@@ -77,9 +77,9 @@ what was accomplished
     def __init__(
         self,
         *,
-        user_data_dir: Optional[str] = None,
+        user_data_dir: str | None = None,
         headless: bool = False,
-        model_backend: Optional[BaseModelBackend] = None,
+        model_backend: BaseModelBackend | None = None,
     ):
         self._session = NVBrowserSession(
             headless=headless, user_data_dir=user_data_dir
@@ -87,7 +87,7 @@ what was accomplished
         from camel.agents import ChatAgent
 
         # Populated lazily after first page load
-        self.action_history: List[Dict[str, Any]] = []
+        self.action_history: list[dict[str, Any]] = []
         if model_backend is None:
             model_backend = ModelFactory.create(
                 model_platform=ModelPlatformType.OPENAI,
@@ -96,7 +96,7 @@ what was accomplished
             )
         self.model_backend = model_backend
         # Reuse ChatAgent instance to avoid recreation overhead
-        self._chat_agent: Optional[ChatAgent] = None
+        self._chat_agent: ChatAgent | None = None
 
     async def navigate(self, url: str) -> str:
         try:
@@ -117,7 +117,7 @@ what was accomplished
             )
         return self._chat_agent
 
-    def _safe_parse_json(self, content: str) -> Dict[str, Any]:
+    def _safe_parse_json(self, content: str) -> dict[str, Any]:
         r"""Safely parse JSON from LLM response with multiple fallback
         strategies.
         """
@@ -179,8 +179,8 @@ what was accomplished
         prompt: str,
         snapshot: str,
         is_initial: bool,
-        history: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:
+        history: list[dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
         """Call the LLM (via CAMEL ChatAgent) to get plan & next action."""
         # Build user message
         if is_initial:
@@ -269,7 +269,7 @@ what was accomplished
 
         logger.info("Process completed with %d steps", steps)
 
-    async def _run_action(self, action: Dict[str, Any]) -> str:
+    async def _run_action(self, action: dict[str, Any]) -> str:
         if action.get("type") == "navigate":
             return await self.navigate(action.get("url", ""))
         return await self._session.exec_action(action)

@@ -60,10 +60,10 @@ def test_openai_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into OpenAI model backend."
-            )
+            
         ),
     ):
         _ = OpenAIModel(model_type, model_config_dict)

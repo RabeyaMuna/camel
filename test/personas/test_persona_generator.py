@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import uuid
-from typing import Dict
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -72,7 +71,7 @@ def mock_model_factory():
 
 def test_init(persona_generator: PersonaHub):
     assert isinstance(persona_generator, PersonaHub)
-    assert isinstance(persona_generator.personas, Dict)
+    assert isinstance(persona_generator.personas, dict)
     assert len(persona_generator.personas) == 0
 
 

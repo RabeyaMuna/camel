@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 from camel.configs.base_config import BaseConfig
 
@@ -49,12 +49,12 @@ class ModelScopeConfig(BaseConfig):
             the ModelScope API.
     """
 
-    tool_choice: Optional[Union[dict[str, str], str]] = None
-    max_tokens: Optional[int] = None
-    top_p: Optional[float] = None
-    temperature: Optional[float] = None
-    stream: Optional[bool] = None
-    extra_body: Optional[Dict[str, Any]] = None
+    tool_choice: dict[str, str] | str | None = None
+    max_tokens: int | None = None
+    top_p: float | None = None
+    temperature: float | None = None
+    stream: bool | None = None
+    extra_body: dict[str, Any] | None = None
 
 
 MODELSCOPE_API_PARAMS = {

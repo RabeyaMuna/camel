@@ -16,8 +16,9 @@ import inspect
 import logging
 import textwrap
 import warnings
+from collections.abc import Callable, Mapping
 from inspect import Parameter, getsource, signature
-from typing import Any, Callable, Dict, Mapping, Optional, Tuple, Type
+from typing import Any
 
 from docstring_parser import parse
 from jsonschema.exceptions import SchemaError
@@ -32,7 +33,7 @@ from camel.utils import get_pydantic_object_schema, to_pascal
 logger = logging.getLogger(__name__)
 
 
-def _remove_a_key(d: Dict, remove_key: Any) -> None:
+def _remove_a_key(d: dict, remove_key: Any) -> None:
     r"""Remove a key from a dictionary recursively."""
     if isinstance(d, dict):
         for key in list(d.keys()):
@@ -67,7 +68,7 @@ def _remove_title_recursively(data, parent_key=None):
             _remove_title_recursively(item, parent_key=parent_key)
 
 
-def get_openai_function_schema(func: Callable) -> Dict[str, Any]:
+def get_openai_function_schema(func: Callable) -> dict[str, Any]:
     r"""Generates a schema dict for an OpenAI function based on its signature.
 
     This function is deprecated and will be replaced by
@@ -87,7 +88,7 @@ def get_openai_function_schema(func: Callable) -> Dict[str, Any]:
     return openai_function_schema
 
 
-def get_openai_tool_schema(func: Callable) -> Dict[str, Any]:
+def get_openai_tool_schema(func: Callable) -> dict[str, Any]:
     r"""Generates an OpenAI JSON schema from a given Python function.
 
     This function creates a schema compatible with OpenAI's API specifications,
@@ -117,7 +118,7 @@ def get_openai_tool_schema(func: Callable) -> Dict[str, Any]:
             <https://platform.openai.com/docs/api-reference/assistants/object>`_
     """
     params: Mapping[str, Parameter] = signature(func).parameters
-    fields: Dict[str, Tuple[type, FieldInfo]] = {}
+    fields: dict[str, tuple[type, FieldInfo]] = {}
     for param_name, p in params.items():
         param_type = p.annotation
         param_default = p.default
@@ -293,7 +294,7 @@ def sanitize_and_enforce_required(parameters_dict):
 
 def generate_docstring(
     code: str,
-    model: Optional[BaseModelBackend] = None,
+    model: BaseModelBackend | None = None,
 ) -> str:
     r"""Generates a docstring for a given function code using LLM.
 
@@ -395,13 +396,13 @@ class FunctionTool:
     def __init__(
         self,
         func: Callable,
-        openai_tool_schema: Optional[Dict[str, Any]] = None,
-        synthesize_schema: Optional[bool] = False,
-        synthesize_schema_model: Optional[BaseModelBackend] = None,
+        openai_tool_schema: dict[str, Any] | None = None,
+        synthesize_schema: bool | None = False,
+        synthesize_schema_model: BaseModelBackend | None = None,
         synthesize_schema_max_retries: int = 2,
-        synthesize_output: Optional[bool] = False,
-        synthesize_output_model: Optional[BaseModelBackend] = None,
-        synthesize_output_format: Optional[Type[BaseModel]] = None,
+        synthesize_output: bool | None = False,
+        synthesize_output_model: BaseModelBackend | None = None,
+        synthesize_output_format: type[BaseModel] | None = None,
     ) -> None:
         self.func = func
         self.openai_tool_schema = openai_tool_schema or get_openai_tool_schema(
@@ -419,7 +420,7 @@ class FunctionTool:
                 f"Use `{self.synthesize_output_model.model_type}` to "
                 "synthesize the output."
             )
-        self.synthesize_output_format: Optional[type[BaseModel]] = None
+        self.synthesize_output_format: type[BaseModel] | None = None
         return_annotation = inspect.signature(self.func).return_annotation
         if synthesize_output_format is not None:
             self.synthesize_output_format = synthesize_output_format
@@ -485,7 +486,7 @@ class FunctionTool:
 
     @staticmethod
     def validate_openai_tool_schema(
-        openai_tool_schema: Dict[str, Any],
+        openai_tool_schema: dict[str, Any],
     ) -> None:
         r"""Validates the OpenAI tool schema against
         :obj:`ToolAssistantToolsFunction`.
@@ -526,8 +527,8 @@ class FunctionTool:
             raise e
 
         # Check the parameter description, if no description then raise warming
-        properties: Dict[str, Any] = parameters["properties"]
-        for param_name in properties.keys():
+        properties: dict[str, Any] = parameters["properties"]
+        for param_name in properties:
             param_dict = properties[param_name]
             if "description" not in param_dict:
                 warnings.warn(
@@ -537,7 +538,7 @@ class FunctionTool:
                     f"This may affect the quality of tool calling."
                 )
 
-    def get_openai_tool_schema(self) -> Dict[str, Any]:
+    def get_openai_tool_schema(self) -> dict[str, Any]:
         r"""Gets the OpenAI tool schema for this function.
 
         This method returns the OpenAI tool schema associated with this
@@ -550,7 +551,7 @@ class FunctionTool:
         self.validate_openai_tool_schema(self.openai_tool_schema)
         return self.openai_tool_schema
 
-    def set_openai_tool_schema(self, schema: Dict[str, Any]) -> None:
+    def set_openai_tool_schema(self, schema: dict[str, Any]) -> None:
         r"""Sets the OpenAI tool schema for this function.
 
         Allows setting a custom OpenAI tool schema for this function.
@@ -560,7 +561,7 @@ class FunctionTool:
         """
         self.openai_tool_schema = schema
 
-    def get_openai_function_schema(self) -> Dict[str, Any]:
+    def get_openai_function_schema(self) -> dict[str, Any]:
         r"""Gets the schema of the function from the OpenAI tool schema.
 
         This method extracts and returns the function-specific part of the
@@ -575,7 +576,7 @@ class FunctionTool:
 
     def set_openai_function_schema(
         self,
-        openai_function_schema: Dict[str, Any],
+        openai_function_schema: dict[str, Any],
     ) -> None:
         r"""Sets the schema of the function within the OpenAI tool schema.
 
@@ -653,7 +654,7 @@ class FunctionTool:
             param_name
         ]["description"] = description
 
-    def get_parameter(self, param_name: str) -> Dict[str, Any]:
+    def get_parameter(self, param_name: str) -> dict[str, Any]:
         r"""Gets the schema for a specific parameter from the function schema.
 
         Args:
@@ -667,7 +668,7 @@ class FunctionTool:
             param_name
         ]
 
-    def set_parameter(self, param_name: str, value: Dict[str, Any]):
+    def set_parameter(self, param_name: str, value: dict[str, Any]):
         r"""Sets the schema for a specific parameter in the function schema.
 
         Args:
@@ -684,8 +685,8 @@ class FunctionTool:
 
     def synthesize_openai_tool_schema(
         self,
-        max_retries: Optional[int] = None,
-    ) -> Dict[str, Any]:
+        max_retries: int | None = None,
+    ) -> dict[str, Any]:
         r"""Synthesizes an OpenAI tool schema for the specified function.
 
         This method uses a language model (LLM) to synthesize the OpenAI tool
@@ -739,8 +740,8 @@ class FunctionTool:
 
     def synthesize_execution_output(
         self,
-        args: Optional[tuple[Any, ...]] = None,
-        kwargs: Optional[Dict[str, Any]] = None,
+        args: tuple[Any, ...] | None = None,
+        kwargs: dict[str, Any] | None = None,
     ) -> Any:
         r"""Synthesizes the output of the function based on the provided
         positional arguments and keyword arguments.
@@ -832,7 +833,7 @@ class FunctionTool:
         return response.msg.content
 
     @property
-    def parameters(self) -> Dict[str, Any]:
+    def parameters(self) -> dict[str, Any]:
         r"""Getter method for the property :obj:`parameters`.
 
         Returns:
@@ -843,7 +844,7 @@ class FunctionTool:
         return self.openai_tool_schema["function"]["parameters"]["properties"]
 
     @parameters.setter
-    def parameters(self, value: Dict[str, Any]) -> None:
+    def parameters(self, value: dict[str, Any]) -> None:
         r"""Setter method for the property :obj:`parameters`. It will
         firstly check if the input parameters schema is valid. If invalid,
         the method will raise :obj:`jsonschema.exceptions.SchemaError`.

@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import requests
 
@@ -33,9 +33,9 @@ class JinaRerankerToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
-        model_name: Optional[str] = "jinaai/jina-reranker-m0",
-        device: Optional[str] = None,
+        timeout: float | None = None,
+        model_name: str | None = "jinaai/jina-reranker-m0",
+        device: str | None = None,
         use_api: bool = True,
     ) -> None:
         r"""Initializes a new instance of the JinaRerankerToolkit class.
@@ -93,8 +93,8 @@ class JinaRerankerToolkit(BaseToolkit):
             self.model.eval()
 
     def _sort_documents(
-        self, documents: List[str], scores: List[float]
-    ) -> List[Dict[str, object]]:
+        self, documents: list[str], scores: list[float]
+    ) -> list[dict[str, object]]:
         r"""Sort documents by their scores in descending order.
 
         Args:
@@ -119,7 +119,7 @@ class JinaRerankerToolkit(BaseToolkit):
 
         return results
 
-    def _call_jina_api(self, data: Dict[str, Any]) -> List[Dict[str, object]]:
+    def _call_jina_api(self, data: dict[str, Any]) -> list[dict[str, object]]:
         r"""Makes a call to the JINA API for reranking.
 
         Args:
@@ -148,9 +148,9 @@ class JinaRerankerToolkit(BaseToolkit):
     def rerank_text_documents(
         self,
         query: str,
-        documents: List[str],
+        documents: list[str],
         max_length: int = 1024,
-    ) -> List[Dict[str, object]]:
+    ) -> list[dict[str, object]]:
         r"""Reranks text documents based on their relevance to a text query.
 
         Args:
@@ -194,9 +194,9 @@ class JinaRerankerToolkit(BaseToolkit):
     def rerank_image_documents(
         self,
         query: str,
-        documents: List[str],
+        documents: list[str],
         max_length: int = 2048,
-    ) -> List[Dict[str, object]]:
+    ) -> list[dict[str, object]]:
         r"""Reranks image documents based on their relevance to a text query.
 
         Args:
@@ -239,9 +239,9 @@ class JinaRerankerToolkit(BaseToolkit):
     def image_query_text_documents(
         self,
         image_query: str,
-        documents: List[str],
+        documents: list[str],
         max_length: int = 2048,
-    ) -> List[Dict[str, object]]:
+    ) -> list[dict[str, object]]:
         r"""Reranks text documents based on their relevance to an image query.
 
         Args:
@@ -287,9 +287,9 @@ class JinaRerankerToolkit(BaseToolkit):
     def image_query_image_documents(
         self,
         image_query: str,
-        documents: List[str],
+        documents: list[str],
         max_length: int = 2048,
-    ) -> List[Dict[str, object]]:
+    ) -> list[dict[str, object]]:
         r"""Reranks image documents based on their relevance to an image query.
 
         Args:
@@ -332,7 +332,7 @@ class JinaRerankerToolkit(BaseToolkit):
 
             return self._sort_documents(documents, scores)
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

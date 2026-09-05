@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 import os
-from typing import ClassVar, Dict, Optional, Type, Union
+from typing import ClassVar
 
 from camel.models.aiml_model import AIMLModel
 from camel.models.anthropic_model import AnthropicModel
@@ -64,7 +64,7 @@ class ModelFactory:
     """
 
     _MODEL_PLATFORM_TO_CLASS_MAP: ClassVar[
-        Dict[ModelPlatformType, Type[BaseModelBackend]]
+        dict[ModelPlatformType, type[BaseModelBackend]]
     ] = {
         ModelPlatformType.OLLAMA: OllamaModel,
         ModelPlatformType.VLLM: VLLMModel,
@@ -105,13 +105,13 @@ class ModelFactory:
 
     @staticmethod
     def create(
-        model_platform: Union[ModelPlatformType, str],
-        model_type: Union[ModelType, str, UnifiedModelType],
-        model_config_dict: Optional[Dict] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        timeout: Optional[float] = None,
+        model_platform: ModelPlatformType | str,
+        model_type: ModelType | str | UnifiedModelType,
+        model_config_dict: dict | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        timeout: float | None = None,
         max_retries: int = 3,
         **kwargs,
     ) -> BaseModelBackend:
@@ -171,7 +171,7 @@ class ModelFactory:
                 # If not in ModelType, create a UnifiedModelType
                 model_type = UnifiedModelType(model_type)
 
-        model_class: Optional[Type[BaseModelBackend]] = None
+        model_class: type[BaseModelBackend] | None = None
         model_type = UnifiedModelType(model_type)
 
         model_class = ModelFactory._MODEL_PLATFORM_TO_CLASS_MAP.get(
@@ -233,7 +233,7 @@ class ModelFactory:
             raise KeyError(f"Invalid model platform: {model_platform_str}")
 
     @classmethod
-    def __load_yaml(cls, filepath: str) -> Dict:
+    def __load_yaml(cls, filepath: str) -> dict:
         import yaml
 
         r"""Loads and parses a YAML file into a dictionary.
@@ -250,7 +250,7 @@ class ModelFactory:
         return config
 
     @classmethod
-    def __load_json(cls, filepath: str) -> Dict:
+    def __load_json(cls, filepath: str) -> dict:
         r"""Loads and parses a JSON file into a dictionary.
 
         Args:

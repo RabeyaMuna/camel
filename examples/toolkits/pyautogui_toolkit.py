@@ -127,7 +127,7 @@ def run_automated_demo():
         print(f"EXECUTING TASK {i+1} OF {len(tasks)}")
         print("=" * 60 + "\n")
         print(f"Instruction: {task}")
-        print("")
+        print()
 
         # Execute the task
         response = agent.step(task)
@@ -139,7 +139,7 @@ def run_automated_demo():
         if i < len(tasks) - 1:
             print("\nWaiting a moment before the next task...")
             time.sleep(3)
-            print("")
+            print()
 
 
 def main():

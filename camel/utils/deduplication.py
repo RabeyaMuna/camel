@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 
-from typing import Dict, List, Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel
 
@@ -33,17 +33,17 @@ class DeduplicationResult(BaseModel):
             duplicate of.
     """
 
-    original_texts: List[str]
-    unique_ids: List[int]
-    unique_embeddings_dict: Dict[int, List[float]]
-    duplicate_to_target_map: Dict[int, int]
+    original_texts: list[str]
+    unique_ids: list[int]
+    unique_embeddings_dict: dict[int, list[float]]
+    duplicate_to_target_map: dict[int, int]
 
 
 def deduplicate_internally(
-    texts: List[str],
+    texts: list[str],
     threshold: float = 0.65,
-    embedding_instance: Optional[BaseEmbedding[str]] = None,
-    embeddings: Optional[List[List[float]]] = None,
+    embedding_instance: BaseEmbedding[str] | None = None,
+    embeddings: list[list[float]] | None = None,
     strategy: Literal["top1", "llm-supervise"] = "top1",
     batch_size: int = 1000,
 ) -> DeduplicationResult:
@@ -183,7 +183,7 @@ def deduplicate_internally(
     # Convert embeddings to numpy array for efficient computation
     embeddings_array = np.array(embeddings)
     n = len(texts)
-    duplicate_to_target_map: Dict[int, int] = {}
+    duplicate_to_target_map: dict[int, int] = {}
 
     # Process in batches to reduce memory usage
     for i in range(0, n, batch_size):

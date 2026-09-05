@@ -47,10 +47,10 @@ def test_reka_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into Reka model backend."
-            )
+            
         ),
     ):
         _ = RekaModel(model_type, model_config_dict)

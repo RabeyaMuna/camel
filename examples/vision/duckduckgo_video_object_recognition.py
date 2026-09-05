@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import List
 
 from PIL import Image
 
@@ -22,7 +21,7 @@ from camel.toolkits import SearchToolkit, VideoDownloaderToolkit
 from camel.types import RoleType, TaskType
 
 
-def detect_image_obj(image_list: List[Image.Image]) -> None:
+def detect_image_obj(image_list: list[Image.Image]) -> None:
     sys_msg = PromptTemplateGenerator().get_prompt_from_key(
         TaskType.OBJECT_RECOGNITION, RoleType.ASSISTANT
     )

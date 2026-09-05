@@ -20,7 +20,7 @@ import random
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Tuple, Union
+from typing import Any, Literal
 
 import pandas as pd
 from datasets import load_dataset
@@ -104,7 +104,7 @@ class NexusBenchmark(BaseBenchmark):
                 parallel processing. (default: :obj:`1`)
         """
         super().__init__("nexus", data_dir, save_to, processes)
-        self._data: List[NexusSample] = []  # type: ignore[assignment]
+        self._data: list[NexusSample] = []  # type: ignore[assignment]
 
     def download(self):
         r"""Download the Nexus Functional Calling Benchmark dataset."""
@@ -127,7 +127,7 @@ class NexusBenchmark(BaseBenchmark):
             force_download (bool): Whether to force download the data.
         """
 
-        def _load_csv_data(dataset_dir: Path) -> List:
+        def _load_csv_data(dataset_dir: Path) -> list:
             r"""Load datasets from CSV files."""
             dataset = []
             for file_name in os.listdir(dataset_dir):
@@ -145,7 +145,7 @@ class NexusBenchmark(BaseBenchmark):
                 logger.warning(f"Skipping unsupported file: {file_name}")
             return dataset
 
-        def _load_parquet_data(data_dir: Path, dataset_name: str) -> List:
+        def _load_parquet_data(data_dir: Path, dataset_name: str) -> list:
             r"""Load datasets from Parquet files."""
             dataset = []
             if not data_dir.exists():
@@ -166,9 +166,9 @@ class NexusBenchmark(BaseBenchmark):
 
         def _process_parquet_data(
             data: pd.DataFrame, dataset_name: str
-        ) -> List:
+        ) -> list:
             r"""Process data from Parquet files based on dataset name."""
-            dataset: List = []
+            dataset: list = []
             dataset_handlers = {
                 "NVDLibrary": _process_nvdlibrary,
                 "VirusTotal": _process_simple,
@@ -202,7 +202,7 @@ class NexusBenchmark(BaseBenchmark):
             r"""Process samples for simple datasets (e.g., VirusTotal)."""
             return NexusSample(sample["Input"], sample["Output"])
 
-        def _process_nested_calls(sample) -> Union[NexusSample, None]:
+        def _process_nested_calls(sample) -> NexusSample | None:
             r"""Process samples for VirusTotal-NestedCalls dataset."""
             if len(sample["fncall"]) == 1:
                 return NexusSample(
@@ -210,7 +210,7 @@ class NexusBenchmark(BaseBenchmark):
                 )
             return None
 
-        def _process_parallel_calls(sample) -> Union[NexusSample, None]:
+        def _process_parallel_calls(sample) -> NexusSample | None:
             r"""Process samples for VirusTotal-ParallelCalls dataset."""
             if len(sample["fncall"]) > 1:
                 return NexusSample(
@@ -266,8 +266,8 @@ class NexusBenchmark(BaseBenchmark):
             "NVDLibrary-NestedCalls",
         ],
         randomize: bool = False,
-        subset: Optional[int] = None,
-    ) -> Dict[str, Any]:
+        subset: int | None = None,
+    ) -> dict[str, Any]:
         r"""Run the benchmark.
 
         Args:
@@ -412,7 +412,7 @@ def construct_prompt(input: str, tools: str) -> str:
 # Functions for function call evaluation
 def parse_function_call(
     call: str,
-) -> Tuple[Optional[str], Optional[List[Any]], Optional[Dict[str, Any]]]:
+) -> tuple[str | None, list[Any] | None, dict[str, Any] | None]:
     r"""Parse a function call string to extract the function name,
     positional arguments, and keyword arguments, including
     nested function calls.
@@ -482,15 +482,14 @@ def parse_function_call(
                 args = [evaluate_arg(arg) for arg in tree.body.args]
 
                 # Extract keyword arguments
-                kwargs: Dict[str, Any] = {
+                kwargs: dict[str, Any] = {
                     kw.arg: evaluate_arg(kw.value)
                     for kw in tree.body.keywords
                     if kw.arg is not None
                 }
                 logger.info("Valid call.")
                 return func_name, args, kwargs
-        else:
-            raise ValueError(f"Not a valid function call: {call}")
+        raise ValueError(f"Not a valid function call: {call}")
     except Exception as e:
         logger.info(f"Error parsing call: {call}, {e}")
         return None, None, None

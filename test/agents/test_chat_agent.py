@@ -15,7 +15,6 @@ import asyncio
 import json
 from copy import deepcopy
 from io import BytesIO
-from typing import List
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -960,7 +959,7 @@ def test_tool_calling_sync(step_call_count=3):
     for i in range(step_call_count):
         agent_response = agent.step(user_msg)
 
-        tool_calls: List[ToolCallingRecord] = [
+        tool_calls: list[ToolCallingRecord] = [
             call for call in agent_response.info['tool_calls']
         ]
 

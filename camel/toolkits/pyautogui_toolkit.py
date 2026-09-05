@@ -14,7 +14,7 @@
 
 import os
 import time
-from typing import List, Literal, Optional, Tuple, Union
+from typing import Literal
 
 from camel.logger import get_logger
 from camel.toolkits import BaseToolkit, FunctionTool
@@ -33,7 +33,7 @@ class PyAutoGUIToolkit(BaseToolkit):
     @dependencies_required('pyautogui')
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
         screenshots_dir: str = "tmp",
     ):
         r"""Initializes the PyAutoGUIToolkit with optional timeout.
@@ -63,7 +63,7 @@ class PyAutoGUIToolkit(BaseToolkit):
         self.screen_center = (self.screen_width // 2, self.screen_height // 2)
         self.screenshots_dir = os.path.expanduser(screenshots_dir)
 
-    def _get_safe_coordinates(self, x: int, y: int) -> Tuple[int, int]:
+    def _get_safe_coordinates(self, x: int, y: int) -> tuple[int, int]:
         r"""Ensure coordinates are within safe boundaries to prevent triggering
         failsafe.
 
@@ -109,8 +109,8 @@ class PyAutoGUIToolkit(BaseToolkit):
         self,
         button: Literal["left", "middle", "right"] = "left",
         clicks: int = 1,
-        x: Optional[int] = None,
-        y: Optional[int] = None,
+        x: int | None = None,
+        y: int | None = None,
     ) -> str:
         r"""Performs a mouse click at the specified coordinates or current
         position.
@@ -262,8 +262,8 @@ class PyAutoGUIToolkit(BaseToolkit):
     def scroll(
         self,
         scroll_amount: int,
-        x: Optional[int] = None,
-        y: Optional[int] = None,
+        x: int | None = None,
+        y: int | None = None,
     ) -> str:
         r"""Scroll the mouse wheel.
 
@@ -337,7 +337,7 @@ class PyAutoGUIToolkit(BaseToolkit):
             logger.error(f"Error typing text: {e}")
             return f"Error: {e}"
 
-    def press_key(self, key: Union[str, List[str]]) -> str:
+    def press_key(self, key: str | list[str]) -> str:
         r"""Press a key on the keyboard.
 
         Args:
@@ -385,7 +385,7 @@ class PyAutoGUIToolkit(BaseToolkit):
             logger.error(f"Error pressing key: {e}")
             return f"Error: Invalid key '{key}' or error pressing it. {e}"
 
-    def hotkey(self, keys: List[str]) -> str:
+    def hotkey(self, keys: list[str]) -> str:
         r"""Press keys in succession and release in reverse order.
 
         Args:
@@ -409,7 +409,7 @@ class PyAutoGUIToolkit(BaseToolkit):
             logger.error(f"Error pressing hotkey: {e}")
             return f"Error: {e}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects for PyAutoGUI operations.
 
         Returns:

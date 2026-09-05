@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -61,7 +61,7 @@ def test_chat_message(chat_message: BaseMessage) -> None:
     assert chat_message.content == content
 
     dictionary = chat_message.to_dict()
-    reference_dict: Dict[str, Any] = {
+    reference_dict: dict[str, Any] = {
         "role_name": role_name,
         "role_type": role_type.name,
         "content": content,
@@ -81,7 +81,7 @@ def test_assistant_chat_message(assistant_chat_message: BaseMessage) -> None:
     assert assistant_chat_message.content == content
 
     dictionary = assistant_chat_message.to_dict()
-    reference_dict: Dict[str, Any] = {
+    reference_dict: dict[str, Any] = {
         "role_name": role_name,
         "role_type": role_type.name,
         "content": content,
@@ -101,7 +101,7 @@ def test_user_chat_message(user_chat_message: BaseMessage) -> None:
     assert user_chat_message.content == content
 
     dictionary = user_chat_message.to_dict()
-    reference_dict: Dict[str, Any] = {
+    reference_dict: dict[str, Any] = {
         "role_name": role_name,
         "role_type": role_type.name,
         "content": content,

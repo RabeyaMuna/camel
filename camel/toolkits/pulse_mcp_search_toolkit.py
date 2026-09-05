@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import requests
 
@@ -24,18 +24,18 @@ from camel.utils import MCPServer
 class PulseMCPSearchToolkit(BaseToolkit):
     r"""A toolkit for searching MCP servers using the PulseMCP API."""
 
-    def __init__(self, timeout: Optional[float] = None):
+    def __init__(self, timeout: float | None = None):
         super().__init__(timeout=timeout)
         self.api_base_url = "https://api.pulsemcp.com/v0beta"
 
     def search_mcp_servers(
         self,
-        query: Optional[str] = None,
-        top_k: Optional[int] = 5,
-        package_registry: Optional[str] = None,
+        query: str | None = None,
+        top_k: int | None = 5,
+        package_registry: str | None = None,
         count_per_page: int = 5000,
         offset: int = 0,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Search for MCP servers using the PulseMCP API.
 
         Args:
@@ -54,7 +54,7 @@ class PulseMCPSearchToolkit(BaseToolkit):
             Dict[str, Any]: A dictionary containing the search results or
                 an error message.
         """
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             "count_per_page": min(count_per_page, 5000),
             "offset": offset,
         }
@@ -95,7 +95,7 @@ class PulseMCPSearchToolkit(BaseToolkit):
             # 2. With description +3
             # 3. With stars +1
 
-            def score(server: Dict[str, Any]) -> float:
+            def score(server: dict[str, Any]) -> float:
                 name = server.get("name", "").lower()
                 desc = server.get("short_description", "").lower()
                 stars = server.get("github_stars", 0) or 0
@@ -120,7 +120,7 @@ class PulseMCPSearchToolkit(BaseToolkit):
 
         return {"servers": servers}
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
 import xml.etree.ElementTree as ET
-from typing import Any, Dict, List
+from typing import Any
 
 import requests
 
@@ -66,7 +66,7 @@ class WolframAlphaToolkit(BaseToolkit):
         ]
     )
     @dependencies_required("wolframalpha")
-    def query_wolfram_alpha_step_by_step(self, query: str) -> Dict[str, Any]:
+    def query_wolfram_alpha_step_by_step(self, query: str) -> dict[str, Any]:
         r"""Queries Wolfram|Alpha and returns detailed results with
         step-by-step solution.
 
@@ -130,7 +130,7 @@ class WolframAlphaToolkit(BaseToolkit):
         except Exception as e:
             return f"Wolfram Alpha wasn't able to answer it. Error: {e}"
 
-    def _parse_wolfram_result(self, result) -> Dict[str, Any]:
+    def _parse_wolfram_result(self, result) -> dict[str, Any]:
         r"""Parses a Wolfram Alpha API result into a structured dictionary
         format.
 
@@ -250,7 +250,7 @@ class WolframAlphaToolkit(BaseToolkit):
 
         return structured_steps
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

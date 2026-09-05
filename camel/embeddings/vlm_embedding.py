@@ -15,7 +15,7 @@
 # Enables postponed evaluation of annotations (for string-based type hints)
 from __future__ import annotations
 
-from typing import Any, List, Optional, Union
+from typing import Any, Union, cast
 
 from PIL import Image
 
@@ -68,12 +68,11 @@ class VisionLanguageEmbedding(BaseEmbedding[Union[str, Image.Image]]):
             ]
         except Exception:
             logger.warning("not typically processor and model structure")
-            pass
-        self.dim: Optional[int] = None
+        self.dim: int | None = None
 
     def embed_list(
-        self, objs: List[Union[Image.Image, str]], **kwargs: Any
-    ) -> List[List[float]]:
+        self, objs: list[Image.Image | str], **kwargs: Any
+    ) -> list[list[float]]:
         r"""Generates embeddings for the given images or texts.
 
         Args:
@@ -94,11 +93,11 @@ class VisionLanguageEmbedding(BaseEmbedding[Union[str, Image.Image]]):
         if not objs:
             raise ValueError("Input objs list is empty.")
 
-        image_processor_kwargs: Optional[dict] = kwargs.get(
+        image_processor_kwargs: dict | None = kwargs.get(
             'image_processor_kwargs', {}
         )
-        tokenizer_kwargs: Optional[dict] = kwargs.get('tokenizer_kwargs', {})
-        model_kwargs: Optional[dict] = kwargs.get('model_kwargs', {})
+        tokenizer_kwargs: dict | None = kwargs.get('tokenizer_kwargs', {})
+        model_kwargs: dict | None = kwargs.get('model_kwargs', {})
 
         result_list = []
         for obj in objs:
@@ -110,11 +109,11 @@ class VisionLanguageEmbedding(BaseEmbedding[Union[str, Image.Image]]):
                     images=obj,
                     return_tensors="pt",
                     padding=True,
-                    **image_processor_kwargs,
+                    **cast(dict[str, Any], image_processor_kwargs),
                 )
                 image_feature = (
                     self.model.get_image_features(
-                        **image_input, **model_kwargs
+                        **image_input, **cast(dict[str, Any], model_kwargs)
                     )
                     .squeeze(dim=0)
                     .tolist()
@@ -125,10 +124,12 @@ class VisionLanguageEmbedding(BaseEmbedding[Union[str, Image.Image]]):
                     text=obj,
                     return_tensors="pt",
                     padding=True,
-                    **tokenizer_kwargs,
+                    **cast(dict[str, Any], tokenizer_kwargs),
                 )
                 text_feature = (
-                    self.model.get_text_features(**text_input, **model_kwargs)
+                    self.model.get_text_features(
+                        **text_input, **cast(dict[str, Any], model_kwargs)
+                    )
                     .squeeze(dim=0)
                     .tolist()
                 )

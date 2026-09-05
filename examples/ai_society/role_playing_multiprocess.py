@@ -15,7 +15,7 @@ import json
 import multiprocessing
 import os
 import sys
-from typing import Any, Dict
+from typing import Any
 
 from colorama import Fore
 
@@ -76,7 +76,7 @@ def generate_data(
         )
 
     message_counter = 0
-    message_dict: Dict[str, Any] = {}
+    message_dict: dict[str, Any] = {}
 
     assistant_agent = role_play_session.assistant_agent
     user_agent = role_play_session.user_agent

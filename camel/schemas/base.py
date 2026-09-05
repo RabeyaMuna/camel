@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
 
 
 class BaseConverter(ABC):
@@ -27,7 +27,7 @@ class BaseConverter(ABC):
 
     @abstractmethod
     def convert(
-        self, content: str, *args: Any, **kwargs: Dict[str, Any]
+        self, content: str, *args: Any, **kwargs: dict[str, Any]
     ) -> Any:
         r"""Structures the input text into the expected response format.
 
@@ -40,4 +40,3 @@ class BaseConverter(ABC):
         Returns:
            Any: The converted response.
         """
-        pass

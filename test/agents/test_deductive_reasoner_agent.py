@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from mock import patch
+from unittest.mock import patch
 
 from camel.agents import ChatAgent
 from camel.agents.deductive_reasoner_agent import DeductiveReasonerAgent

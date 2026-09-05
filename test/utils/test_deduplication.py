@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List
 
 import pytest
 
@@ -25,10 +24,10 @@ class MockEmbedding(BaseEmbedding[str]):
     for any input text. Useful for testing deduplication logic.
     """
 
-    def embed(self, obj: str, **kwargs) -> List[float]:
+    def embed(self, obj: str, **kwargs) -> list[float]:
         return [0.5, 0.5, 0.5]
 
-    def embed_list(self, objs: List[str], **kwargs) -> List[List[float]]:
+    def embed_list(self, objs: list[str], **kwargs) -> list[list[float]]:
         return [[0.5, 0.5, 0.5] for _ in objs]
 
     def get_output_dim(self) -> int:

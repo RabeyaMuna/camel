@@ -58,10 +58,10 @@ def test_qianfan_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into QIANFAN model backend."
-            )
+            
         ),
     ):
         _ = QianfanModel(model_type, model_config_dict)

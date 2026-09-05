@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Optional, Sequence, Union
+from collections.abc import Sequence
 
 from camel.configs.base_config import BaseConfig
 
@@ -59,12 +59,12 @@ class ZhipuAIConfig(BaseConfig):
             are present.
     """
 
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    stream: Optional[bool] = None
-    stop: Optional[Union[str, Sequence[str]]] = None
-    max_tokens: Optional[int] = None
-    tool_choice: Optional[Union[dict[str, str], str]] = None
+    temperature: float | None = None
+    top_p: float | None = None
+    stream: bool | None = None
+    stop: str | Sequence[str] | None = None
+    max_tokens: int | None = None
+    tool_choice: dict[str, str] | str | None = None
 
 
 ZHIPUAI_API_PARAMS = {param for param in ZhipuAIConfig.model_fields.keys()}

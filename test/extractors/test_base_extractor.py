@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -23,7 +23,7 @@ from camel.extractors.base import BaseExtractor, BaseExtractorStrategy
 class DummyStrategy(BaseExtractorStrategy):
     r"""A dummy strategy that just returns the input text."""
 
-    async def extract(self, text: str) -> Optional[str]:
+    async def extract(self, text: str) -> str | None:
         return text
 
 
@@ -38,7 +38,7 @@ class TestExtractor(BaseExtractor):
         batch_size: int = 10,
         **kwargs,
     ):
-        pipeline: List[List[BaseExtractorStrategy]] = [[DummyStrategy()]]
+        pipeline: list[list[BaseExtractorStrategy]] = [[DummyStrategy()]]
         super().__init__(
             pipeline=pipeline,
             cache_templates=cache_templates,
@@ -49,7 +49,7 @@ class TestExtractor(BaseExtractor):
         )
 
     async def extract(
-        self, response: str, context: Optional[Dict[str, Any]] = None
+        self, response: str, context: dict[str, Any] | None = None
     ) -> str:
         r"""Simple implementation that returns the response with a prefix."""
         if not self._is_setup:

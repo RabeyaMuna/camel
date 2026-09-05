@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import ClassVar, Dict, List, Optional
+from typing import ClassVar
 
 from camel.logger import get_logger
 
@@ -41,7 +41,7 @@ class MarkItDownLoader:
         - YouTube URLs (via transcript extraction)
     """
 
-    SUPPORTED_FORMATS: ClassVar[List[str]] = [
+    SUPPORTED_FORMATS: ClassVar[list[str]] = [
         ".pdf",
         ".doc",
         ".docx",
@@ -66,8 +66,8 @@ class MarkItDownLoader:
 
     def __init__(
         self,
-        llm_client: Optional[object] = None,
-        llm_model: Optional[str] = None,
+        llm_client: object | None = None,
+        llm_model: str | None = None,
     ):
         r"""Initializes the Converter.
 
@@ -77,7 +77,7 @@ class MarkItDownLoader:
             llm_model (Optional[str]): Optional model name for the LLM.
                 (default: :obj:`None`)
         """
-        from markitdown import MarkItDown
+        from markitdown import MarkItDown  # type: ignore[import-not-found]
 
         try:
             self.converter = MarkItDown(
@@ -137,10 +137,10 @@ class MarkItDownLoader:
 
     def convert_files(
         self,
-        file_paths: List[str],
+        file_paths: list[str],
         parallel: bool = False,
         skip_failed: bool = False,
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         r"""Converts multiple files to Markdown format.
 
         Args:

@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 class ScrapeGraphAI:
@@ -30,7 +30,7 @@ class ScrapeGraphAI:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
     ) -> None:
         from scrapegraph_py import Client
         from scrapegraph_py.logger import sgai_logger
@@ -42,7 +42,7 @@ class ScrapeGraphAI:
     def search(
         self,
         user_prompt: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Perform an AI-powered web search using ScrapeGraphAI.
 
         Args:
@@ -65,8 +65,8 @@ class ScrapeGraphAI:
         self,
         website_url: str,
         user_prompt: str,
-        website_html: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        website_html: str | None = None,
+    ) -> dict[str, Any]:
         r"""Perform AI-powered web scraping using ScrapeGraphAI.
 
         Args:

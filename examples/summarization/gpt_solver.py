@@ -14,7 +14,6 @@
 import concurrent.futures
 import json
 import os
-from typing import Dict
 
 from camel.agents import ChatAgent
 
@@ -27,7 +26,7 @@ data_dir = "./camel_data/ai_society_solution_extraction"
 save_dir = "./camel_data/ai_society_solution_extraction_save"
 
 
-def process_file(data: Dict[str, str]) -> None:
+def process_file(data: dict[str, str]) -> None:
     print(data["id"])
     assistant_sys_msg = "You are a helpful assistant."
     agent = ChatAgent(assistant_sys_msg)

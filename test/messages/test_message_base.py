@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import List
 
 import pytest
 
@@ -160,7 +159,7 @@ def test_roleplay_sharegpt_conversion():
     input_msg = role_playing.init_chat()
     role_playing.step(input_msg)
 
-    records: List[ContextRecord] = (
+    records: list[ContextRecord] = (
         role_playing.assistant_agent.memory.retrieve()
     )
     original_messages = []

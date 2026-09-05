@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Optional, Sequence, Union
+from collections.abc import Sequence
 
 from pydantic import Field
 
@@ -55,13 +55,13 @@ class SambaVerseAPIConfig(BaseConfig):
             (default: :obj:`None`)
     """
 
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    top_k: Optional[int] = None
-    max_tokens: Optional[int] = None
-    repetition_penalty: Optional[float] = None
-    stop: Optional[Union[str, list[str]]] = None
-    stream: Optional[bool] = None
+    temperature: float | None = None
+    top_p: float | None = None
+    top_k: int | None = None
+    max_tokens: int | None = None
+    repetition_penalty: float | None = None
+    stop: str | list[str] | None = None
+    stream: bool | None = None
 
 
 SAMBA_VERSE_API_PARAMS = {
@@ -149,14 +149,14 @@ class SambaCloudAPIConfig(BaseConfig):
     top_p: float = 1.0
     n: int = 1
     stream: bool = False
-    stop: Union[str, Sequence[str], NotGiven] = NOT_GIVEN
-    max_tokens: Union[int, NotGiven] = NOT_GIVEN
+    stop: str | Sequence[str] | NotGiven = NOT_GIVEN
+    max_tokens: int | NotGiven = NOT_GIVEN
     presence_penalty: float = 0.0
-    response_format: Union[dict, NotGiven] = NOT_GIVEN
+    response_format: dict | NotGiven = NOT_GIVEN
     frequency_penalty: float = 0.0
     logit_bias: dict = Field(default_factory=dict)
     user: str = ""
-    tool_choice: Optional[Union[dict[str, str], str]] = None
+    tool_choice: dict[str, str] | str | None = None
 
 
 SAMBA_CLOUD_API_PARAMS = {

@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import List
 
 import pytest
 
@@ -22,7 +21,7 @@ from camel.types import RoleType, TerminationMode
 NUM_TIMES = 2
 
 
-def _create_messages() -> List[BaseMessage]:
+def _create_messages() -> list[BaseMessage]:
     messages = []
     for _ in range(3):
         message = BaseMessage(

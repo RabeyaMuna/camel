@@ -54,10 +54,10 @@ def test_nvidia_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into NVIDIA model backend."
-            )
+            
         ),
     ):
         _ = NvidiaModel(model_type, model_config_dict)

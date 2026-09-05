@@ -47,10 +47,10 @@ def test_ppio_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into PPIO model backend."
-            )
+            
         ),
     ):
         _ = PPIOModel(model_type, model_config_dict)

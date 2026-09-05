@@ -14,7 +14,7 @@
 
 import json
 from datetime import datetime
-from typing import Annotated, Dict, Optional, Union
+from typing import Annotated
 
 from pydantic import BaseModel, Field, confloat
 
@@ -88,11 +88,11 @@ class CoTDataGenerator:
 
     def __init__(
         self,
-        chat_agent: Optional[ChatAgent] = None,
+        chat_agent: ChatAgent | None = None,
         *,
-        generator_agent: Optional[ChatAgent] = None,
-        verifier_agent: Optional[ChatAgent] = None,
-        golden_answers: Dict[str, str],
+        generator_agent: ChatAgent | None = None,
+        verifier_agent: ChatAgent | None = None,
+        golden_answers: dict[str, str],
         search_limit: int = 100,
     ):
         r"""Initialize the CoTDataGenerator.
@@ -135,7 +135,7 @@ class CoTDataGenerator:
 
         self.golden_answers = golden_answers
         self.search_limit = search_limit
-        self.solution_tree: Dict[str, Dict[str, Union[str, int]]] = {}
+        self.solution_tree: dict[str, dict[str, str | int]] = {}
         logger.info(
             "CoTDataGenerator initialized with search_limit=%d", search_limit
         )
@@ -373,7 +373,7 @@ class CoTDataGenerator:
         }
         return final_solution
 
-    def import_qa_from_json(self, data: Union[str, Dict[str, str]]) -> bool:
+    def import_qa_from_json(self, data: str | dict[str, str]) -> bool:
         r"""Import question and answer data from either a JSON file or a
         dictionary.
 

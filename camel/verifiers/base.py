@@ -14,7 +14,6 @@
 import asyncio
 import time
 from abc import ABC, abstractmethod
-from typing import List, Optional
 
 from camel.extractors.base import BaseExtractor
 from camel.logger import get_logger
@@ -45,12 +44,12 @@ class BaseVerifier(ABC):
 
     def __init__(
         self,
-        extractor: Optional[BaseExtractor] = None,
-        max_parallel: Optional[int] = None,
-        timeout: Optional[float] = None,
+        extractor: BaseExtractor | None = None,
+        max_parallel: int | None = None,
+        timeout: float | None = None,
         max_retries: int = 3,
         retry_delay: float = 1.0,
-        initial_batch_size: Optional[int] = None,
+        initial_batch_size: int | None = None,
         cpu_threshold: float = 80.0,
         memory_threshold: float = 85.0,
         **kwargs,
@@ -78,11 +77,11 @@ class BaseVerifier(ABC):
         self.extractor = extractor
 
         self._is_setup: bool = False
-        self._max_parallel: Optional[int] = max_parallel
-        self._timeout: Optional[float] = timeout
+        self._max_parallel: int | None = max_parallel
+        self._timeout: float | None = timeout
         self._max_retries: int = max_retries
         self._retry_delay: float = retry_delay
-        self._initial_batch_size: Optional[int] = initial_batch_size
+        self._initial_batch_size: int | None = initial_batch_size
         self._cpu_threshold: float = cpu_threshold
         self._memory_threshold: float = memory_threshold
         self._batch_processor: BatchProcessor = BatchProcessor()
@@ -127,7 +126,6 @@ class BaseVerifier(ABC):
     @abstractmethod
     async def _setup(self, **kwargs) -> None:
         r"""Implement verifier-specific setup logic."""
-        pass
 
     async def cleanup(self) -> None:
         r"""Clean up verifier resources.
@@ -160,10 +158,9 @@ class BaseVerifier(ABC):
     @abstractmethod
     async def _cleanup(self) -> None:
         r"""Implement verifier-specific cleanup logic."""
-        pass
 
     async def verify(
-        self, solution: str, reference_answer: Optional[str]
+        self, solution: str, reference_answer: str | None
     ) -> VerificationResult:
         r"""Perform verification with full error handling.
 
@@ -281,7 +278,7 @@ class BaseVerifier(ABC):
 
     @abstractmethod
     async def _verify_implementation(
-        self, solution: str, reference_answer: Optional[str]
+        self, solution: str, reference_answer: str | None
     ) -> VerificationResult:
         r"""Abstract method for verification logic.
 
@@ -306,10 +303,10 @@ class BaseVerifier(ABC):
     # TODO: check again
     async def verify_batch(
         self,
-        solutions: List[str],
-        reference_answers: List[Optional[str]],
+        solutions: list[str],
+        reference_answers: list[str | None],
         raise_on_error: bool = False,
-    ) -> List[VerificationResult]:
+    ) -> list[VerificationResult]:
         r"""Verify multiple solutions in parallel with controlled concurrency.
 
         This method verifies multiple generated solutions against their
@@ -351,7 +348,7 @@ class BaseVerifier(ABC):
         semaphore = asyncio.Semaphore(max(1, max_workers))
 
         async def _verify_with_semaphore(
-            solution: str, reference_answer: Optional[str]
+            solution: str, reference_answer: str | None
         ) -> VerificationResult:
             start_time = time.time()
             try:
@@ -379,7 +376,7 @@ class BaseVerifier(ABC):
                 )
 
         # Process in batches
-        all_results: List[VerificationResult] = []
+        all_results: list[VerificationResult] = []
         for i in range(0, len(solutions), batch_size):
             batch_solutions = solutions[i : i + batch_size]
             batch_reference_answers = reference_answers[i : i + batch_size]

@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Optional, Union
+from typing import Any
 
 from openai import OpenAI
 
@@ -51,9 +51,9 @@ class OpenAIEmbedding(BaseEmbedding[str]):
         model_type: EmbeddingModelType = (
             EmbeddingModelType.TEXT_EMBEDDING_3_SMALL
         ),
-        url: Optional[str] = None,
-        api_key: Optional[str] = None,
-        dimensions: Union[int, NotGiven] = NOT_GIVEN,
+        url: str | None = None,
+        api_key: str | None = None,
+        dimensions: int | NotGiven = NOT_GIVEN,
     ) -> None:
         if not model_type.is_openai:
             raise ValueError("Invalid OpenAI embedding model type.")

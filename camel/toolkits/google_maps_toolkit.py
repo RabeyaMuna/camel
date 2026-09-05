@@ -12,8 +12,9 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable, List, Optional, Union
+from typing import Any
 
 from camel.toolkits.base import BaseToolkit
 from camel.toolkits.function_tool import FunctionTool
@@ -37,7 +38,6 @@ def handle_googlemaps_exceptions(
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
-            # ruff: noqa: E501
             from googlemaps.exceptions import (  # type: ignore[import]
                 ApiError,
                 HTTPError,
@@ -101,7 +101,7 @@ class GoogleMapsToolkit(BaseToolkit):
     """
 
     @dependencies_required('googlemaps')
-    def __init__(self, timeout: Optional[float] = None) -> None:
+    def __init__(self, timeout: float | None = None) -> None:
         super().__init__(timeout=timeout)
         import googlemaps
 
@@ -119,9 +119,9 @@ class GoogleMapsToolkit(BaseToolkit):
     @handle_googlemaps_exceptions
     def get_address_description(
         self,
-        address: Union[str, List[str]],
-        region_code: Optional[str] = None,
-        locality: Optional[str] = None,
+        address: str | list[str],
+        region_code: str | None = None,
+        locality: str | None = None,
     ) -> str:
         r"""Validates an address via Google Maps API, returns a descriptive
         summary. Validates an address using Google Maps API, returning a
@@ -288,7 +288,7 @@ class GoogleMapsToolkit(BaseToolkit):
 
         return description
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

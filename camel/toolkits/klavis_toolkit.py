@@ -14,7 +14,7 @@
 
 import os
 import urllib.parse
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import requests
 
@@ -48,7 +48,7 @@ class KlavisToolkit(BaseToolkit):
             (None, "KLAVIS_API_KEY"),
         ]
     )
-    def __init__(self, timeout: Optional[float] = None) -> None:
+    def __init__(self, timeout: float | None = None) -> None:
         r"""Initialize the KlavisToolkit with API client. The API key is
         retrieved from environment variables.
         """
@@ -60,9 +60,9 @@ class KlavisToolkit(BaseToolkit):
         self,
         method: str,
         endpoint: str,
-        payload: Optional[Dict[str, Any]] = None,
-        additional_headers: Optional[Dict[str, str]] = None,
-    ) -> Dict[str, Any]:
+        payload: dict[str, Any] | None = None,
+        additional_headers: dict[str, str] | None = None,
+    ) -> dict[str, Any]:
         r"""Make an HTTP request to the Klavis API.
 
         Args:
@@ -108,7 +108,7 @@ class KlavisToolkit(BaseToolkit):
 
     def create_server_instance(
         self, server_name: str, user_id: str, platform_name: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Create a Server-Sent Events (SSE) URL for a specified MCP server.
 
         Args:
@@ -131,7 +131,7 @@ class KlavisToolkit(BaseToolkit):
             'POST', endpoint, payload=payload, additional_headers=headers
         )
 
-    def get_server_instance(self, instance_id: str) -> Dict[str, Any]:
+    def get_server_instance(self, instance_id: str) -> dict[str, Any]:
         r"""Get details of a specific server connection instance.
 
         Args:
@@ -144,7 +144,7 @@ class KlavisToolkit(BaseToolkit):
         endpoint = f"/mcp-server/instance/get/{instance_id}"
         return self._request('GET', endpoint)
 
-    def delete_auth_data(self, instance_id: str) -> Dict[str, Any]:
+    def delete_auth_data(self, instance_id: str) -> dict[str, Any]:
         r"""Delete authentication metadata for a specific server
         connection instance.
 
@@ -158,7 +158,7 @@ class KlavisToolkit(BaseToolkit):
         endpoint = f"/mcp-server/instance/delete-auth/{instance_id}"
         return self._request('DELETE', endpoint)
 
-    def delete_server_instance(self, instance_id: str) -> Dict[str, Any]:
+    def delete_server_instance(self, instance_id: str) -> dict[str, Any]:
         r"""Completely removes a server connection instance.
 
         Args:
@@ -170,7 +170,7 @@ class KlavisToolkit(BaseToolkit):
         endpoint = f"/mcp-server/instance/delete/{instance_id}"
         return self._request('DELETE', endpoint)
 
-    def get_all_servers(self) -> Dict[str, Any]:
+    def get_all_servers(self) -> dict[str, Any]:
         r"""Get all MCP servers with their basic information.
 
         Returns:
@@ -181,7 +181,7 @@ class KlavisToolkit(BaseToolkit):
 
     def set_auth_token(
         self, instance_id: str, auth_token: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Sets an authentication token for a specific instance.
 
         Args:
@@ -198,7 +198,7 @@ class KlavisToolkit(BaseToolkit):
             'POST', endpoint, payload=payload, additional_headers=headers
         )
 
-    def list_tools(self, server_url: str) -> Dict[str, Any]:
+    def list_tools(self, server_url: str) -> dict[str, Any]:
         r"""Lists all tools available for a specific remote MCP server.
 
         Args:
@@ -217,8 +217,8 @@ class KlavisToolkit(BaseToolkit):
         self,
         server_url: str,
         tool_name: str,
-        tool_args: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        tool_args: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         r"""Calls a remote MCP server tool directly using the provided server
         URL.
 
@@ -235,7 +235,7 @@ class KlavisToolkit(BaseToolkit):
                 or an error.
         """
         endpoint = "/mcp-server/call-tool"
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "serverUrl": server_url,
             "toolName": tool_name,
         }
@@ -252,7 +252,7 @@ class KlavisToolkit(BaseToolkit):
             'POST', endpoint, payload=payload, additional_headers=headers
         )
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions
         in the toolkit.
 

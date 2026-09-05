@@ -13,13 +13,9 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import re
 import uuid
+from collections.abc import Collection, Sequence
 from typing import (
     TYPE_CHECKING,
-    Collection,
-    List,
-    Optional,
-    Sequence,
-    Tuple,
     Union,
 )
 
@@ -55,10 +51,10 @@ class AutoRetriever:
 
     def __init__(
         self,
-        url_and_api_key: Optional[Tuple[str, str]] = None,
-        vector_storage_local_path: Optional[str] = None,
-        storage_type: Optional[StorageType] = None,
-        embedding_model: Optional[BaseEmbedding] = None,
+        url_and_api_key: tuple[str, str] | None = None,
+        vector_storage_local_path: str | None = None,
+        storage_type: StorageType | None = None,
+        embedding_model: BaseEmbedding | None = None,
     ):
         self.storage_type = storage_type or StorageType.QDRANT
         self.embedding_model = embedding_model or OpenAIEmbedding()
@@ -67,7 +63,7 @@ class AutoRetriever:
 
     def _initialize_vector_storage(
         self,
-        collection_name: Optional[str] = None,
+        collection_name: str | None = None,
     ) -> BaseVectorStorage:
         r"""Sets up and returns a vector storage instance with specified
         parameters.
@@ -167,7 +163,7 @@ class AutoRetriever:
     def run_vector_retriever(
         self,
         query: str,
-        contents: Union[str, List[str], "Element", List["Element"]],
+        contents: Union[str, list[str], "Element", list["Element"]],
         top_k: int = Constants.DEFAULT_TOP_K_RESULTS,
         similarity_threshold: float = Constants.DEFAULT_SIMILARITY_THRESHOLD,
         return_detailed_info: bool = False,
@@ -210,9 +206,7 @@ class AutoRetriever:
             raise ValueError("content cannot be empty.")
 
         # Normalize contents to a list
-        if isinstance(contents, str):
-            contents = [contents]
-        elif isinstance(contents, Element):
+        if isinstance(contents, str) or isinstance(contents, Element):
             contents = [contents]
         elif not isinstance(contents, list):
             raise ValueError(

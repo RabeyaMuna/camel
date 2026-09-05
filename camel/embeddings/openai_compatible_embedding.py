@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Optional
+from typing import Any
 
 from openai import OpenAI
 
@@ -44,12 +44,12 @@ class OpenAICompatibleEmbedding(BaseEmbedding[str]):
     def __init__(
         self,
         model_type: str,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        output_dim: Optional[int] = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        output_dim: int | None = None,
     ) -> None:
         self.model_type = model_type
-        self.output_dim: Optional[int] = output_dim
+        self.output_dim: int | None = output_dim
 
         self._api_key = api_key or os.environ.get(
             "OPENAI_COMPATIBILITY_API_KEY"

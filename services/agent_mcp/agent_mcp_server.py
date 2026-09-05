@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, Optional
+from typing import Any
 
 from mcp.server.fastmcp import Context, FastMCP
 
@@ -26,8 +26,8 @@ async def step(
     name: str,
     message: str,
     ctx: Context,
-    response_format: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    response_format: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     r"""Execute a single step in the chat session with the agent.
 
     Args:
@@ -66,7 +66,7 @@ async def step(
 
 
 @mcp.tool()
-async def reset(ctx: Context) -> Dict[str, str]:
+async def reset(ctx: Context) -> dict[str, str]:
     r"""Reset the chat agent to its initial state.
 
     Args:
@@ -83,7 +83,7 @@ async def reset(ctx: Context) -> Dict[str, str]:
 
 
 @mcp.tool()
-async def set_output_language(language: str, ctx: Context) -> Dict[str, str]:
+async def set_output_language(language: str, ctx: Context) -> dict[str, str]:
     r"""Set the output language for the chat agent.
 
     Args:
@@ -105,7 +105,7 @@ async def set_output_language(language: str, ctx: Context) -> Dict[str, str]:
 
 @mcp.resource("agent://")
 @mcp.tool()
-def get_agents_info() -> Dict[str, Any]:
+def get_agents_info() -> dict[str, Any]:
     r"""Get information about all agents provided by the server.
 
     Returns:
@@ -116,7 +116,7 @@ def get_agents_info() -> Dict[str, Any]:
 
 @mcp.resource("history://{name}")
 @mcp.tool()
-def get_chat_history(name: str) -> Dict[str, Any]:
+def get_chat_history(name: str) -> dict[str, Any]:
     r"""Get the chat history for the given agent.
 
     Args:
@@ -141,7 +141,7 @@ def get_chat_history(name: str) -> Dict[str, Any]:
 
 @mcp.resource("agent://{name}")
 @mcp.tool()
-def get_agent_info(name: str) -> Dict[str, Any]:
+def get_agent_info(name: str) -> dict[str, Any]:
     r"""Get information about the given agent.
 
     Args:
@@ -169,7 +169,7 @@ def get_agent_info(name: str) -> Dict[str, Any]:
 
 @mcp.resource("tool://{name}")
 @mcp.tool()
-def get_available_tools(name: str) -> Dict[str, Any]:
+def get_available_tools(name: str) -> dict[str, Any]:
     r"""Get a list of available internal tools.
 
     Args:

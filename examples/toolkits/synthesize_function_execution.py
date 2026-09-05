@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Any, Dict
+from typing import Any
 
 import requests
 from pydantic import BaseModel, Field
@@ -22,7 +22,7 @@ from camel.toolkits import FunctionTool
 
 
 # example function
-def movie_data_by_id(id: int) -> Dict[str, Any]:
+def movie_data_by_id(id: int) -> dict[str, Any]:
     r"""Fetch movie data by its ID from the IMDB Top 100 Movies API.
 
     Args:

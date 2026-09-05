@@ -13,8 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import List, Optional, Union
-
 from pydantic import Field
 
 from camel.configs.base_config import BaseConfig
@@ -56,15 +54,15 @@ class NvidiaConfig(BaseConfig):
             (default: :obj:`None`)
     """
 
-    stream: Optional[bool] = Field(default=None)
-    temperature: Optional[float] = Field(default=None)
-    top_p: Optional[float] = Field(default=None)
-    presence_penalty: Optional[float] = Field(default=None)
-    frequency_penalty: Optional[float] = Field(default=None)
-    max_tokens: Optional[Union[int, NotGiven]] = Field(default=None)
-    seed: Optional[int] = Field(default=None)
-    tool_choice: Optional[str] = Field(default=None)
-    stop: Optional[List[str]] = Field(default=None)
+    stream: bool | None = Field(default=None)
+    temperature: float | None = Field(default=None)
+    top_p: float | None = Field(default=None)
+    presence_penalty: float | None = Field(default=None)
+    frequency_penalty: float | None = Field(default=None)
+    max_tokens: int | NotGiven | None = Field(default=None)
+    seed: int | None = Field(default=None)
+    tool_choice: str | None = Field(default=None)
+    stop: list[str] | None = Field(default=None)
 
 
 NVIDIA_API_PARAMS = {param for param in NvidiaConfig.model_fields.keys()}

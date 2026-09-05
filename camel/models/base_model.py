@@ -15,7 +15,7 @@ import abc
 import os
 import re
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any
 
 from openai import AsyncStream, Stream
 from pydantic import BaseModel
@@ -45,7 +45,7 @@ class ModelBackendMeta(abc.ABCMeta):
             original_run = namespace['run']
 
             def wrapped_run(
-                self, messages: List[OpenAIMessage], *args, **kwargs
+                self, messages: list[OpenAIMessage], *args, **kwargs
             ):
                 messages = self.preprocess_messages(messages)
                 return original_run(self, messages, *args, **kwargs)
@@ -78,12 +78,12 @@ class BaseModelBackend(ABC, metaclass=ModelBackendMeta):
 
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        timeout: Optional[float] = None,
+        model_type: ModelType | str,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        timeout: float | None = None,
         max_retries: int = 3,
     ) -> None:
         self.model_type: UnifiedModelType = UnifiedModelType(model_type)
@@ -112,11 +112,10 @@ class BaseModelBackend(ABC, metaclass=ModelBackendMeta):
             BaseTokenCounter: The token counter following the model's
                 tokenization style.
         """
-        pass
 
     def preprocess_messages(
-        self, messages: List[OpenAIMessage]
-    ) -> List[OpenAIMessage]:
+        self, messages: list[OpenAIMessage]
+    ) -> list[OpenAIMessage]:
         r"""Preprocess messages before sending to model API.
         Removes thinking content from assistant and user messages.
         Automatically formats messages for parallel tool calls if tools are
@@ -130,8 +129,8 @@ class BaseModelBackend(ABC, metaclass=ModelBackendMeta):
         """
         # Process all messages in a single pass
         processed_messages = []
-        tool_calls_buffer: List[OpenAIMessage] = []
-        tool_responses_buffer: Dict[str, OpenAIMessage] = {}
+        tool_calls_buffer: list[OpenAIMessage] = []
+        tool_responses_buffer: dict[str, OpenAIMessage] = {}
         has_tool_calls = False
 
         for msg in messages:
@@ -239,7 +238,7 @@ class BaseModelBackend(ABC, metaclass=ModelBackendMeta):
 
         return formatted_messages
 
-    def _log_request(self, messages: List[OpenAIMessage]) -> Optional[str]:
+    def _log_request(self, messages: list[OpenAIMessage]) -> str | None:
         r"""Log the request messages to a JSON file if logging is enabled.
 
         Args:
@@ -304,27 +303,27 @@ class BaseModelBackend(ABC, metaclass=ModelBackendMeta):
     @abstractmethod
     def _run(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
         pass
 
     @abstractmethod
     async def _arun(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         pass
 
     def run(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
         r"""Runs the query to the backend model.
 
         Args:
@@ -362,10 +361,10 @@ class BaseModelBackend(ABC, metaclass=ModelBackendMeta):
 
     async def arun(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         r"""Runs the query to the backend model asynchronously.
 
         Args:
@@ -408,9 +407,8 @@ class BaseModelBackend(ABC, metaclass=ModelBackendMeta):
             ValueError: If the model configuration dictionary contains any
                 unexpected argument for this model class.
         """
-        pass
 
-    def count_tokens_from_messages(self, messages: List[OpenAIMessage]) -> int:
+    def count_tokens_from_messages(self, messages: list[OpenAIMessage]) -> int:
         r"""Count the number of tokens in the messages using the specific
         tokenizer.
 

@@ -14,7 +14,7 @@
 
 import queue
 import re
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from camel.interpreters.base import BaseInterpreter
 from camel.interpreters.interpreter_error import InterpreterError
@@ -47,8 +47,8 @@ class JupyterKernelInterpreter(BaseInterpreter):
         self.print_stdout = print_stdout
         self.print_stderr = print_stderr
 
-        self.kernel_manager: Optional[KernelManager] = None
-        self.client: Optional[BlockingKernelClient] = None
+        self.kernel_manager: KernelManager | None = None
+        self.client: BlockingKernelClient | None = None
 
     def __del__(self) -> None:
         r"""Clean up the kernel and client."""
@@ -162,7 +162,7 @@ class JupyterKernelInterpreter(BaseInterpreter):
         except Exception as e:
             raise InterpreterError(f"Error executing command: {e}")
 
-    def supported_code_types(self) -> List[str]:
+    def supported_code_types(self) -> list[str]:
         r"""Provides supported code types by the interpreter.
 
         Returns:
@@ -170,7 +170,7 @@ class JupyterKernelInterpreter(BaseInterpreter):
         """
         return ["python", "bash"]
 
-    def update_action_space(self, action_space: Dict[str, Any]) -> None:
+    def update_action_space(self, action_space: dict[str, Any]) -> None:
         r"""Updates the action space for the interpreter.
 
         Args:

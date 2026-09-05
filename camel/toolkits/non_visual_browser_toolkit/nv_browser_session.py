@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import asyncio
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, ClassVar, Dict, Optional
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from camel.logger import get_logger
 
@@ -23,7 +23,7 @@ from .actions import ActionExecutor
 from .snapshot import PageSnapshot
 
 if TYPE_CHECKING:
-    from playwright.async_api import (
+    from playwright.async_api import (  # type: ignore[import-not-found]
         Browser,
         BrowserContext,
         Page,
@@ -50,13 +50,13 @@ class NVBrowserSession:
     NETWORK_IDLE_TIMEOUT = 5000  # 5 seconds
 
     _sessions: ClassVar[
-        Dict[asyncio.AbstractEventLoop, "NVBrowserSession"]
+        dict[asyncio.AbstractEventLoop, NVBrowserSession]
     ] = {}
 
     _initialized: bool
 
     def __new__(
-        cls, *, headless: bool = True, user_data_dir: Optional[str] = None
+        cls, *, headless: bool = True, user_data_dir: str | None = None
     ):
         loop = asyncio.get_running_loop()
         if loop not in cls._sessions:
@@ -66,7 +66,7 @@ class NVBrowserSession:
         return cls._sessions[loop]
 
     def __init__(
-        self, *, headless: bool = True, user_data_dir: Optional[str] = None
+        self, *, headless: bool = True, user_data_dir: str | None = None
     ):
         if self._initialized:
             return
@@ -75,16 +75,16 @@ class NVBrowserSession:
         self._headless = headless
         self._user_data_dir = user_data_dir
 
-        self._playwright: Optional[Playwright] = None
-        self._browser: Optional[Browser] = None
-        self._context: Optional[BrowserContext] = None
-        self._page: Optional[Page] = None
+        self._playwright: Playwright | None = None
+        self._browser: Browser | None = None
+        self._context: BrowserContext | None = None
+        self._page: Page | None = None
 
-        self.snapshot: Optional[PageSnapshot] = None
-        self.executor: Optional[ActionExecutor] = None
+        self.snapshot: PageSnapshot | None = None
+        self.executor: ActionExecutor | None = None
 
         # Protect browser initialisation against concurrent calls
-        self._ensure_lock: "asyncio.Lock" = asyncio.Lock()
+        self._ensure_lock: asyncio.Lock = asyncio.Lock()
 
     # ------------------------------------------------------------------
     # Browser lifecycle helpers
@@ -239,7 +239,7 @@ class NVBrowserSession:
         return await self.executor.execute(action)
 
     # Low-level accessors -------------------------------------------------
-    async def get_page(self) -> "Page":
+    async def get_page(self) -> Page:
         await self.ensure_browser()
         assert self._page is not None
         return self._page

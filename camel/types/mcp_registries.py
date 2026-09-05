@@ -14,7 +14,7 @@
 import os
 import platform
 from enum import Enum, auto
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -40,9 +40,9 @@ class BaseMCPRegistryConfig(BaseModel):
 
     type: MCPRegistryType
     os: Literal["darwin", "linux", "windows"]
-    api_key: Optional[str] = None
+    api_key: str | None = None
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         r"""Generate configuration based on registry type and API key.
 
         Returns:
@@ -52,7 +52,7 @@ class BaseMCPRegistryConfig(BaseModel):
 
     @model_validator(mode='before')
     @classmethod
-    def set_default_os(cls, values: Dict) -> Dict:
+    def set_default_os(cls, values: dict) -> dict:
         r"""Set the default OS based on the current platform if not provided.
 
         Args:
@@ -73,8 +73,8 @@ class BaseMCPRegistryConfig(BaseModel):
         return values
 
     def _prepare_command_args(
-        self, command: str, args: List[str]
-    ) -> Dict[str, Any]:
+        self, command: str, args: list[str]
+    ) -> dict[str, Any]:
         r"""Prepare command and arguments based on OS.
 
         Args:
@@ -98,7 +98,7 @@ class SmitheryRegistryConfig(BaseMCPRegistryConfig):
         ..., description="The profile to use for the registry."
     )
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         r"""Generate configuration for Smithery registry.
 
         Returns:
@@ -130,7 +130,7 @@ class ACIRegistryConfig(BaseMCPRegistryConfig):
         ..., description="The owner ID of the linked account."
     )
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         r"""Generate configuration for ACI registry.
 
         Returns:

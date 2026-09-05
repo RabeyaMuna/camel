@@ -1382,9 +1382,7 @@ class EmbeddingModelType(Enum):
             EmbeddingModelType.JINA_CLIP_V2,
         }:
             return 1024
-        elif self is EmbeddingModelType.TEXT_EMBEDDING_ADA_2:
-            return 1536
-        elif self is EmbeddingModelType.TEXT_EMBEDDING_3_SMALL:
+        elif self is EmbeddingModelType.TEXT_EMBEDDING_ADA_2 or self is EmbeddingModelType.TEXT_EMBEDDING_3_SMALL:
             return 1536
         elif self is EmbeddingModelType.TEXT_EMBEDDING_3_LARGE:
             return 3072

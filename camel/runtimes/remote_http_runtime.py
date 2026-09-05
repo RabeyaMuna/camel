@@ -19,7 +19,7 @@ import time
 from functools import wraps
 from pathlib import Path
 from subprocess import Popen
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import requests
 from pydantic import BaseModel
@@ -49,8 +49,8 @@ class RemoteHttpRuntime(BaseRuntime):
         self.port = port
         self.python_exec = python_exec
         self.api_path = Path(__file__).parent / "api.py"
-        self.entrypoint: Dict[str, str] = dict()
-        self.process: Optional[Popen] = None
+        self.entrypoint: dict[str, str] = dict()
+        self.process: Popen | None = None
 
     def build(self) -> "RemoteHttpRuntime":
         r"""Build the API server.
@@ -78,10 +78,10 @@ class RemoteHttpRuntime(BaseRuntime):
 
     def add(  # type: ignore[override]
         self,
-        funcs: Union[FunctionTool, List[FunctionTool]],
+        funcs: FunctionTool | list[FunctionTool],
         entrypoint: str,
         redirect_stdout: bool = False,
-        arguments: Optional[Dict[str, Any]] = None,
+        arguments: dict[str, Any] | None = None,
     ) -> "RemoteHttpRuntime":
         r"""Add a function or list of functions to the runtime.
 

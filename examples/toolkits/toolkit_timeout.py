@@ -15,7 +15,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import time
-from typing import Optional
 
 from camel.toolkits.base import BaseToolkit
 from camel.utils import with_timeout
@@ -39,7 +38,7 @@ def slow_function() -> str:
 
 # Example 3: Class with configurable timeout
 class TimeoutExample:
-    def __init__(self, timeout: Optional[float] = None):
+    def __init__(self, timeout: float | None = None):
         self.timeout = timeout
 
     @with_timeout()  # Uses instance timeout
@@ -57,7 +56,7 @@ class TimeoutExample:
 
 # Example 4: Toolkit with timeout
 class TimeoutToolkit(BaseToolkit):
-    def __init__(self, timeout: Optional[float] = None):
+    def __init__(self, timeout: float | None = None):
         super().__init__(timeout=timeout)
 
     @with_timeout()

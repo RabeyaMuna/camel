@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import unittest
-from typing import Any, ClassVar, Dict
+from typing import Any, ClassVar
 from unittest.mock import MagicMock, patch
 
 from camel.agents import ChatAgent
@@ -22,12 +22,12 @@ from camel.datagen.evol_instruct import EvolInstructPipeline
 
 # Dummy template class providing EVOL_METHODS and STRATEGY configuration.
 class DummyTemplates:
-    EVOL_METHODS: ClassVar[Dict[str, str]] = {
+    EVOL_METHODS: ClassVar[dict[str, str]] = {
         "method1": "Method1 instruction",
         "method2": "Method2 instruction",
         "method3": "Method3 instruction",
     }
-    STRATEGY: ClassVar[Dict[str, Dict[str, Any]]] = {
+    STRATEGY: ClassVar[dict[str, dict[str, Any]]] = {
         "DEPTH": {
             "meta_instruction": "Use {method} to evolve: {prompt}",
             "methods": ["method1", "method2"],
@@ -41,7 +41,7 @@ class DummyTemplates:
 
 # Dummy scorer for testing purposes.
 class DummyScorer:
-    def score(self, current_prompt: str, candidate: str) -> Dict[str, int]:
+    def score(self, current_prompt: str, candidate: str) -> dict[str, int]:
         # Score based on the length of the candidate prompt.
         return {"score": len(candidate)}
 

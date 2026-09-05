@@ -81,9 +81,9 @@ def test_openai_model_unexpected_argument():
         ValueError,
         # ruff: noqa: E501
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is input into Azure OpenAI model backend."
-            )
+            
         ),
     ):
         _ = AzureOpenAIModel(model_type, model_config_dict)

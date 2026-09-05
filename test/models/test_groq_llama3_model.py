@@ -49,10 +49,10 @@ def test_groq_llama3_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into Groq model backend."
-            )
+            
         ),
     ):
         _ = GroqModel(model_type, model_config_dict)

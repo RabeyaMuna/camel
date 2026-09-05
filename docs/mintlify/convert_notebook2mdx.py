@@ -261,11 +261,11 @@ def convert_md_to_mdx(
     # Check if there is already front matter; if not, add it
     if not content.startswith('---'):
         title = Path(md_file).stem.replace('_', ' ').title()
-        front_matter = """---
+        front_matter = f"""---
 title: "{title}"
 ---
 
-""".format(title=title)
+"""
 
         # For key_modules files, remove any H1 header that matches the title to avoid duplication
         if 'key_modules' in str(md_file):
@@ -579,11 +579,11 @@ def convert_ipynb_to_mdx(
                 flags=re.MULTILINE,
             )
 
-    front_matter = """---
-title: "{title}"
+    front_matter = f"""---
+title: "{notebook_title}"
 ---
 
-""".format(title=notebook_title)
+"""
 
     markdown = front_matter + markdown
 

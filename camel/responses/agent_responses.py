@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, List
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
@@ -32,9 +32,9 @@ class ChatAgentResponse(BaseModel):
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
-    msgs: List[BaseMessage]
+    msgs: list[BaseMessage]
     terminated: bool
-    info: Dict[str, Any]
+    info: dict[str, Any]
 
     @property
     def msg(self):

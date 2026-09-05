@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 try:
     import yaml
@@ -51,10 +51,10 @@ class BohriumToolkit(BaseToolkit):
     )
     def __init__(
         self,
-        timeout: Optional[float] = None,
-        api_key: Optional[str] = None,
-        project_id: Optional[int] = None,
-        yaml_path: Optional[str] = None,
+        timeout: float | None = None,
+        api_key: str | None = None,
+        project_id: int | None = None,
+        yaml_path: str | None = None,
         _test_mode: bool = False,  # Used for testing without dependency
     ):
         super().__init__(timeout=timeout)
@@ -102,7 +102,7 @@ class BohriumToolkit(BaseToolkit):
         machine_type: str = "c2_m4_cpu",
         cmd: str = "mpirun -n 2 lmp_mpi -i in.shear",
         image_address: str = "registry.dp.tech/dptech/lammps:29Sep2021",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Submit a job to Bohrium.
 
         Args:
@@ -126,7 +126,7 @@ class BohriumToolkit(BaseToolkit):
             Dict[str, Any]: The result of the job submission.
         """
         # Initialize params with default values
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             "project_id": self._project_id,
             "job_name": job_name,
             "machine_type": machine_type,
@@ -182,7 +182,7 @@ class BohriumToolkit(BaseToolkit):
             logger.error(f"Error submitting job: {e}")
             return {"error": str(e)}
 
-    def get_job_details(self, job_id: int) -> Dict[str, Any]:
+    def get_job_details(self, job_id: int) -> dict[str, Any]:
         r"""Get details for a specific job.
 
         Args:
@@ -197,7 +197,7 @@ class BohriumToolkit(BaseToolkit):
             logger.error(f"Error getting job details: {e}")
             return {"error": str(e)}
 
-    def terminate_job(self, job_id: int) -> Dict[str, Any]:
+    def terminate_job(self, job_id: int) -> dict[str, Any]:
         r"""Terminate a running job.
 
         Args:
@@ -213,7 +213,7 @@ class BohriumToolkit(BaseToolkit):
             logger.error(f"Error terminating job: {e}")
             return {"error": str(e)}
 
-    def kill_job(self, job_id: int) -> Dict[str, Any]:
+    def kill_job(self, job_id: int) -> dict[str, Any]:
         r"""Kill a running job.
 
         Args:
@@ -260,7 +260,7 @@ class BohriumToolkit(BaseToolkit):
 
     def create_job_group(
         self, project_id: int, job_group_name: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Create a job group.
 
         Args:
@@ -279,7 +279,7 @@ class BohriumToolkit(BaseToolkit):
 
     def download_job_results(
         self, job_id: int, save_path: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Download the results of a job.
 
         Args:
@@ -299,7 +299,7 @@ class BohriumToolkit(BaseToolkit):
             logger.error(f"Error downloading job results: {e}")
             return {"error": str(e)}
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

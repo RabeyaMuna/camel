@@ -15,7 +15,7 @@
 import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal
 
 from camel.agents import ChatAgent
 
@@ -59,8 +59,8 @@ class BaseBenchmark(ABC):
             raise NotADirectoryError(
                 f"Data directory {data_dir} is not a directory"
             )
-        self._data: Dict[str, List[Dict[str, Any]]] = dict()
-        self._results: List[Dict[str, Any]] = []
+        self._data: dict[str, list[dict[str, Any]]] = dict()
+        self._results: list[dict[str, Any]] = []
 
     @abstractmethod
     def download(self) -> "BaseBenchmark":
@@ -69,7 +69,6 @@ class BaseBenchmark(ABC):
         Returns:
             BaseBenchmark: The benchmark instance.
         """
-        pass
 
     @abstractmethod
     def load(self, force_download: bool = False) -> "BaseBenchmark":
@@ -81,10 +80,9 @@ class BaseBenchmark(ABC):
         Returns:
             BaseBenchmark: The benchmark instance.
         """
-        pass
 
     @property
-    def train(self) -> List[Dict[str, Any]]:
+    def train(self) -> list[dict[str, Any]]:
         r"""Get the training data.
 
         Returns:
@@ -96,7 +94,7 @@ class BaseBenchmark(ABC):
         return self._data["train"]
 
     @property
-    def valid(self) -> List[Dict[str, Any]]:
+    def valid(self) -> list[dict[str, Any]]:
         r"""Get the validation data.
 
         Returns:
@@ -108,7 +106,7 @@ class BaseBenchmark(ABC):
         return self._data["valid"]
 
     @property
-    def test(self) -> List[Dict[str, Any]]:
+    def test(self) -> list[dict[str, Any]]:
         r"""Get the test data.
 
         Returns:
@@ -125,7 +123,7 @@ class BaseBenchmark(ABC):
         agent: ChatAgent,
         on: Literal["train", "valid", "test"],
         randomize: bool = False,
-        subset: Optional[int] = None,
+        subset: int | None = None,
         *args,
         **kwargs,
     ) -> "BaseBenchmark":
@@ -140,10 +138,9 @@ class BaseBenchmark(ABC):
         Returns:
             BaseBenchmark: The benchmark instance.
         """
-        pass
 
     @property
-    def results(self) -> List[Dict[str, Any]]:
+    def results(self) -> list[dict[str, Any]]:
         r"""Get the results.
 
         Returns:

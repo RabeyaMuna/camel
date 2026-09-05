@@ -57,10 +57,10 @@ def test_zhipuai_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into ZhipuAI model backend."
-            )
+            
         ),
     ):
         _ = ZhipuAIModel(model_type, model_config_dict)

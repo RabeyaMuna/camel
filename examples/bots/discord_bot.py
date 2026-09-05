@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import asyncio
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING, Union
 
 from camel.agents import ChatAgent
 from camel.bots import DiscordApp
@@ -31,8 +31,8 @@ if TYPE_CHECKING:
 class BotAgent:
     def __init__(
         self,
-        contents: Union[str, List[str], "Element", List["Element"]] = None,
-        auto_retriever: Optional[AutoRetriever] = None,
+        contents: Union[str, list[str], "Element", list["Element"]] = None,
+        auto_retriever: AutoRetriever | None = None,
         similarity_threshold: float = 0.5,
         vector_storage_local_path: str = "local_data/",
         top_k: int = 1,
@@ -143,8 +143,8 @@ class DiscordBot(DiscordApp):
     def __init__(
         self,
         agent: BotAgent,
-        token: Optional[str] = None,
-        channel_ids: Optional[list[int]] = None,
+        token: str | None = None,
+        channel_ids: list[int] | None = None,
     ):
         r"""Initializes the DiscordBot instance to handle Discord messages and
         communicate with BotAgent.
@@ -203,7 +203,7 @@ async def process_message(agent: BotAgent, msg_queue: asyncio.Queue):
             for processing.
     """
     while True:
-        message: "Message" = await msg_queue.get()
+        message: Message = await msg_queue.get()
         user_raw_msg = message.content
 
         # Process the message using the agent and get the response

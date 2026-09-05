@@ -14,7 +14,6 @@
 from __future__ import annotations
 
 import json
-from typing import Dict, List, Optional
 
 from colorama import Fore
 
@@ -55,9 +54,9 @@ class RolePlayingWorker(Worker):
         description: str,
         assistant_role_name: str,
         user_role_name: str,
-        assistant_agent_kwargs: Optional[Dict] = None,
-        user_agent_kwargs: Optional[Dict] = None,
-        summarize_agent_kwargs: Optional[Dict] = None,
+        assistant_agent_kwargs: dict | None = None,
+        user_agent_kwargs: dict | None = None,
+        summarize_agent_kwargs: dict | None = None,
         chat_turn_limit: int = 20,
     ) -> None:
         super().__init__(description)
@@ -81,7 +80,7 @@ class RolePlayingWorker(Worker):
         self.user_agent_kwargs = user_agent_kwargs
 
     async def _process_task(
-        self, task: Task, dependencies: List[Task]
+        self, task: Task, dependencies: list[Task]
     ) -> TaskState:
         r"""Processes a task leveraging its dependencies through role-playing.
 

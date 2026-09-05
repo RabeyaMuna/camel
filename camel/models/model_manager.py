@@ -14,16 +14,11 @@
 
 import asyncio
 import logging
+from collections.abc import Callable
 from itertools import cycle
 from random import choice
 from typing import (
     Any,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Type,
-    Union,
 )
 
 from openai import AsyncStream, Stream
@@ -44,7 +39,6 @@ logger = logging.getLogger(__name__)
 class ModelProcessingError(Exception):
     r"""Raised when an error occurs during model processing."""
 
-    pass
 
 
 class ModelManager:
@@ -61,7 +55,7 @@ class ModelManager:
 
     def __init__(
         self,
-        models: Union[BaseModelBackend, List[BaseModelBackend]],
+        models: BaseModelBackend | list[BaseModelBackend],
         scheduling_strategy: str = "round_robin",
     ):
         if isinstance(models, list):
@@ -92,7 +86,7 @@ class ModelManager:
         return self.current_model.model_type
 
     @property
-    def model_config_dict(self) -> Dict[str, Any]:
+    def model_config_dict(self) -> dict[str, Any]:
         r"""Return model_config_dict of the current model.
 
         Returns:
@@ -101,7 +95,7 @@ class ModelManager:
         return self.current_model.model_config_dict
 
     @model_config_dict.setter
-    def model_config_dict(self, model_config_dict: Dict[str, Any]):
+    def model_config_dict(self, model_config_dict: dict[str, Any]):
         r"""Set model_config_dict to the current model.
 
         Args:
@@ -193,10 +187,10 @@ class ModelManager:
 
     def run(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, Stream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | Stream[ChatCompletionChunk]:
         r"""Process a list of messages by selecting a model based on
             the scheduling strategy.
             Sends the entire list of messages to the selected model,
@@ -230,10 +224,10 @@ class ModelManager:
 
     async def arun(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
-    ) -> Union[ChatCompletion, AsyncStream[ChatCompletionChunk]]:
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
+    ) -> ChatCompletion | AsyncStream[ChatCompletionChunk]:
         r"""Process a list of messages by selecting a model based on
             the scheduling strategy.
             Sends the entire list of messages to the selected model,

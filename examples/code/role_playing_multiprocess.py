@@ -14,7 +14,7 @@
 import json
 import multiprocessing
 import os
-from typing import Any, Dict
+from typing import Any
 
 from camel.agents import ChatAgent, TaskSpecifyAgent
 from camel.generators import SystemMessageGenerator
@@ -102,7 +102,7 @@ def generate_data(
     print("Assistant System Message: ", assistant_sys_msg.content)
     print("User System Message: ", user_sys_msg.content)
     message_counter = 0
-    message_dict: Dict[str, Any] = {}
+    message_dict: dict[str, Any] = {}
 
     # Append roles to the dictionary
     # We start number from 1 not 0.

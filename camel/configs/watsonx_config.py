@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Dict, List, Literal, Optional
+from typing import Literal
 
 from camel.configs.base_config import BaseConfig
 
@@ -78,18 +78,18 @@ class WatsonXConfig(BaseConfig):
             (default: :obj:`"auto"`)
     """
 
-    frequency_penalty: Optional[float] = None
-    logprobs: Optional[bool] = None
-    top_logprobs: Optional[int] = None
-    presence_penalty: Optional[float] = None
-    temperature: Optional[float] = None
-    max_tokens: Optional[int] = None
-    time_limit: Optional[int] = None
-    top_p: Optional[float] = None
-    n: Optional[int] = None
-    logit_bias: Optional[Dict] = None
-    seed: Optional[int] = None
-    stop: Optional[List[str]] = None
+    frequency_penalty: float | None = None
+    logprobs: bool | None = None
+    top_logprobs: int | None = None
+    presence_penalty: float | None = None
+    temperature: float | None = None
+    max_tokens: int | None = None
+    time_limit: int | None = None
+    top_p: float | None = None
+    n: int | None = None
+    logit_bias: dict | None = None
+    seed: int | None = None
+    stop: list[str] | None = None
     tool_choice_options: Literal["none", "auto"] = "auto"
 
 

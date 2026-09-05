@@ -20,22 +20,17 @@ The client can automatically detect the transport type based on configuration.
 """
 
 import inspect
+from collections.abc import Callable
 from contextlib import asynccontextmanager
 from datetime import timedelta
 from enum import Enum
 from pathlib import Path
 from typing import (
     Any,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Set,
-    Union,
 )
 
 import httpx
-import mcp.types as types
+from mcp import types
 from pydantic import BaseModel, model_validator
 
 try:
@@ -43,12 +38,12 @@ try:
 except ImportError:
 
     def create_mcp_http_client(
-        headers: Optional[Dict[str, str]] = None,
-        timeout: Optional[httpx.Timeout] = None,
-        auth: Optional[httpx.Auth] = None,
+        headers: dict[str, str] | None = None,
+        timeout: httpx.Timeout | None = None,
+        auth: httpx.Auth | None = None,
     ) -> httpx.AsyncClient:
         """Fallback implementation if not available."""
-        kwargs: Dict[str, Any] = {"follow_redirects": True}
+        kwargs: dict[str, Any] = {"follow_redirects": True}
 
         if timeout is None:
             kwargs["timeout"] = httpx.Timeout(30.0)
@@ -97,14 +92,14 @@ class ServerConfig(BaseModel):
     """
 
     # STDIO configuration
-    command: Optional[str] = None
-    args: Optional[List[str]] = None
-    env: Optional[Dict[str, str]] = None
-    cwd: Optional[Union[str, Path]] = None
+    command: str | None = None
+    args: list[str] | None = None
+    env: dict[str, str] | None = None
+    cwd: str | Path | None = None
 
     # HTTP/WebSocket configuration
-    url: Optional[str] = None
-    headers: Optional[Dict[str, Any]] = None
+    url: str | None = None
+    headers: dict[str, Any] | None = None
 
     # Common configuration
     timeout: float = 30.0
@@ -216,9 +211,9 @@ class MCPClient:
 
     def __init__(
         self,
-        config: Union[ServerConfig, Dict[str, Any]],
-        client_info: Optional[types.Implementation] = None,
-        timeout: Optional[float] = 10.0,
+        config: ServerConfig | dict[str, Any],
+        client_info: types.Implementation | None = None,
+        timeout: float | None = 10.0,
     ):
         # Convert dict config to ServerConfig if needed
         if isinstance(config, dict):
@@ -232,8 +227,8 @@ class MCPClient:
         self.client_info = client_info
         self.read_timeout_seconds = timedelta(seconds=timeout or 10.0)
 
-        self._session: Optional[ClientSession] = None
-        self._tools: List[types.Tool] = []
+        self._session: ClientSession | None = None
+        self._tools: list[types.Tool] = []
         self._connection_context = None
 
     @property
@@ -497,7 +492,7 @@ class MCPClient:
             raise ValueError(f"Unsupported transport type: {transport_type}")
 
     @property
-    def session(self) -> Optional[ClientSession]:
+    def session(self) -> ClientSession | None:
         r"""Get the current session if connected."""
         return self._session
 
@@ -558,7 +553,7 @@ class MCPClient:
             "object": dict,
         }
         annotations = {}  # used to type hints
-        defaults: Dict[str, Any] = {}  # store default values
+        defaults: dict[str, Any] = {}  # store default values
 
         func_params = []
         for param_name, param_schema in parameters_schema.items():
@@ -574,7 +569,7 @@ class MCPClient:
         # Create the async version of the function
         async def async_mcp_call(**kwargs) -> str:
             r"""Async version of MCP tool call."""
-            missing_params: Set[str] = set(required_params) - set(
+            missing_params: set[str] = set(required_params) - set(
                 kwargs.keys()
             )
             if missing_params:
@@ -729,7 +724,7 @@ class MCPClient:
 
         return adaptive_dynamic_function
 
-    def _build_tool_schema(self, mcp_tool: types.Tool) -> Dict[str, Any]:
+    def _build_tool_schema(self, mcp_tool: types.Tool) -> dict[str, Any]:
         r"""Build tool schema for OpenAI function calling format."""
         input_schema = mcp_tool.inputSchema
         properties = input_schema.get("properties", {})
@@ -828,7 +823,7 @@ class MCPClient:
         return "\n".join(tool_descriptions)
 
     async def call_tool(
-        self, tool_name: str, arguments: Dict[str, Any]
+        self, tool_name: str, arguments: dict[str, Any]
     ) -> Any:
         r"""Call a tool by name with the provided arguments.
 
@@ -882,7 +877,7 @@ class MCPClient:
 
         return result
 
-    def call_tool_sync(self, tool_name: str, arguments: Dict[str, Any]) -> Any:
+    def call_tool_sync(self, tool_name: str, arguments: dict[str, Any]) -> Any:
         r"""Synchronously call a tool by name with the provided arguments.
 
         Args:
@@ -899,7 +894,7 @@ class MCPClient:
 
 
 def create_mcp_client(
-    config: Union[Dict[str, Any], ServerConfig], **kwargs: Any
+    config: dict[str, Any] | ServerConfig, **kwargs: Any
 ) -> MCPClient:
     r"""Create an MCP client from configuration.
 
@@ -957,7 +952,7 @@ def create_mcp_client(
 
 
 def create_mcp_client_from_config_file(
-    config_path: Union[str, Path], server_name: str, **kwargs: Any
+    config_path: str | Path, server_name: str, **kwargs: Any
 ) -> MCPClient:
     r"""Create an MCP client from a configuration file.
 

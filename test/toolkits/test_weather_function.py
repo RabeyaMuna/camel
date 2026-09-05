@@ -129,8 +129,8 @@ def test_weather(api_key, weather_toolkit):
         match = pattern.search(report)
         # Ensure sunrise and sunset times are found in the report
         assert match, (
-            "Sunrise and sunset information in {} "
-            "format is missing from the report.".format(time_units)
+            f"Sunrise and sunset information in {time_units} "
+            "format is missing from the report."
         )
         sunrise_str, sunset_str = match.groups()
         # Parse times according to format

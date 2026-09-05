@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import warnings
-from typing import List, Optional
 
 from camel.memories.base import MemoryBlock
 from camel.memories.records import ContextRecord, MemoryRecord
@@ -44,7 +43,7 @@ class ChatHistoryBlock(MemoryBlock):
 
     def __init__(
         self,
-        storage: Optional[BaseKeyValueStorage] = None,
+        storage: BaseKeyValueStorage | None = None,
         keep_rate: float = 0.9,
     ) -> None:
         if keep_rate > 1 or keep_rate < 0:
@@ -54,8 +53,8 @@ class ChatHistoryBlock(MemoryBlock):
 
     def retrieve(
         self,
-        window_size: Optional[int] = None,
-    ) -> List[ContextRecord]:
+        window_size: int | None = None,
+    ) -> list[ContextRecord]:
         r"""Retrieves records with a proper size for the agent from the memory
         based on the window size or fetches the entire chat history if no
         window size is specified.
@@ -116,7 +115,7 @@ class ChatHistoryBlock(MemoryBlock):
             # Return full records when no window restriction
             final_records = record_dicts
 
-        chat_records: List[MemoryRecord] = [
+        chat_records: list[MemoryRecord] = [
             MemoryRecord.from_dict(record) for record in final_records
         ]
 
@@ -148,7 +147,7 @@ class ChatHistoryBlock(MemoryBlock):
         output_records.reverse()
         return output_records
 
-    def write_records(self, records: List[MemoryRecord]) -> None:
+    def write_records(self, records: list[MemoryRecord]) -> None:
         r"""Writes memory records to the memory. Additionally, performs
         validation checks on the messages.
 

@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Generic, List, Optional, TypeVar
+from typing import Any, Generic, TypeVar
 
 from camel.messages.conversion import (
     ToolCall,
@@ -27,23 +27,19 @@ class FunctionCallFormatter(ABC, Generic[CallT, ResponseT]):
     r"""Abstract base class for function calling formats"""
 
     @abstractmethod
-    def extract_tool_calls(self, message: str) -> List[CallT]:
+    def extract_tool_calls(self, message: str) -> list[CallT]:
         r"""Extract function call info from a message string"""
-        pass
 
     @abstractmethod
-    def extract_tool_response(self, message: str) -> Optional[ResponseT]:
+    def extract_tool_response(self, message: str) -> ResponseT | None:
         r"""Extract function response info from a message string"""
-        pass
 
     @abstractmethod
     def format_tool_call(
-        self, content: str, func_name: str, args: Dict[str, Any]
+        self, content: str, func_name: str, args: dict[str, Any]
     ) -> str:
         r"""Format a function call into a message string"""
-        pass
 
     @abstractmethod
     def format_tool_response(self, func_name: str, result: Any) -> str:
         r"""Format a function response into a message string"""
-        pass

@@ -16,7 +16,7 @@ import random
 import time
 from concurrent.futures import ThreadPoolExecutor
 from math import ceil
-from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
+from typing import Any, cast
 
 from tqdm import tqdm
 
@@ -47,8 +47,8 @@ class EvolInstructPipeline:
 
     def __init__(
         self,
-        templates: Type = EvolInstructTemplates,
-        agent: Optional[ChatAgent] = None,
+        templates: type = EvolInstructTemplates,
+        agent: ChatAgent | None = None,
     ) -> None:
         r"""Initialize pipeline with templates and language model agent.
 
@@ -89,9 +89,9 @@ class EvolInstructPipeline:
 
     def _get_evolution_methods(
         self,
-        method: Union[str, List[str]],
+        method: str | list[str],
         num_generations: int = 2,
-    ) -> List[str]:
+    ) -> list[str]:
         r"""Get list of evolution methods based on input specification.
 
         Args:
@@ -139,7 +139,7 @@ class EvolInstructPipeline:
         prompt: str,
         method: str,
         return_method: bool = False,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         r"""Generate a single evolved prompt from a seed prompt.
 
         Args:
@@ -184,11 +184,11 @@ class EvolInstructPipeline:
     def _generate_multiple_evolutions(
         self,
         prompt: str,
-        method: Union[str, List[str]],
+        method: str | list[str],
         num_generations: int = 2,
         keep_original: bool = True,
         num_threads: int = 10,
-    ) -> List[Tuple[str, str]]:
+    ) -> list[tuple[str, str]]:
         r"""Generate multiple evolved versions of a prompt.
 
         Args:
@@ -210,7 +210,7 @@ class EvolInstructPipeline:
                 method=method, num_generations=num_generations
             )
 
-        def _process_single_method(method_name: str) -> Tuple[str, str]:
+        def _process_single_method(method_name: str) -> tuple[str, str]:
             return self._generate_single_evolution(
                 prompt, method_name, return_method=True
             )
@@ -226,13 +226,13 @@ class EvolInstructPipeline:
     def _generate_iterative_evolutions(
         self,
         prompt: str,
-        evolution_spec: Union[str, List[Union[str, List[str]]]],
+        evolution_spec: str | list[str | list[str]],
         num_generations: int = 2,
-        num_iterations: Optional[int] = None,
+        num_iterations: int | None = None,
         keep_original: bool = True,
-        scorer: Optional[BaseScorer] = None,
+        scorer: BaseScorer | None = None,
         num_threads: int = 10,
-    ) -> Dict[int, List[Dict[str, Any]]]:
+    ) -> dict[int, list[dict[str, Any]]]:
         r"""Generate iterative evolutions of a prompt with scoring.
 
         Args:
@@ -294,7 +294,7 @@ class EvolInstructPipeline:
             best_index = max(
                 range(len(scored_results)),
                 key=lambda i: sum(
-                    cast(Dict[str, int], scored_results[i]["scores"]).values()
+                    cast(dict[str, int], scored_results[i]["scores"]).values()
                 ),
             )
 
@@ -320,17 +320,17 @@ class EvolInstructPipeline:
 
     def generate(
         self,
-        prompts: List[str],
-        evolution_spec: Union[str, List[Union[str, List[str]]]],
+        prompts: list[str],
+        evolution_spec: str | list[str | list[str]],
         num_generations: int = 2,
-        num_iterations: Optional[int] = None,
+        num_iterations: int | None = None,
         keep_original: bool = True,
-        scorer: Optional[BaseScorer] = None,
+        scorer: BaseScorer | None = None,
         num_chunks: int = 1,
         retry_limit: int = 3,
         retry_delay: float = 1.0,
         num_threads: int = 10,
-    ) -> List[Dict[int, List[Dict[str, Any]]]]:
+    ) -> list[dict[int, list[dict[str, Any]]]]:
         r"""Evolve a batch of prompts through iterative refinement.
 
         Args:
@@ -358,7 +358,7 @@ class EvolInstructPipeline:
             else:
                 num_iterations = 1
 
-        evolution_plan: List[List[List[str]]] = []
+        evolution_plan: list[list[list[str]]] = []
         for _ in prompts:
             prompt_plan = []
             for iteration in range(num_iterations):
@@ -375,8 +375,8 @@ class EvolInstructPipeline:
             evolution_plan.append(prompt_plan)
 
         def _process_prompt(
-            args: Tuple[str, List[List[str]]],
-        ) -> Dict[int, List[Dict[str, Any]]]:
+            args: tuple[str, list[list[str]]],
+        ) -> dict[int, list[dict[str, Any]]]:
             prompt, methods = args
             retries = 0
             while retries <= retry_limit:

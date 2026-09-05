@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 from copy import deepcopy
-from typing import Any, Dict, List
+from typing import Any
 
 from camel.storages.key_value_storages import BaseKeyValueStorage
 
@@ -25,9 +25,9 @@ class InMemoryKeyValueStorage(BaseKeyValueStorage):
     """
 
     def __init__(self) -> None:
-        self.memory_list: List[Dict] = []
+        self.memory_list: list[dict] = []
 
-    def save(self, records: List[Dict[str, Any]]) -> None:
+    def save(self, records: list[dict[str, Any]]) -> None:
         r"""Saves a batch of records to the key-value storage system.
 
         Args:
@@ -36,7 +36,7 @@ class InMemoryKeyValueStorage(BaseKeyValueStorage):
         """
         self.memory_list.extend(deepcopy(records))
 
-    def load(self) -> List[Dict[str, Any]]:
+    def load(self) -> list[dict[str, Any]]:
         r"""Loads all stored records from the key-value storage system.
 
         Returns:

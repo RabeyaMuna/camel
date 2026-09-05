@@ -12,7 +12,8 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import inspect
-from typing import Any, Callable, Dict, Optional, Set, TypeVar, Union
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 from camel.interpreters import BaseInterpreter, SubprocessInterpreter
 from camel.types import RoleType
@@ -24,7 +25,7 @@ T = TypeVar('T')
 def return_prompt_wrapper(
     cls: Any,
     func: Callable,
-) -> Callable[..., Union[Any, tuple]]:
+) -> Callable[..., Any | tuple]:
     r"""Wrapper that converts the return value of a function to an input
     class instance if it's a string.
 
@@ -38,7 +39,7 @@ def return_prompt_wrapper(
             string.
     """
 
-    def wrapper(*args: Any, **kwargs: Any) -> Union[Any, str]:
+    def wrapper(*args: Any, **kwargs: Any) -> Any | str:
         r"""Wrapper function that performs the conversion to :obj:`TextPrompt`
             instance.
 
@@ -100,7 +101,7 @@ class TextPrompt(str):
     """
 
     @property
-    def key_words(self) -> Set[str]:
+    def key_words(self) -> set[str]:
         r"""Returns a set of strings representing the keywords in the prompt."""
         from camel.utils import get_prompt_template_key_words
 
@@ -149,7 +150,7 @@ class CodePrompt(TextPrompt):
         return instance
 
     @property
-    def code_type(self) -> Optional[str]:
+    def code_type(self) -> str | None:
         r"""Returns the type of code.
 
         Returns:
@@ -167,7 +168,7 @@ class CodePrompt(TextPrompt):
 
     def execute(
         self,
-        interpreter: Optional[BaseInterpreter] = None,
+        interpreter: BaseInterpreter | None = None,
         **kwargs: Any,
     ) -> str:
         r"""Executes the code string using the provided interpreter.
@@ -202,7 +203,7 @@ class CodePrompt(TextPrompt):
 
 
 # flake8: noqa :E501
-class TextPromptDict(Dict[Any, TextPrompt]):
+class TextPromptDict(dict[Any, TextPrompt]):
     r"""A dictionary class that maps from key to :obj:`TextPrompt` object."""
 
     EMBODIMENT_PROMPT = TextPrompt(

@@ -14,7 +14,7 @@
 
 import os
 import time
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
@@ -39,7 +39,7 @@ class RedditToolkit(BaseToolkit):
         self,
         retries: int = 3,
         delay: float = 0.0,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         r"""Initializes the RedditToolkit with the specified number of retries
         and delay.
@@ -75,7 +75,7 @@ class RedditToolkit(BaseToolkit):
         subreddit_name: str,
         post_limit: int = 5,
         comment_limit: int = 5,
-    ) -> Union[List[Dict[str, Any]], str]:
+    ) -> list[dict[str, Any]] | str:
         r"""Collects the top posts and their comments from a specified
         subreddit.
 
@@ -116,8 +116,8 @@ class RedditToolkit(BaseToolkit):
         return data
 
     def perform_sentiment_analysis(
-        self, data: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        self, data: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         r"""Performs sentiment analysis on the comments collected from Reddit
         posts.
 
@@ -141,12 +141,12 @@ class RedditToolkit(BaseToolkit):
 
     def track_keyword_discussions(
         self,
-        subreddits: List[str],
-        keywords: List[str],
+        subreddits: list[str],
+        keywords: list[str],
         post_limit: int = 10,
         comment_limit: int = 10,
         sentiment_analysis: bool = False,
-    ) -> Union[List[Dict[str, Any]], str]:
+    ) -> list[dict[str, Any]] | str:
         r"""Tracks discussions about specific keywords in specified subreddits.
 
         Args:
@@ -198,7 +198,7 @@ class RedditToolkit(BaseToolkit):
             data = self.perform_sentiment_analysis(data)
         return data
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

@@ -45,10 +45,10 @@ def test_aiml_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into AIML model backend."
-            )
+            
         ),
     ):
         _ = AIMLModel(model_type, model_config_dict)

@@ -134,10 +134,9 @@ def test_init_with_invalid_directory():
         patch(
             "pathlib.Path.mkdir", side_effect=ValueError("Invalid directory")
         ),
-        patch("camel.agents.ChatAgent"),
+        patch("camel.agents.ChatAgent"),pytest.raises(ValueError)
     ):
-        with pytest.raises(ValueError):
-            VideoAnalysisToolkit(download_directory="invalid_dir")
+        VideoAnalysisToolkit(download_directory="invalid_dir")
 
 
 # Test cleanup

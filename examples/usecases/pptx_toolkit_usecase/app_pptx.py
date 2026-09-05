@@ -11,18 +11,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-import os
-import streamlit as st
-import json
 import base64
-from typing import List, Optional, Union
+import json
+import os
+
+import streamlit as st
 from pydantic import BaseModel, Field
 
-
-from camel.toolkits.pptx_toolkit import PPTXToolkit
-from camel.models import ModelFactory
-from camel.types import ModelPlatformType, ModelType
 from camel.agents import ChatAgent
+from camel.models import ModelFactory
+from camel.toolkits.pptx_toolkit import PPTXToolkit
+from camel.types import ModelPlatformType, ModelType
+
 
 # --- Pydantic Models for Structured Output ---
 class TitleSlide(BaseModel):
@@ -32,25 +32,25 @@ class TitleSlide(BaseModel):
 
 class TableData(BaseModel):
     """Table data model"""
-    headers: List[str] = Field(description="Table column headers")
-    rows: List[List[str]] = Field(description="Table rows data")
+    headers: list[str] = Field(description="Table column headers")
+    rows: list[list[str]] = Field(description="Table rows data")
 
 class BulletSlide(BaseModel):
     """Bullet point slide model"""
     heading: str = Field(description="Slide heading")
-    bullet_points: List[str] = Field(description="List of bullet points, use >> prefix for step-by-step slides")
-    img_keywords: Optional[str] = Field(default="", description="Keywords for image search (not URLs)")
+    bullet_points: list[str] = Field(description="List of bullet points, use >> prefix for step-by-step slides")
+    img_keywords: str | None = Field(default="", description="Keywords for image search (not URLs)")
 
 class TableSlide(BaseModel):
     """Table slide model"""
     heading: str = Field(description="Slide heading")
     table: TableData = Field(description="Table data with headers and rows")
-    img_keywords: Optional[str] = Field(default="", description="Keywords for image search (not URLs)")
+    img_keywords: str | None = Field(default="", description="Keywords for image search (not URLs)")
 
 class PresentationSlides(BaseModel):
     """Complete presentation model"""
     title_slide: TitleSlide = Field(description="First slide must be a title slide")
-    content_slides: List[Union[BulletSlide, TableSlide]] = Field(
+    content_slides: list[BulletSlide | TableSlide] = Field(
         description="Content slides including bullet slides and table slides"
     )
 

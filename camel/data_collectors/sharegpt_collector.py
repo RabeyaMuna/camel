@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import json
-from typing import Any, ClassVar, Dict, List, Literal, Optional, Union
+from typing import Any, ClassVar, Literal
 
 from pydantic import BaseModel
 from typing_extensions import Self
@@ -60,14 +60,14 @@ class ConversationItem(BaseModel):
     value: str
 
     class Config:
-        fields: ClassVar[Dict[str, str]] = {"from_": "from"}
+        fields: ClassVar[dict[str, str]] = {"from_": "from"}
         extra = "forbid"
 
 
 class ShareGPTData(BaseModel):
     system: str
     tools: str
-    conversations: List[ConversationItem]
+    conversations: list[ConversationItem]
 
     class Config:
         extra = "forbid"
@@ -76,13 +76,13 @@ class ShareGPTData(BaseModel):
 class ShareGPTDataCollector(BaseDataCollector):
     def __init__(self) -> None:
         super().__init__()
-        self.system_message: Optional[BaseMessage] = None
-        self.agent_name: Optional[str] = None
-        self.tools: List[FunctionTool] = []
+        self.system_message: BaseMessage | None = None
+        self.agent_name: str | None = None
+        self.tools: list[FunctionTool] = []
 
     def record(
         self,
-        agent: Union[List[ChatAgent], ChatAgent],
+        agent: list[ChatAgent] | ChatAgent,
     ) -> Self:
         r"""Inject an agent into the data collector."""
         if not self.agent_name:
@@ -94,7 +94,7 @@ class ShareGPTDataCollector(BaseDataCollector):
         super().record(agent)
         return self
 
-    def convert(self) -> Dict[str, Any]:
+    def convert(self) -> dict[str, Any]:
         r"""Convert the collected data into a dictionary."""
         if self.agent_name is None:
             raise ValueError("No agent injected")
@@ -112,7 +112,7 @@ class ShareGPTDataCollector(BaseDataCollector):
             conversations=[],
         )
 
-        conversations: List[Any] = []
+        conversations: list[Any] = []
         for _data in history:
             role, message = _data.role, _data
 
@@ -150,9 +150,9 @@ class ShareGPTDataCollector(BaseDataCollector):
 
     def llm_convert(
         self,
-        converter: Optional[OpenAISchemaConverter] = None,
-        prompt: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        converter: OpenAISchemaConverter | None = None,
+        prompt: str | None = None,
+    ) -> dict[str, Any]:
         r"""Convert collected data using an LLM schema converter.
 
         Args:
@@ -202,7 +202,7 @@ class ShareGPTDataCollector(BaseDataCollector):
         ).model_dump()
 
     @staticmethod
-    def to_sharegpt_conversation(data: Dict[str, Any]) -> ShareGPTConversation:
+    def to_sharegpt_conversation(data: dict[str, Any]) -> ShareGPTConversation:
         messages = [
             ShareGPTMessage(from_="system", value=data["system"])  # type: ignore[call-arg]
         ]

@@ -14,7 +14,6 @@
 
 from abc import ABC, abstractmethod
 from pathlib import Path, PurePath
-from typing import Tuple
 
 from camel.loaders import File
 
@@ -34,7 +33,7 @@ class BaseObjectStorage(ABC):
 
     @staticmethod
     @abstractmethod
-    def canonicalize_path(file_path: PurePath) -> Tuple[str, str]:
+    def canonicalize_path(file_path: PurePath) -> tuple[str, str]:
         pass
 
     def put_file(self, file_path: PurePath, file: File) -> None:

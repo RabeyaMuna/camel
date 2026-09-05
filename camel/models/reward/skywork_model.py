@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Dict, List, Optional, Union
 
 import torch
 
@@ -38,12 +37,12 @@ class SkyworkRewardModel(BaseRewardModel):
 
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        device_map: Optional[str] = "auto",
-        attn_implementation: Optional[str] = "flash_attention_2",
-        offload_folder: Optional[str] = "offload",
+        model_type: ModelType | str,
+        api_key: str | None = None,
+        url: str | None = None,
+        device_map: str | None = "auto",
+        attn_implementation: str | None = "flash_attention_2",
+        offload_folder: str | None = "offload",
     ) -> None:
         from transformers import (
             AutoModelForSequenceClassification,
@@ -61,7 +60,7 @@ class SkyworkRewardModel(BaseRewardModel):
         )
         self._tokenizer = AutoTokenizer.from_pretrained(model_type)
 
-    def evaluate(self, messages: List[Dict[str, str]]) -> Dict[str, float]:
+    def evaluate(self, messages: list[dict[str, str]]) -> dict[str, float]:
         r"""Evaluate the messages using the Skywork model.
 
         Args:
@@ -79,7 +78,7 @@ class SkyworkRewardModel(BaseRewardModel):
             score = self._client(inputs).logits[0][0].item()
             return {"Score": score}
 
-    def get_scores_types(self) -> List[str]:
+    def get_scores_types(self) -> list[str]:
         r"""get the scores types
 
         Returns:

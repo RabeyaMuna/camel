@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from openai import AsyncStream, Stream
 from pydantic import BaseModel, ConfigDict
@@ -24,7 +24,7 @@ class ToolCallRequest(BaseModel):
     r"""The request for tool calling."""
 
     tool_name: str
-    args: Dict[str, Any]
+    args: dict[str, Any]
     tool_call_id: str
 
 
@@ -33,9 +33,9 @@ class ModelResponse(BaseModel):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    response: Union[ChatCompletion, Stream, AsyncStream]
-    tool_call_requests: Optional[List[ToolCallRequest]]
-    output_messages: List[BaseMessage]
-    finish_reasons: List[str]
-    usage_dict: Dict[str, Any]
+    response: ChatCompletion | Stream | AsyncStream
+    tool_call_requests: list[ToolCallRequest] | None
+    output_messages: list[BaseMessage]
+    finish_reasons: list[str]
+    usage_dict: dict[str, Any]
     response_id: str

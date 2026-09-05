@@ -16,7 +16,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Union
+from typing import Any
 
 from openai import AzureOpenAI
 
@@ -57,10 +57,10 @@ class AzureEmbedding(BaseEmbedding[str]):
         model_type: EmbeddingModelType = (
             EmbeddingModelType.TEXT_EMBEDDING_3_SMALL
         ),
-        url: Union[str, None] = None,
-        api_key: Union[str, None] = None,
-        api_version: Union[str, None] = None,
-        dimensions: Union[int, None] = None,
+        url: str | None = None,
+        api_key: str | None = None,
+        api_version: str | None = None,
+        dimensions: int | None = None,
     ) -> None:
         self.model_type = model_type
         self.api_version = api_version or os.environ.get("AZURE_API_VERSION")

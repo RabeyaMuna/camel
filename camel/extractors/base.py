@@ -15,7 +15,7 @@
 import asyncio
 from abc import ABC, abstractmethod
 from types import TracebackType
-from typing import Any, Dict, List, Optional, Type
+from typing import Any
 
 from camel.logger import get_logger
 from camel.utils import BatchProcessor
@@ -27,7 +27,7 @@ class BaseExtractorStrategy(ABC):
     r"""Abstract base class for extraction strategies."""
 
     @abstractmethod
-    async def extract(self, text: str) -> Optional[str]:
+    async def extract(self, text: str) -> str | None:
         r"""Asynchronously extracts relevant parts from text.
 
         Args:
@@ -36,7 +36,6 @@ class BaseExtractorStrategy(ABC):
         Returns:
             Optional[str]: Extracted str if successful, otherwise None.
         """
-        pass
 
 
 class BaseExtractor:
@@ -52,7 +51,7 @@ class BaseExtractor:
 
     def __init__(
         self,
-        pipeline: List[List[BaseExtractorStrategy]],
+        pipeline: list[list[BaseExtractorStrategy]],
         cache_templates: bool = True,
         max_cache_size: int = 1000,
         extraction_timeout: float = 30.0,
@@ -97,8 +96,8 @@ class BaseExtractor:
         }
 
         self._is_setup = False
-        self._cache: Dict[str, Any] = {}
-        self._batch_processor: Optional[BatchProcessor] = None
+        self._cache: dict[str, Any] = {}
+        self._batch_processor: BatchProcessor | None = None
 
         self._pipeline = pipeline
 
@@ -119,7 +118,7 @@ class BaseExtractor:
 
         try:
             if self._metadata["cache_templates"]:
-                self._template_cache: Dict[str, Any] = {}
+                self._template_cache: dict[str, Any] = {}
 
             if self._metadata["batch_size"] > 1:
                 self._batch_processor = BatchProcessor(
@@ -209,9 +208,9 @@ class BaseExtractor:
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
     ) -> None:
         r"""Async context manager exit.
 
@@ -225,7 +224,7 @@ class BaseExtractor:
         """
         await self.cleanup()
 
-    async def extract(self, response: str) -> Optional[str]:
+    async def extract(self, response: str) -> str | None:
         r"""Extracts a normalized, comparable part of the LLM response
         using the fixed multi-stage strategy pipeline.
 

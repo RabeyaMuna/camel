@@ -13,8 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Optional, Union
-
 from camel.configs.base_config import BaseConfig
 
 
@@ -47,11 +45,11 @@ class YiConfig(BaseConfig):
             (default: :obj:`None`)
     """
 
-    tool_choice: Optional[Union[dict[str, str], str]] = None
-    max_tokens: Optional[int] = None
-    top_p: Optional[float] = None
-    temperature: Optional[float] = None
-    stream: Optional[bool] = None
+    tool_choice: dict[str, str] | str | None = None
+    max_tokens: int | None = None
+    top_p: float | None = None
+    temperature: float | None = None
+    stream: bool | None = None
 
 
 YI_API_PARAMS = {param for param in YiConfig.model_fields.keys()}

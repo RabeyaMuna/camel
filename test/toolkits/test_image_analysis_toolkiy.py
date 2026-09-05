@@ -78,13 +78,12 @@ def test_load_image_url_failure(image_toolkit):
     with patch(
         'requests.get',
         side_effect=requests.exceptions.RequestException("Failed"),
-    ):
-        with pytest.raises(requests.exceptions.RequestException):
-            image_toolkit._load_image("http://invalid.com/image.jpg")
+    ), pytest.raises(requests.exceptions.RequestException):
+        image_toolkit._load_image("http://invalid.com/image.jpg")
 
 
 def test_load_image_local_failure(image_toolkit):
-    with patch('PIL.Image.open', side_effect=IOError("Corrupt file")):
+    with patch('PIL.Image.open', side_effect=OSError("Corrupt file")):
         with pytest.raises(ValueError):
             image_toolkit._load_image("invalid.jpg")
 
@@ -168,7 +167,7 @@ def test_empty_image_path(image_toolkit):
 
 
 def test_non_image_file(image_toolkit):
-    with patch('PIL.Image.open', side_effect=IOError("Not an image")):
+    with patch('PIL.Image.open', side_effect=OSError("Not an image")):
         result = image_toolkit.ask_question_about_image(
             "text.txt", "What's this?"
         )

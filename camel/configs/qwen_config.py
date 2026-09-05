@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from camel.configs.base_config import BaseConfig
 
@@ -70,15 +70,15 @@ class QwenConfig(BaseConfig):
             (default: :obj:`None`)
     """
 
-    stream: Optional[bool] = None
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    presence_penalty: Optional[float] = None
-    response_format: Optional[Dict[str, str]] = None
-    max_tokens: Optional[int] = None
-    seed: Optional[int] = None
-    stop: Optional[Union[str, List]] = None
-    extra_body: Optional[Dict[str, Any]] = None
+    stream: bool | None = None
+    temperature: float | None = None
+    top_p: float | None = None
+    presence_penalty: float | None = None
+    response_format: dict[str, str] | None = None
+    max_tokens: int | None = None
+    seed: int | None = None
+    stop: str | list | None = None
+    extra_body: dict[str, Any] | None = None
 
 
 QWEN_API_PARAMS = {param for param in QwenConfig.model_fields.keys()}

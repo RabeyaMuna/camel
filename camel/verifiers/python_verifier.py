@@ -20,7 +20,7 @@ import subprocess
 import sys
 import tempfile
 import venv
-from typing import Any, List, Optional, Tuple
+from typing import Any
 
 from camel.extractors.base import BaseExtractor
 from camel.logger import get_logger
@@ -48,10 +48,10 @@ class PythonVerifier(BaseVerifier):
 
     def __init__(
         self,
-        extractor: Optional[BaseExtractor] = None,
-        timeout: Optional[float] = 30.0,
-        required_packages: Optional[List[str]] = None,
-        float_tolerance: Optional[float] = None,
+        extractor: BaseExtractor | None = None,
+        timeout: float | None = 30.0,
+        required_packages: list[str] | None = None,
+        float_tolerance: float | None = None,
         **kwargs,
     ):
         r"""Initializes the PythonVerifier.
@@ -69,7 +69,7 @@ class PythonVerifier(BaseVerifier):
         """
         # TODO: Use CAMEL's Interpreter to execute the code
         super().__init__(extractor=extractor, timeout=timeout, **kwargs)
-        self.venv_path: Optional[str] = None
+        self.venv_path: str | None = None
         self.required_packages = required_packages or []
         self.float_tolerance = float_tolerance
 
@@ -211,7 +211,7 @@ class PythonVerifier(BaseVerifier):
         self._cleanup_venv()
 
     async def _verify_implementation(
-        self, solution: str, reference_answer: Optional[str]
+        self, solution: str, reference_answer: str | None
     ) -> VerificationResult:
         r"""Executes the provided Python solution in an isolated environment
         and verifies its output against an expected ground truth expression.
@@ -387,7 +387,7 @@ class PythonVerifier(BaseVerifier):
 
     async def _run_code_block(
         self, code: str, venv_path: str
-    ) -> Tuple[str, str, int]:
+    ) -> tuple[str, str, int]:
         r"""Executes a block of Python code in the virtual environment.
 
         The code is written to a temporary file, executed using the Python

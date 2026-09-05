@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List, Optional
 
 from camel.logger import get_logger
 from camel.toolkits import FunctionTool
@@ -26,7 +25,7 @@ class ThinkingToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
     ):
         r"""Initialize the ThinkingToolkit.
 
@@ -35,13 +34,13 @@ class ThinkingToolkit(BaseToolkit):
                 (default: :obj:`None`)
         """
         super().__init__(timeout=timeout)
-        self.plans: List[str] = []
-        self.hypotheses: List[str] = []
-        self.thoughts: List[str] = []
-        self.contemplations: List[str] = []
-        self.critiques: List[str] = []
-        self.syntheses: List[str] = []
-        self.reflections: List[str] = []
+        self.plans: list[str] = []
+        self.hypotheses: list[str] = []
+        self.thoughts: list[str] = []
+        self.contemplations: list[str] = []
+        self.critiques: list[str] = []
+        self.syntheses: list[str] = []
+        self.reflections: list[str] = []
 
     def plan(self, plan: str) -> str:
         r"""Use the tool to create a plan or strategy.
@@ -213,7 +212,7 @@ class ThinkingToolkit(BaseToolkit):
             logger.error(error_msg)
             return error_msg
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Get all tools in the toolkit.
 
         Returns:

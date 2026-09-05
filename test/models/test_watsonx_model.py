@@ -70,10 +70,10 @@ def test_watsonx_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into WatsonX model backend."
-            )
+            
         ),
     ):
         _ = WatsonXModel(model_type, model_config_dict)

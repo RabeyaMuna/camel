@@ -745,13 +745,11 @@ def is_class_substantial(class_node):
                     init_doc and len(init_doc.strip()) > 50
                 ):  # Substantial docstring
                     meaningful_methods.append(node.name)
-            elif not node.name.startswith('_'):  # Public methods
-                meaningful_methods.append(node.name)
-            elif node.name in [
+            elif not node.name.startswith('_') or node.name in [
                 '__str__',
                 '__repr__',
                 '__call__',
-            ]:  # Important special methods
+            ]:  # Public methods
                 meaningful_methods.append(node.name)
 
     # A class is substantial if:

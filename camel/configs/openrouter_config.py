@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Optional, Sequence, Union
+from collections.abc import Sequence
 
 from camel.configs.base_config import BaseConfig
 from camel.types import NotGiven
@@ -88,17 +88,17 @@ class OpenRouterConfig(BaseConfig):
             are present. (default: :obj:`None`)
     """
 
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    n: Optional[int] = None
-    stream: Optional[bool] = None
-    stop: Optional[Union[str, Sequence[str], NotGiven]] = None
-    max_tokens: Optional[Union[int, NotGiven]] = None
-    presence_penalty: Optional[float] = None
-    response_format: Optional[Union[dict, NotGiven]] = None
-    frequency_penalty: Optional[float] = None
-    user: Optional[str] = None
-    tool_choice: Optional[Union[dict[str, str], str]] = None
+    temperature: float | None = None
+    top_p: float | None = None
+    n: int | None = None
+    stream: bool | None = None
+    stop: str | Sequence[str] | NotGiven | None = None
+    max_tokens: int | NotGiven | None = None
+    presence_penalty: float | None = None
+    response_format: dict | NotGiven | None = None
+    frequency_penalty: float | None = None
+    user: str | None = None
+    tool_choice: dict[str, str] | str | None = None
 
 
 OPENROUTER_API_PARAMS = {

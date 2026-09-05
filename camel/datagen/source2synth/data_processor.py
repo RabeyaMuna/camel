@@ -13,7 +13,8 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import random
-from typing import Any, Dict, List, Optional, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 from tqdm import tqdm
 
@@ -41,7 +42,7 @@ class UserDataProcessor:
             generating QA pairs.
     """
 
-    def __init__(self, config: Optional[ProcessorConfig] = None):
+    def __init__(self, config: ProcessorConfig | None = None):
         r"""Initialize the UserDataProcessor.
 
         Args:
@@ -58,7 +59,7 @@ class UserDataProcessor:
 
     def process_text(
         self, text: str, source: str = "user_input"
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Process a single text to generate multi-hop QA pairs.
 
         Args:
@@ -89,8 +90,8 @@ class UserDataProcessor:
         return final_dataset
 
     def process_batch(
-        self, texts: List[str], sources: Optional[List[str]] = None
-    ) -> List[Dict[str, Any]]:
+        self, texts: list[str], sources: list[str] | None = None
+    ) -> list[dict[str, Any]]:
         r"""Process multiple texts in batch to generate multi-hop QA pairs.
 
         Args:
@@ -144,7 +145,7 @@ class ExampleConstructor:
     def __init__(
         self,
         config: ProcessorConfig,
-        multi_hop_agent: Optional[MultiHopGeneratorAgent] = None,
+        multi_hop_agent: MultiHopGeneratorAgent | None = None,
     ):
         r"""Initialize the ExampleConstructor.
 
@@ -157,8 +158,8 @@ class ExampleConstructor:
         self.multi_hop_agent = multi_hop_agent
 
     def construct_examples(
-        self, raw_data: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        self, raw_data: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         r"""Construct training examples from raw data.
 
         Args:
@@ -251,7 +252,7 @@ class ExampleConstructor:
 
         return True
 
-    def _extract_info_pairs(self, text: str) -> List[Dict[str, Sequence[str]]]:
+    def _extract_info_pairs(self, text: str) -> list[dict[str, Sequence[str]]]:
         r"""Extract information pairs and relationships from text.
 
         Args:
@@ -287,8 +288,8 @@ class ExampleConstructor:
         return info_pairs
 
     def _generate_qa_pairs(
-        self, info_pairs: List[Dict[str, Sequence[str]]]
-    ) -> List[Dict[str, str]]:
+        self, info_pairs: list[dict[str, Sequence[str]]]
+    ) -> list[dict[str, str]]:
         r"""Generate multi-hop question-answer pairs from information pairs.
 
         Args:
@@ -315,7 +316,7 @@ class ExampleConstructor:
 
         return qa_pairs
 
-    def _calculate_complexity(self, qa_pairs: List[Dict[str, Any]]) -> float:
+    def _calculate_complexity(self, qa_pairs: list[dict[str, Any]]) -> float:
         r"""Calculate the complexity score for a set of QA pairs.
 
         Args:
@@ -382,8 +383,8 @@ class DataCurator:
         self.rng = rng
 
     def curate_dataset(
-        self, examples: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        self, examples: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         r"""Manage and curate a dataset through multiple filtering stages.
 
         Args:
@@ -421,8 +422,8 @@ class DataCurator:
         return final_dataset
 
     def _quality_filter(
-        self, examples: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        self, examples: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         r"""Filter examples based on quality criteria.
 
         Args:
@@ -447,7 +448,7 @@ class DataCurator:
 
         return filtered
 
-    def _check_qa_quality(self, qa_pairs: List[Dict[str, str]]) -> bool:
+    def _check_qa_quality(self, qa_pairs: list[dict[str, str]]) -> bool:
         r"""Check the quality of question-answer pairs.
 
         Args:
@@ -474,8 +475,8 @@ class DataCurator:
         return True
 
     def _complexity_filter(
-        self, examples: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        self, examples: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         """
         Filter examples based on complexity threshold.
 
@@ -495,8 +496,8 @@ class DataCurator:
         ]
 
     def _remove_duplicates(
-        self, examples: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        self, examples: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         r"""Remove duplicate examples from the dataset.
 
         Args:
@@ -522,8 +523,8 @@ class DataCurator:
         return unique_examples
 
     def _sample_dataset(
-        self, examples: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
+        self, examples: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
         r"""Sample examples to match target dataset size.
 
         Args:

@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 from camel.storages import RedisStorage
 
@@ -27,7 +27,7 @@ def main():
     storage = RedisStorage(sid=sid, url=url)
 
     with storage:
-        records: List[Dict[str, Any]] = [
+        records: list[dict[str, Any]] = [
             {"id": 1, "name": "Record1"},
             {"id": 2, "name": "Record2"},
         ]

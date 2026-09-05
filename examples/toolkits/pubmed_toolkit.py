@@ -110,7 +110,7 @@ print(str(response.info['tool_calls'])[:2000])
                      doi: 10.26599/1671-5411.2023.09.007.
                      Chinese guideline for lipid management (2023):
                      a new guideline rich in domestic elements for 
-                     controlling dyslipidemia.Li JJ(1).\Author information:
+                     controlling dyslipidemia.Li JJ(1).\\Author information:
                      (1)Division of Cardio-Metabolic Center,
                      State Key Laboratory of Cardiovascular 
                      Disease, Fu Wai Hospital, National Center 

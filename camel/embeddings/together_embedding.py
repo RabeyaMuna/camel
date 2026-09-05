@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Any, Optional
+from typing import Any
 
 from openai import OpenAI
 
@@ -45,8 +45,8 @@ class TogetherEmbedding(BaseEmbedding[str]):
     def __init__(
         self,
         model_type: str = "togethercomputer/m2-bert-80M-8k-retrieval",
-        api_key: Optional[str] = None,
-        dimensions: Optional[int] = None,
+        api_key: str | None = None,
+        dimensions: int | None = None,
     ) -> None:
         if not isinstance(model_type, str) or not model_type.strip():
             raise ValueError("Model name must be a non-empty string")

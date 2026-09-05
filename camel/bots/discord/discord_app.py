@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 import discord
 import httpx
@@ -55,13 +55,13 @@ class DiscordApp:
     )
     def __init__(
         self,
-        channel_ids: Optional[List[int]] = None,
-        token: Optional[str] = None,
-        client_id: Optional[str] = None,
-        client_secret: Optional[str] = None,
-        redirect_uri: Optional[str] = None,
-        installation_store: Optional[DiscordBaseInstallationStore] = None,
-        intents: Optional[discord.Intents] = None,
+        channel_ids: list[int] | None = None,
+        token: str | None = None,
+        client_id: str | None = None,
+        client_secret: str | None = None,
+        redirect_uri: str | None = None,
+        installation_store: DiscordBaseInstallationStore | None = None,
+        intents: discord.Intents | None = None,
     ) -> None:
         r"""Initialize the DiscordApp instance by setting up the Discord client
         and event handlers.
@@ -139,7 +139,7 @@ class DiscordApp:
 
     async def exchange_code_for_token_response(
         self, code: str
-    ) -> Optional[str]:
+    ) -> str | None:
         r"""Exchange the authorization code for an access token.
 
         Args:
@@ -182,7 +182,7 @@ class DiscordApp:
             logger.error(f"Error during token fetch: {e}")
             return None
 
-    async def get_user_info(self, access_token: str) -> Optional[dict]:
+    async def get_user_info(self, access_token: str) -> dict | None:
         r"""Retrieve user information using the access token.
 
         Args:
@@ -202,7 +202,7 @@ class DiscordApp:
             user_response = await client.get(USER_URL, headers=headers)
             return user_response.json()
 
-    async def refresh_access_token(self, refresh_token: str) -> Optional[str]:
+    async def refresh_access_token(self, refresh_token: str) -> str | None:
         r"""Refresh the access token using a refresh token.
 
         Args:
@@ -234,7 +234,7 @@ class DiscordApp:
             response_data = response.json()
             return response_data.get("access_token")
 
-    async def get_valid_access_token(self, guild_id: str) -> Optional[str]:
+    async def get_valid_access_token(self, guild_id: str) -> str | None:
         r"""Retrieve a valid access token for the specified guild.
 
         This method attempts to retrieve an access token for a specific guild.
@@ -310,7 +310,7 @@ class DiscordApp:
                 "OAuth is not enabled. Missing client_id, "
                 "client_secret, or redirect_uri."
             )
-            return None
+            return
         assert self.installation_store is not None
         expires_at = datetime.now() + timedelta(seconds=expires_in)
         installation = DiscordInstallation(
@@ -335,7 +335,7 @@ class DiscordApp:
                 "OAuth is not enabled. Missing client_id, "
                 "client_secret, or redirect_uri."
             )
-            return None
+            return
         assert self.installation_store is not None
         await self.installation_store.delete(guild_id=str(guild.id))
         print(f"Bot removed from guild: {guild.id}")

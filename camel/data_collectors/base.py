@@ -14,7 +14,7 @@
 
 import uuid
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Literal, Optional, Tuple, Union
+from typing import Any, Literal
 from uuid import UUID
 
 from typing_extensions import Self
@@ -28,8 +28,8 @@ class CollectorData:
         id: UUID,
         name: str,
         role: Literal["user", "assistant", "system", "tool"],
-        message: Optional[str] = None,
-        function_call: Optional[Dict[str, Any]] = None,
+        message: str | None = None,
+        function_call: dict[str, Any] | None = None,
     ) -> None:
         r"""Create a data item store information about a message.
         Used by the data collector.
@@ -67,7 +67,7 @@ class CollectorData:
         self.function_call = function_call
 
     @staticmethod
-    def from_context(name, context: Dict[str, Any]) -> "CollectorData":
+    def from_context(name, context: dict[str, Any]) -> "CollectorData":
         r"""Create a data collector from a context.
 
         Args:
@@ -91,17 +91,17 @@ class BaseDataCollector(ABC):
 
     def __init__(self) -> None:
         r"""Create a data collector."""
-        self.history: List[CollectorData] = []
+        self.history: list[CollectorData] = []
         self._recording = False
-        self.agents: List[Tuple[str, ChatAgent]] = []
-        self.data: List[Dict[str, Any]] = []
+        self.agents: list[tuple[str, ChatAgent]] = []
+        self.data: list[dict[str, Any]] = []
 
     def step(
         self,
         role: Literal["user", "assistant", "system", "tool"],
-        name: Optional[str] = None,
-        message: Optional[str] = None,
-        function_call: Optional[Dict[str, Any]] = None,
+        name: str | None = None,
+        message: str | None = None,
+        function_call: dict[str, Any] | None = None,
     ) -> Self:
         r"""Record a message.
 
@@ -135,7 +135,7 @@ class BaseDataCollector(ABC):
 
     def record(
         self,
-        agent: Union[List[ChatAgent], ChatAgent],
+        agent: list[ChatAgent] | ChatAgent,
     ) -> Self:
         r"""Record agents.
 
@@ -185,14 +185,12 @@ class BaseDataCollector(ABC):
     @abstractmethod
     def convert(self) -> Any:
         r"""Convert the collected data."""
-        pass
 
     @abstractmethod
-    def llm_convert(self, converter: Any, prompt: Optional[str] = None) -> Any:
+    def llm_convert(self, converter: Any, prompt: str | None = None) -> Any:
         r"""Convert the collected data."""
-        pass
 
-    def get_agent_history(self, name: str) -> List[CollectorData]:
+    def get_agent_history(self, name: str) -> list[CollectorData]:
         r"""Get the message history of an agent.
 
         Args:

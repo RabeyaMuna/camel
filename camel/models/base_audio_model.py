@@ -14,7 +14,7 @@
 
 import os
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 
 
 class BaseAudioModel(ABC):
@@ -24,9 +24,9 @@ class BaseAudioModel(ABC):
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        timeout: Optional[float] = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initialize an instance of BaseAudioModel.
 
@@ -66,7 +66,6 @@ class BaseAudioModel(ABC):
             Any: The response from the TTS API, which may vary by
                 implementation.
         """
-        pass
 
     @abstractmethod
     def speech_to_text(
@@ -84,7 +83,6 @@ class BaseAudioModel(ABC):
         Returns:
             str: The transcribed text.
         """
-        pass
 
     def _ensure_directory_exists(self, file_path: str) -> None:
         r"""Ensure the directory for the given file path exists.

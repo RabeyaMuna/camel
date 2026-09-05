@@ -20,7 +20,6 @@ import os
 import re
 import tempfile
 from pathlib import Path
-from typing import List, Optional
 
 from PIL import Image
 
@@ -123,14 +122,14 @@ class VideoAnalysisToolkit(BaseToolkit):
     @dependencies_required("ffmpeg", "scenedetect")
     def __init__(
         self,
-        download_directory: Optional[str] = None,
-        model: Optional[BaseModelBackend] = None,
+        download_directory: str | None = None,
+        model: BaseModelBackend | None = None,
         use_audio_transcription: bool = False,
         use_ocr: bool = False,
         frame_interval: float = 4.0,
         output_language: str = "English",
-        cookies_path: Optional[str] = None,
-        timeout: Optional[float] = None,
+        cookies_path: str | None = None,
+        timeout: float | None = None,
     ) -> None:
         super().__init__(timeout=timeout)
         self._cleanup = download_directory is None
@@ -324,7 +323,7 @@ class VideoAnalysisToolkit(BaseToolkit):
             logger.error(f"Audio transcription failed: {e}")
             return "Audio transcription failed."
 
-    def _extract_keyframes(self, video_path: str) -> List[Image.Image]:
+    def _extract_keyframes(self, video_path: str) -> list[Image.Image]:
         r"""Extract keyframes from a video based on scene changes and
         regular intervals,and return them as PIL.Image.Image objects.
 
@@ -389,7 +388,7 @@ class VideoAnalysisToolkit(BaseToolkit):
         scene_manager.detect_scenes(video)
 
         scenes = scene_manager.get_scene_list()
-        keyframes: List[Image.Image] = []
+        keyframes: list[Image.Image] = []
 
         # If scene detection is successful, prioritize scene change points
         if scenes:
@@ -490,8 +489,8 @@ class VideoAnalysisToolkit(BaseToolkit):
         return normalized_keyframes
 
     def _normalize_frames(
-        self, frames: List[Image.Image], target_width: int = 512
-    ) -> List[Image.Image]:
+        self, frames: list[Image.Image], target_width: int = 512
+    ) -> list[Image.Image]:
         r"""Normalize the size of extracted frames.
 
         Args:
@@ -501,7 +500,7 @@ class VideoAnalysisToolkit(BaseToolkit):
         Returns:
             List[Image.Image]: List of normalized frames.
         """
-        normalized_frames: List[Image.Image] = []
+        normalized_frames: list[Image.Image] = []
 
         for frame in frames:
             # Get original dimensions
@@ -614,7 +613,7 @@ class VideoAnalysisToolkit(BaseToolkit):
             logger.error(error_message)
             return f"Error: {error_message}"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

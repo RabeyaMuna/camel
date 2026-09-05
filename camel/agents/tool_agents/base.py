@@ -29,11 +29,9 @@ class BaseToolAgent(BaseAgent):
 
     def reset(self) -> None:
         r"""Resets the agent to its initial state."""
-        pass
 
     def step(self) -> None:
         r"""Performs a single step of the agent."""
-        pass
 
     def __str__(self) -> str:
         return f"{self.name}: {self.description}"

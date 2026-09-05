@@ -17,7 +17,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, ClassVar, Dict, List
+from typing import Any, ClassVar
 
 from colorama import Fore
 
@@ -48,19 +48,19 @@ class SubprocessInterpreter(BaseInterpreter):
             code execution to complete. (default: :obj:`60`)
     """
 
-    _CODE_EXECUTE_CMD_MAPPING: ClassVar[Dict[str, Dict[str, str]]] = {
+    _CODE_EXECUTE_CMD_MAPPING: ClassVar[dict[str, dict[str, str]]] = {
         "python": {"posix": "python {file_name}", "nt": "python {file_name}"},
         "bash": {"posix": "bash {file_name}", "nt": "bash {file_name}"},
         "r": {"posix": "Rscript {file_name}", "nt": "Rscript {file_name}"},
     }
 
-    _CODE_EXTENSION_MAPPING: ClassVar[Dict[str, str]] = {
+    _CODE_EXTENSION_MAPPING: ClassVar[dict[str, str]] = {
         "python": "py",
         "bash": "sh",
         "r": "R",
     }
 
-    _CODE_TYPE_MAPPING: ClassVar[Dict[str, str]] = {
+    _CODE_TYPE_MAPPING: ClassVar[dict[str, str]] = {
         "python": "python",
         "py3": "python",
         "python3": "python",
@@ -259,9 +259,7 @@ class SubprocessInterpreter(BaseInterpreter):
             exec_result += f"(stderr: {stderr})"
         if return_code != 0:
             error_msg = f"(Execution failed with return code {return_code})"
-            if not stderr:
-                exec_result += error_msg
-            elif error_msg not in stderr:
+            if not stderr or error_msg not in stderr:
                 exec_result += error_msg
         return exec_result
 
@@ -380,11 +378,11 @@ class SubprocessInterpreter(BaseInterpreter):
             )
         return self._CODE_TYPE_MAPPING[code_type]
 
-    def supported_code_types(self) -> List[str]:
+    def supported_code_types(self) -> list[str]:
         r"""Provides supported code types by the interpreter."""
         return list(self._CODE_EXTENSION_MAPPING.keys())
 
-    def update_action_space(self, action_space: Dict[str, Any]) -> None:
+    def update_action_space(self, action_space: dict[str, Any]) -> None:
         r"""Updates action space for *python* interpreter"""
         raise RuntimeError(
             "SubprocessInterpreter doesn't support " "`action_space`."

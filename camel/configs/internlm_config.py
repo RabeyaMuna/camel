@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Optional, Union
 
 from camel.configs.base_config import BaseConfig
 
@@ -50,11 +49,11 @@ class InternLMConfig(BaseConfig):
             are present.
     """
 
-    stream: Optional[bool] = None
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    max_tokens: Optional[int] = None
-    tool_choice: Optional[Union[dict[str, str], str]] = None
+    stream: bool | None = None
+    temperature: float | None = None
+    top_p: float | None = None
+    max_tokens: int | None = None
+    tool_choice: dict[str, str] | str | None = None
 
 
 INTERNLM_API_PARAMS = {param for param in InternLMConfig.model_fields.keys()}

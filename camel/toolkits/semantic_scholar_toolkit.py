@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import json
-from typing import List, Optional
 
 import requests
 
@@ -28,7 +27,7 @@ class SemanticScholarToolkit(BaseToolkit):
     API to fetch paper and author data.
     """
 
-    def __init__(self, timeout: Optional[float] = None):
+    def __init__(self, timeout: float | None = None):
         r"""Initializes the SemanticScholarToolkit."""
         super().__init__(timeout=timeout)
         self.base_url = "https://api.semanticscholar.org/graph/v1"
@@ -36,7 +35,7 @@ class SemanticScholarToolkit(BaseToolkit):
     def fetch_paper_data_title(
         self,
         paper_title: str,
-        fields: Optional[List[str]] = None,
+        fields: list[str] | None = None,
     ) -> dict:
         r"""Fetches a SINGLE paper from the Semantic Scholar
         API based on a paper title.
@@ -84,7 +83,7 @@ class SemanticScholarToolkit(BaseToolkit):
     def fetch_paper_data_id(
         self,
         paper_id: str,
-        fields: Optional[List[str]] = None,
+        fields: list[str] | None = None,
     ) -> dict:
         r"""Fetches a SINGLE paper from the Semantic Scholar
         API based on a paper ID.
@@ -133,7 +132,7 @@ class SemanticScholarToolkit(BaseToolkit):
         self,
         query: str,
         year: str = "2023-",
-        fields: Optional[List[str]] = None,
+        fields: list[str] | None = None,
     ) -> dict:
         r"""Fetches MULTIPLE papers at once from the Semantic Scholar
         API based on a related topic.
@@ -190,9 +189,9 @@ class SemanticScholarToolkit(BaseToolkit):
 
     def fetch_recommended_papers(
         self,
-        positive_paper_ids: List[str],
-        negative_paper_ids: List[str],
-        fields: Optional[List[str]] = None,
+        positive_paper_ids: list[str],
+        negative_paper_ids: list[str],
+        fields: list[str] | None = None,
         limit: int = 500,
         save_to_file: bool = False,
     ) -> dict:
@@ -252,8 +251,8 @@ class SemanticScholarToolkit(BaseToolkit):
 
     def fetch_author_data(
         self,
-        ids: List[str],
-        fields: Optional[List[str]] = None,
+        ids: list[str],
+        fields: list[str] | None = None,
         save_to_file: bool = False,
     ) -> dict:
         r"""Fetches author information from the Semantic Scholar
@@ -294,7 +293,7 @@ class SemanticScholarToolkit(BaseToolkit):
                 "message": response.text,
             }
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

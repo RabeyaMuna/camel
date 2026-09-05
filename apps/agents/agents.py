@@ -19,7 +19,7 @@ a chat between collaborative agents.
 import argparse
 import os
 import re
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import gradio as gr
 import openai
@@ -36,7 +36,7 @@ REPO_ROOT = os.path.realpath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
 )
 
-ChatBotHistory = List[Tuple[Optional[str], Optional[str]]]
+ChatBotHistory = list[tuple[str | None, str | None]]
 
 
 logger = get_logger(__name__)
@@ -48,10 +48,10 @@ class State(BaseModel):
         extra="forbid",
     )
 
-    session: Optional[RolePlaying]
+    session: RolePlaying | None
     max_messages: int
     chat: ChatBotHistory
-    saved_assistant_msg: Optional[BaseMessage]
+    saved_assistant_msg: BaseMessage | None
 
     @classmethod
     def empty(cls) -> 'State':
@@ -65,10 +65,10 @@ class State(BaseModel):
     @staticmethod
     def construct_inplace(
         state: 'State',
-        session: Optional[RolePlaying],
+        session: RolePlaying | None,
         max_messages: int,
         chat: ChatBotHistory,
-        saved_assistant_msg: Optional[BaseMessage],
+        saved_assistant_msg: BaseMessage | None,
     ) -> None:
         validated_data = State(
             session=session,
@@ -118,7 +118,7 @@ def parse_arguments():
     return args
 
 
-def load_roles(path: str) -> List[str]:
+def load_roles(path: str) -> list[str]:
     """Load roles from list files.
 
     Args:
@@ -142,7 +142,7 @@ def load_roles(path: str) -> List[str]:
     return roles
 
 
-def cleanup_on_launch(state: State) -> Tuple[State, ChatBotHistory, Dict]:
+def cleanup_on_launch(state: State) -> tuple[State, ChatBotHistory, dict]:
     """Prepare the UI for a new session.
 
     Args:
@@ -172,7 +172,7 @@ def role_playing_start(
     with_task_specifier: bool,
     word_limit: int,
     language: str,
-) -> Union[Dict, Tuple[State, str, Union[str, Dict], ChatBotHistory, Dict]]:
+) -> dict | tuple[State, str, str | dict, ChatBotHistory, dict]:
     """Creates a role playing session.
 
     Args:
@@ -201,8 +201,8 @@ def role_playing_start(
         logger.error(f"Unrecognezed society {society_name}")
         return {}
 
-    meta_dict: Optional[Dict[str, str]]
-    extend_sys_msg_meta_dicts: Optional[List[Dict]]
+    meta_dict: dict[str, str] | None
+    extend_sys_msg_meta_dicts: list[dict] | None
     task_type: TaskType
     if society_name == "AI Society":
         meta_dict = None
@@ -275,7 +275,7 @@ def role_playing_start(
 
 def role_playing_chat_init(
     state: State,
-) -> Union[Dict, Tuple[State, ChatBotHistory, Dict]]:
+) -> dict | tuple[State, ChatBotHistory, dict]:
     """Initialize role playing.
 
     Args:
@@ -314,7 +314,7 @@ def role_playing_chat_init(
 # WORKAROUND: do not add type hints for session and chatbot_history
 def role_playing_chat_cont(
     state: State,
-) -> Tuple[State, ChatBotHistory, Dict, Dict]:
+) -> tuple[State, ChatBotHistory, dict, dict]:
     """Produce a pair of messages by an assistant and a user.
         To be run multiple times.
 
@@ -377,7 +377,7 @@ def role_playing_chat_cont(
     return state, state.chat, progress_update, start_bn_update
 
 
-def stop_session(state: State) -> Tuple[State, Dict, Dict]:
+def stop_session(state: State) -> tuple[State, dict, dict]:
     """Finish the session and leave chat contents as an artefact.
 
     Args:
@@ -394,7 +394,7 @@ def stop_session(state: State) -> Tuple[State, Dict, Dict]:
     return state, gr.update(visible=False), gr.update(interactive=True)
 
 
-def construct_ui(blocks, api_key: Optional[str] = None) -> None:
+def construct_ui(blocks, api_key: str | None = None) -> None:
     """Build Gradio UI and populate with topics.
 
     Args:
@@ -407,7 +407,7 @@ def construct_ui(blocks, api_key: Optional[str] = None) -> None:
     if api_key is not None:
         openai.api_key = api_key
 
-    society_dict: Dict[str, Dict[str, Any]] = {}
+    society_dict: dict[str, dict[str, Any]] = {}
     for society_name in ("AI Society", "Code"):
         if society_name == "AI Society":
             assistant_role_subpath = "ai_society/assistant_roles.txt"
@@ -438,7 +438,7 @@ def construct_ui(blocks, api_key: Optional[str] = None) -> None:
 
     default_society = society_dict["AI Society"]
 
-    def change_society(society_name: str) -> Tuple[Dict, Dict, str]:
+    def change_society(society_name: str) -> tuple[dict, dict, str]:
         society = society_dict[society_name]
         assistant_dd_update = gr.update(
             choices=society['assistant_roles'], value=society['assistant_role']
@@ -623,7 +623,7 @@ def construct_ui(blocks, api_key: Optional[str] = None) -> None:
     blocks.load(lambda dd: dd, user_dd, user_ta)
 
 
-def construct_blocks(api_key: Optional[str]):
+def construct_blocks(api_key: str | None):
     """Construct Agents app but do not launch it.
 
     Args:

@@ -75,7 +75,6 @@ result = benchmark.run(agent, "valid", level="all", subset=3)
 print("correct:", result["correct"])
 print("total:", result["total"])
 
-# ruff: noqa: E501
 """
 Number of validation examples: 165
 Number of test examples: 300

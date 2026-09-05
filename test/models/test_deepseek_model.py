@@ -66,9 +66,9 @@ def test_deepseek_model_unexpected_argument():
         ValueError,
         # ruff: noqa: E501
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is input into DeepSeek model backend."
-            )
+            
         ),
     ):
         _ = DeepSeekModel(model_type, model_config_dict)

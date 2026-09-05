@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from camel.logger import get_logger
 from camel.models import BaseModelBackend
@@ -35,8 +35,8 @@ class BrowserNonVisualToolkit(BaseToolkit):
         self,
         *,
         headless: bool = True,
-        user_data_dir: Optional[str] = None,
-        web_agent_model: Optional[BaseModelBackend] = None,
+        user_data_dir: str | None = None,
+        web_agent_model: BaseModelBackend | None = None,
     ) -> None:
         super().__init__()
         self._headless = headless
@@ -50,7 +50,7 @@ class BrowserNonVisualToolkit(BaseToolkit):
         )
 
         # Optional higher-level agent (only if user supplies model)
-        self._agent: Optional[PlaywrightLLMAgent] = None
+        self._agent: PlaywrightLLMAgent | None = None
 
     def __del__(self):
         r"""Best-effort cleanup when toolkit is garbage collected.
@@ -134,8 +134,8 @@ class BrowserNonVisualToolkit(BaseToolkit):
             )
 
     async def open_browser(
-        self, start_url: Optional[str] = None
-    ) -> Dict[str, str]:
+        self, start_url: str | None = None
+    ) -> dict[str, str]:
         r"""Launches a new browser session. This should be the first step.
 
         Args:
@@ -179,7 +179,7 @@ class BrowserNonVisualToolkit(BaseToolkit):
         await NVBrowserSession.close_all_sessions()
         return "Browser session closed."
 
-    async def visit_page(self, url: str) -> Dict[str, str]:
+    async def visit_page(self, url: str) -> dict[str, str]:
         r"""Navigates the current browser page to a new URL.
 
         Args:
@@ -220,7 +220,7 @@ class BrowserNonVisualToolkit(BaseToolkit):
             force_refresh=force_refresh, diff_only=diff_only
         )
 
-    async def click(self, *, ref: str) -> Dict[str, str]:
+    async def click(self, *, ref: str) -> dict[str, str]:
         r"""Performs a click action on a specified element on the current page.
 
         Args:
@@ -234,10 +234,10 @@ class BrowserNonVisualToolkit(BaseToolkit):
         """
         self._validate_ref(ref, "click")
 
-        action: Dict[str, Any] = {"type": "click", "ref": ref}
+        action: dict[str, Any] = {"type": "click", "ref": ref}
         return await self._exec_with_snapshot(action)
 
-    async def type(self, *, ref: str, text: str) -> Dict[str, str]:
+    async def type(self, *, ref: str, text: str) -> dict[str, str]:
         r"""Types text into an input field or textarea on the current page.
 
         Args:
@@ -251,10 +251,10 @@ class BrowserNonVisualToolkit(BaseToolkit):
         """
         self._validate_ref(ref, "type")
 
-        action: Dict[str, Any] = {"type": "type", "ref": ref, "text": text}
+        action: dict[str, Any] = {"type": "type", "ref": ref, "text": text}
         return await self._exec_with_snapshot(action)
 
-    async def select(self, *, ref: str, value: str) -> Dict[str, str]:
+    async def select(self, *, ref: str, value: str) -> dict[str, str]:
         r"""Selects an option from a dropdown (<select>) element on the page.
 
         Args:
@@ -269,10 +269,10 @@ class BrowserNonVisualToolkit(BaseToolkit):
         """
         self._validate_ref(ref, "select")
 
-        action: Dict[str, Any] = {"type": "select", "ref": ref, "value": value}
+        action: dict[str, Any] = {"type": "select", "ref": ref, "value": value}
         return await self._exec_with_snapshot(action)
 
-    async def scroll(self, *, direction: str, amount: int) -> Dict[str, str]:
+    async def scroll(self, *, direction: str, amount: int) -> dict[str, str]:
         r"""Scrolls the current page up or down by a specified amount.
 
         Args:
@@ -293,7 +293,7 @@ class BrowserNonVisualToolkit(BaseToolkit):
         action = {"type": "scroll", "direction": direction, "amount": amount}
         return await self._exec_with_snapshot(action)
 
-    async def enter(self, *, ref: str) -> Dict[str, str]:
+    async def enter(self, *, ref: str) -> dict[str, str]:
         r"""Simulates pressing the Enter key on a specific element.
         This is often used to submit forms.
 
@@ -308,13 +308,13 @@ class BrowserNonVisualToolkit(BaseToolkit):
         """
         self._validate_ref(ref, "enter")
 
-        action: Dict[str, Any] = {"type": "enter", "ref": ref}
+        action: dict[str, Any] = {"type": "enter", "ref": ref}
         return await self._exec_with_snapshot(action)
 
     async def wait_user(
         self,
-        timeout_sec: Optional[float] = None,
-    ) -> Dict[str, str]:
+        timeout_sec: float | None = None,
+    ) -> dict[str, str]:
         r"""Pauses the agent's execution and waits for human intervention.
         This is useful for tasks that require manual steps, like solving a
         CAPTCHA. The agent will print a message and wait for the user to
@@ -362,12 +362,12 @@ class BrowserNonVisualToolkit(BaseToolkit):
         return {"result": result_msg, "snapshot": snapshot}
 
     # Helper to run through ActionExecutor
-    async def _exec(self, action: Dict[str, Any]) -> str:
+    async def _exec(self, action: dict[str, Any]) -> str:
         return await self._session.exec_action(action)
 
     async def _exec_with_snapshot(
-        self, action: Dict[str, Any]
-    ) -> Dict[str, str]:
+        self, action: dict[str, Any]
+    ) -> dict[str, str]:
         r"""Execute action and, if DOM structure changed, include snapshot
         diff.
         """
@@ -427,7 +427,7 @@ class BrowserNonVisualToolkit(BaseToolkit):
         await agent.process_command(task_prompt, max_steps=max_steps)
         return "Task processing finished - see stdout for detailed trace."
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         base_tools = [
             FunctionTool(self.open_browser),
             FunctionTool(self.close_browser),

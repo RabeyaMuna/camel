@@ -18,8 +18,9 @@ import json
 import time
 import uuid
 from collections import deque
+from collections.abc import Coroutine
 from enum import Enum
-from typing import Any, Coroutine, Deque, Dict, List, Optional, Set, Tuple
+from typing import Any
 
 from colorama import Fore
 
@@ -83,11 +84,11 @@ class WorkforceSnapshot:
 
     def __init__(
         self,
-        main_task: Optional[Task] = None,
-        pending_tasks: Optional[Deque[Task]] = None,
-        completed_tasks: Optional[List[Task]] = None,
-        task_dependencies: Optional[Dict[str, List[str]]] = None,
-        assignees: Optional[Dict[str, str]] = None,
+        main_task: Task | None = None,
+        pending_tasks: deque[Task] | None = None,
+        completed_tasks: list[Task] | None = None,
+        task_dependencies: dict[str, list[str]] | None = None,
+        assignees: dict[str, str] | None = None,
         current_task_index: int = 0,
         description: str = "",
     ):
@@ -197,37 +198,37 @@ class Workforce(BaseNode):
     def __init__(
         self,
         description: str,
-        children: Optional[List[BaseNode]] = None,
-        coordinator_agent: Optional[ChatAgent] = None,
-        task_agent: Optional[ChatAgent] = None,
-        new_worker_agent: Optional[ChatAgent] = None,  # TODO: use MCP Agent
+        children: list[BaseNode] | None = None,
+        coordinator_agent: ChatAgent | None = None,
+        task_agent: ChatAgent | None = None,
+        new_worker_agent: ChatAgent | None = None,  # TODO: use MCP Agent
         graceful_shutdown_timeout: float = 15.0,
         share_memory: bool = False,
     ) -> None:
         super().__init__(description)
-        self._child_listening_tasks: Deque[asyncio.Task] = deque()
+        self._child_listening_tasks: deque[asyncio.Task] = deque()
         self._children = children or []
         self.new_worker_agent = new_worker_agent
         self.graceful_shutdown_timeout = graceful_shutdown_timeout
         self.share_memory = share_memory
         self.metrics_logger = WorkforceLogger(workforce_id=self.node_id)
-        self._task: Optional[Task] = None
-        self._pending_tasks: Deque[Task] = deque()
-        self._task_dependencies: Dict[str, List[str]] = {}
-        self._assignees: Dict[str, str] = {}
+        self._task: Task | None = None
+        self._pending_tasks: deque[Task] = deque()
+        self._task_dependencies: dict[str, list[str]] = {}
+        self._assignees: dict[str, str] = {}
         self._in_flight_tasks: int = 0
         # Dictionary to track task start times
-        self._task_start_times: Dict[str, float] = {}
+        self._task_start_times: dict[str, float] = {}
         # Human intervention support
         self._state = WorkforceState.IDLE
         self._pause_event = asyncio.Event()
         self._pause_event.set()  # Initially not paused
         self._stop_requested = False
-        self._snapshots: List[WorkforceSnapshot] = []
-        self._completed_tasks: List[Task] = []
-        self._loop: Optional[asyncio.AbstractEventLoop] = None
-        self._main_task_future: Optional[asyncio.Future] = None
-        self._cleanup_task: Optional[asyncio.Task] = None
+        self._snapshots: list[WorkforceSnapshot] = []
+        self._completed_tasks: list[Task] = []
+        self._loop: asyncio.AbstractEventLoop | None = None
+        self._main_task_future: asyncio.Future | None = None
+        self._cleanup_task: asyncio.Task | None = None
         # Snapshot throttle support
         self._last_snapshot_time: float = 0.0
         # Minimum seconds between automatic snapshots
@@ -412,7 +413,7 @@ class Workforce(BaseNode):
             # Should not happen, but guard against unexpected objects
             pass
 
-    def _ensure_pause_event_in_kwargs(self, kwargs: Optional[Dict]) -> Dict:
+    def _ensure_pause_event_in_kwargs(self, kwargs: dict | None) -> dict:
         """Insert pause_event into kwargs dict for ChatAgent construction."""
         new_kwargs = dict(kwargs) if kwargs else {}
         new_kwargs.setdefault("pause_event", self._pause_event)
@@ -424,7 +425,7 @@ class Workforce(BaseNode):
             f"State: {self._state.value}"
         )
 
-    def _collect_shared_memory(self) -> Dict[str, List]:
+    def _collect_shared_memory(self) -> dict[str, list]:
         r"""Collect memory from all SingleAgentWorker instances for sharing.
 
         Returns:
@@ -437,7 +438,7 @@ class Workforce(BaseNode):
         if not self.share_memory:
             return {}
 
-        shared_memory: Dict[str, List] = {
+        shared_memory: dict[str, list] = {
             'coordinator': [],
             'task_agent': [],
             'workers': [],
@@ -472,7 +473,7 @@ class Workforce(BaseNode):
         return shared_memory
 
     def _share_memory_with_agents(
-        self, shared_memory: Dict[str, List]
+        self, shared_memory: dict[str, list]
     ) -> None:
         r"""Share collected memory with coordinator, task agent, and
         SingleAgentWorker instances.
@@ -497,7 +498,7 @@ class Workforce(BaseNode):
             from camel.memories.records import MemoryRecord
 
             # Create consolidated memory objects from records
-            memory_records: List[MemoryRecord] = []
+            memory_records: list[MemoryRecord] = []
             for record_dict in all_records:
                 try:
                     memory_record = MemoryRecord.from_dict(record_dict)
@@ -561,7 +562,7 @@ class Workforce(BaseNode):
         if task_id in self._task_start_times:
             del self._task_start_times[task_id]
 
-    def _decompose_task(self, task: Task) -> List[Task]:
+    def _decompose_task(self, task: Task) -> list[Task]:
         r"""Decompose the task into subtasks. This method will also set the
         relationship between the task and its subtasks.
 
@@ -684,7 +685,7 @@ class Workforce(BaseNode):
         self._snapshots.append(snapshot)
         logger.info(f"Snapshot saved: {description}")
 
-    def list_snapshots(self) -> List[str]:
+    def list_snapshots(self) -> list[str]:
         r"""List all available snapshots."""
         snapshots_info = []
         for i, snapshot in enumerate(self._snapshots):
@@ -698,11 +699,11 @@ class Workforce(BaseNode):
             snapshots_info.append(info)
         return snapshots_info
 
-    def get_pending_tasks(self) -> List[Task]:
+    def get_pending_tasks(self) -> list[Task]:
         r"""Get current pending tasks for human review."""
         return list(self._pending_tasks)
 
-    def get_completed_tasks(self) -> List[Task]:
+    def get_completed_tasks(self) -> list[Task]:
         r"""Get completed tasks."""
         return self._completed_tasks.copy()
 
@@ -727,8 +728,8 @@ class Workforce(BaseNode):
     def add_task(
         self,
         content: str,
-        task_id: Optional[str] = None,
-        additional_info: Optional[Dict[str, Any]] = None,
+        task_id: str | None = None,
+        additional_info: dict[str, Any] | None = None,
         insert_position: int = -1,
     ) -> Task:
         r"""Add a new task to the pending queue."""
@@ -761,7 +762,7 @@ class Workforce(BaseNode):
         logger.warning(f"Task {task_id} not found in pending tasks.")
         return False
 
-    def reorder_tasks(self, task_ids: List[str]) -> bool:
+    def reorder_tasks(self, task_ids: list[str]) -> bool:
         r"""Reorder pending tasks according to the provided task IDs list."""
         # Create a mapping of task_id to task
         tasks_dict = {task.id: task for task in self._pending_tasks}
@@ -857,7 +858,7 @@ class Workforce(BaseNode):
         logger.info(f"Workforce state restored from snapshot {snapshot_index}")
         return True
 
-    def get_workforce_status(self) -> Dict:
+    def get_workforce_status(self) -> dict:
         r"""Get current workforce status for human review."""
         return {
             "state": self._state.value,
@@ -1099,7 +1100,7 @@ class Workforce(BaseNode):
                         pass
                     self._loop.close()
 
-    def continue_from_pause(self) -> Optional[Task]:
+    def continue_from_pause(self) -> Task | None:
         r"""Continue execution from a paused state. This reuses the
         existing event loop.
 
@@ -1129,7 +1130,7 @@ class Workforce(BaseNode):
             self._state = WorkforceState.STOPPED
             return None
 
-    async def _continue_execution(self) -> Optional[Task]:
+    async def _continue_execution(self) -> Task | None:
         r"""Internal method to continue execution after pause."""
         try:
             await self._listen_to_channel()
@@ -1184,9 +1185,9 @@ class Workforce(BaseNode):
         description: str,
         assistant_role_name: str,
         user_role_name: str,
-        assistant_agent_kwargs: Optional[Dict] = None,
-        user_agent_kwargs: Optional[Dict] = None,
-        summarize_agent_kwargs: Optional[Dict] = None,
+        assistant_agent_kwargs: dict | None = None,
+        user_agent_kwargs: dict | None = None,
+        summarize_agent_kwargs: dict | None = None,
         chat_turn_limit: int = 3,
     ) -> Workforce:
         r"""Add a worker node to the workforce that uses `RolePlaying` system.
@@ -1337,7 +1338,7 @@ class Workforce(BaseNode):
         return valid_worker_ids
 
     def _call_coordinator_for_assignment(
-        self, tasks: List[Task], invalid_ids: Optional[List[str]] = None
+        self, tasks: list[Task], invalid_ids: list[str] | None = None
     ) -> TaskAssignResult:
         r"""Call coordinator agent to assign tasks with optional validation
         feedback in the case of invalid worker IDs.
@@ -1399,8 +1400,8 @@ class Workforce(BaseNode):
             return TaskAssignResult(assignments=[])
 
     def _validate_assignments(
-        self, assignments: List[TaskAssignment], valid_ids: Set[str]
-    ) -> Tuple[List[TaskAssignment], List[TaskAssignment]]:
+        self, assignments: list[TaskAssignment], valid_ids: set[str]
+    ) -> tuple[list[TaskAssignment], list[TaskAssignment]]:
         r"""Validate task assignments against valid worker IDs.
 
         Args:
@@ -1411,8 +1412,8 @@ class Workforce(BaseNode):
             Tuple[List[TaskAssignment], List[TaskAssignment]]:
                 (valid_assignments, invalid_assignments)
         """
-        valid_assignments: List[TaskAssignment] = []
-        invalid_assignments: List[TaskAssignment] = []
+        valid_assignments: list[TaskAssignment] = []
+        invalid_assignments: list[TaskAssignment] = []
 
         for assignment in assignments:
             if assignment.assignee_id in valid_ids:
@@ -1422,7 +1423,7 @@ class Workforce(BaseNode):
 
         return valid_assignments, invalid_assignments
 
-    def _handle_task_assignment_fallbacks(self, tasks: List[Task]) -> List:
+    def _handle_task_assignment_fallbacks(self, tasks: list[Task]) -> list:
         r"""Create new workers for unassigned tasks as fallback.
 
         Args:
@@ -1448,10 +1449,10 @@ class Workforce(BaseNode):
 
     def _handle_assignment_retry_and_fallback(
         self,
-        invalid_assignments: List[TaskAssignment],
-        tasks: List[Task],
-        valid_worker_ids: Set[str],
-    ) -> List[TaskAssignment]:
+        invalid_assignments: list[TaskAssignment],
+        tasks: list[Task],
+        valid_worker_ids: set[str],
+    ) -> list[TaskAssignment]:
         r"""Called if Coordinator agent fails to assign tasks to valid worker
         IDs. Handles retry assignment and fallback worker creation for invalid
         assignments.
@@ -1526,7 +1527,7 @@ class Workforce(BaseNode):
 
     def _find_assignee(
         self,
-        tasks: List[Task],
+        tasks: list[Task],
     ) -> TaskAssignResult:
         r"""Assigns multiple tasks to worker nodes with the best capabilities.
 
@@ -1704,7 +1705,7 @@ class Workforce(BaseNode):
                 pause_event=self._pause_event,
             )  # type: ignore[arg-type]
 
-    async def _get_returned_task(self) -> Optional[Task]:
+    async def _get_returned_task(self) -> Task | None:
         r"""Get the task that's published by this node and just get returned
         from the assignee. Includes timeout handling to prevent indefinite
         waiting.
@@ -2077,7 +2078,7 @@ class Workforce(BaseNode):
             return "Logger not initialized."
         return self.metrics_logger.get_ascii_tree_representation()
 
-    def get_workforce_kpis(self) -> Dict[str, Any]:
+    def get_workforce_kpis(self) -> dict[str, Any]:
         r"""Returns a dictionary of key performance indicators."""
         if not self.metrics_logger:
             return {"error": "Logger not initialized."}
@@ -2262,7 +2263,7 @@ class Workforce(BaseNode):
         # shut down the whole workforce tree
         self.stop()
 
-    def _submit_coro_to_loop(self, coro: 'Coroutine') -> None:
+    def _submit_coro_to_loop(self, coro: Coroutine) -> None:
         r"""Thread-safe submission of coroutine to the workforce loop."""
 
         loop = self._loop
@@ -2333,7 +2334,7 @@ class Workforce(BaseNode):
 
         self._running = False
 
-    def clone(self, with_memory: bool = False) -> 'Workforce':
+    def clone(self, with_memory: bool = False) -> Workforce:
         r"""Creates a new instance of Workforce with the same configuration.
 
         Args:
@@ -2393,7 +2394,7 @@ class Workforce(BaseNode):
             "A workforce system using the CAMEL AI framework for "
             "multi-agent collaboration."
         ),
-        dependencies: Optional[List[str]] = None,
+        dependencies: list[str] | None = None,
         host: str = "localhost",
         port: int = 8001,
     ):
@@ -2589,9 +2590,9 @@ class Workforce(BaseNode):
                 >>> for child in children:
                 ...     print(f"{child['type']}: {child['description']}")
             """
-            children_info: List[Dict[str, Any]] = []
+            children_info: list[dict[str, Any]] = []
             for child in workforce_instance._children:
-                child_info: Dict[str, Any] = {
+                child_info: dict[str, Any] = {
                     "node_id": child.node_id,
                     "description": child.description,
                     "type": type(child).__name__,

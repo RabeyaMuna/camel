@@ -359,12 +359,11 @@ def test_shared_memory_operations(
     # Test memory collection and synchronization
     with patch.object(
         workforce, '_collect_shared_memory', return_value=sample_shared_memory
-    ):
-        with patch.object(
-            workforce, '_share_memory_with_agents'
-        ) as mock_share:
-            workforce._sync_shared_memory()
-            mock_share.assert_called_once_with(sample_shared_memory)
+    ), patch.object(
+        workforce, '_share_memory_with_agents'
+    ) as mock_share:
+        workforce._sync_shared_memory()
+        mock_share.assert_called_once_with(sample_shared_memory)
 
 
 def test_cross_agent_memory_access(mock_model, sample_shared_memory):
@@ -407,9 +406,8 @@ def test_cross_agent_memory_access(mock_model, sample_shared_memory):
     # Simulate memory sync
     with patch.object(
         workforce, '_collect_shared_memory', return_value=sample_shared_memory
-    ):
-        with patch.object(workforce, '_share_memory_with_agents'):
-            workforce._sync_shared_memory()
+    ), patch.object(workforce, '_share_memory_with_agents'):
+        workforce._sync_shared_memory()
 
     # Test that both agents have access to shared information
     query = "What information do you have?"

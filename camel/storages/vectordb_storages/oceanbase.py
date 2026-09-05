@@ -14,7 +14,7 @@
 
 import json
 import logging
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from pyobvector.client import ObVecClient
@@ -91,7 +91,7 @@ class OceanBaseStorage(BaseVectorStorage):
         )
 
         # Map distance to distance function in OceanBase
-        self._distance_func_map: Dict[str, str] = {
+        self._distance_func_map: dict[str, str] = {
             "cosine": "cosine_distance",
             "l2": "l2_distance",
         }
@@ -99,7 +99,7 @@ class OceanBaseStorage(BaseVectorStorage):
         # Check or create table with vector index
         if not self._client.check_table_exists(self.table_name):
             # Define table schema
-            columns: List[Column] = [
+            columns: list[Column] = [
                 Column("id", Integer, primary_key=True, autoincrement=True),
                 Column("embedding", VECTOR(vector_dim)),
                 Column("metadata", JSON),
@@ -144,7 +144,7 @@ class OceanBaseStorage(BaseVectorStorage):
 
     def add(
         self,
-        records: List[VectorRecord],
+        records: list[VectorRecord],
         batch_size: int = 100,
         **kwargs: Any,
     ) -> None:
@@ -167,7 +167,7 @@ class OceanBaseStorage(BaseVectorStorage):
 
         try:
             # Convert records to OceanBase format
-            data: List[Dict[str, Any]] = []
+            data: list[dict[str, Any]] = []
             for i, record in enumerate(records):
                 # Validate vector dimensions
                 if len(record.vector) != self.vector_dim:
@@ -176,7 +176,7 @@ class OceanBaseStorage(BaseVectorStorage):
                         f"{len(record.vector)}, expected {self.vector_dim}"
                     )
 
-                item: Dict[str, Any] = {
+                item: dict[str, Any] = {
                     "embedding": record.vector,
                     "metadata": record.payload or {},
                 }
@@ -210,7 +210,7 @@ class OceanBaseStorage(BaseVectorStorage):
 
     def delete(
         self,
-        ids: List[str],
+        ids: list[str],
         **kwargs: Any,
     ) -> None:
         r"""Deletes a list of vectors identified by their IDs from the storage.
@@ -227,8 +227,8 @@ class OceanBaseStorage(BaseVectorStorage):
             return
 
         try:
-            numeric_ids: List[int] = []
-            non_numeric_ids: List[str] = []
+            numeric_ids: list[int] = []
+            non_numeric_ids: list[str] = []
 
             # Separate numeric and non-numeric IDs
             for id_val in ids:
@@ -282,7 +282,7 @@ class OceanBaseStorage(BaseVectorStorage):
         self,
         query: VectorDBQuery,
         **kwargs: Any,
-    ) -> List[VectorDBQueryResult]:
+    ) -> list[VectorDBQueryResult]:
         r"""Searches for similar vectors in the storage based on the
         provided query.
 
@@ -328,10 +328,10 @@ class OceanBaseStorage(BaseVectorStorage):
             )
 
             # Convert results to VectorDBQueryResult format
-            query_results: List[VectorDBQueryResult] = []
+            query_results: list[VectorDBQueryResult] = []
             for row in results:
                 try:
-                    result_dict: Dict[str, Any] = dict(row._mapping)
+                    result_dict: dict[str, Any] = dict(row._mapping)
 
                     # Extract data
                     id_val: str = str(result_dict["id"])
@@ -363,7 +363,7 @@ class OceanBaseStorage(BaseVectorStorage):
                         vector = [0.0] * self.vector_dim
 
                     # Ensure metadata is a dictionary
-                    metadata: Dict[str, Any] = result_dict.get("metadata", {})
+                    metadata: dict[str, Any] = result_dict.get("metadata", {})
                     if not isinstance(metadata, dict):
                         # Convert to dict if it's not already
                         try:
@@ -374,7 +374,7 @@ class OceanBaseStorage(BaseVectorStorage):
                         except Exception:
                             metadata = {"value": str(metadata)}
 
-                    distance_value: Optional[float] = None
+                    distance_value: float | None = None
                     for key in result_dict:
                         if (
                             key.endswith(distance_func_name)
@@ -449,7 +449,6 @@ class OceanBaseStorage(BaseVectorStorage):
     def load(self) -> None:
         r"""Load the collection hosted on cloud service."""
         # OceanBase doesn't require explicit loading
-        pass
 
     @property
     def client(self) -> "ObVecClient":

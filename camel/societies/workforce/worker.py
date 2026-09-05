@@ -16,7 +16,6 @@ from __future__ import annotations
 import asyncio
 import logging
 from abc import ABC, abstractmethod
-from typing import List, Optional, Set
 
 from colorama import Fore
 
@@ -41,17 +40,17 @@ class Worker(BaseNode, ABC):
     def __init__(
         self,
         description: str,
-        node_id: Optional[str] = None,
+        node_id: str | None = None,
     ) -> None:
         super().__init__(description, node_id=node_id)
-        self._active_task_ids: Set[str] = set()
+        self._active_task_ids: set[str] = set()
 
     def __repr__(self):
         return f"Worker node {self.node_id} ({self.description})"
 
     @abstractmethod
     async def _process_task(
-        self, task: Task, dependencies: List[Task]
+        self, task: Task, dependencies: list[Task]
     ) -> TaskState:
         r"""Processes a task based on its dependencies.
 
@@ -59,14 +58,13 @@ class Worker(BaseNode, ABC):
             'DONE' if the task is successfully processed,
             'FAILED' if the processing fails.
         """
-        pass
 
     async def _get_assigned_task(self) -> Task:
         r"""Get a task assigned to this node from the channel."""
         return await self._channel.get_assigned_task_by_assignee(self.node_id)
 
     @staticmethod
-    def _get_dep_tasks_info(dependencies: List[Task]) -> str:
+    def _get_dep_tasks_info(dependencies: list[Task]) -> str:
         result_lines = [
             f"id: {dep_task.id}, content: {dep_task.content}. "
             f"result: {dep_task.result}."
@@ -118,7 +116,7 @@ class Worker(BaseNode, ABC):
         logger.info(f"{self} started.")
 
         # Keep track of running task coroutines
-        running_tasks: Set[asyncio.Task] = set()
+        running_tasks: set[asyncio.Task] = set()
 
         while self._running:
             try:
@@ -177,4 +175,3 @@ class Worker(BaseNode, ABC):
     def stop(self):
         r"""Stop the worker."""
         self._running = False
-        return

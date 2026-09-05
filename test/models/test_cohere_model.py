@@ -50,10 +50,10 @@ def test_cohere_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into Cohere model backend."
-            )
+            
         ),
     ):
         _ = CohereModel(model_type, model_config_dict)

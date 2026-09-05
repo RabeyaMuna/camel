@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import re
-from typing import Any, Dict, Tuple
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -27,7 +27,7 @@ pytestmark = pytest.mark.heavy_dependency
 
 
 class MockMultiStepEnv(MultiStepEnv):
-    def _get_initial_state(self) -> Dict[str, Any]:
+    def _get_initial_state(self) -> dict[str, Any]:
         """Return the initial state with a step counter."""
         return {"step": 0}
 
@@ -43,7 +43,7 @@ class MockMultiStepEnv(MultiStepEnv):
         """Return the terminal observation when the episode ends."""
         return Observation(question="Episode ended")
 
-    async def compute_reward(self) -> Tuple[float, Dict[str, float]]:
+    async def compute_reward(self) -> tuple[float, dict[str, float]]:
         """Return a fixed reward and reward breakdown."""
         return 1.0, {"step_reward": 1.0}
 
@@ -53,11 +53,9 @@ class MockMultiStepEnv(MultiStepEnv):
 
     async def _setup(self) -> None:
         """Perform any setup tasks (empty for this mock)."""
-        pass
 
     async def _close(self) -> None:
         """Perform any cleanup tasks (empty for this mock)."""
-        pass
 
 
 @pytest.mark.asyncio

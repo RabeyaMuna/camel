@@ -14,7 +14,6 @@
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Union
 
 from camel.logger import get_logger
 from camel.toolkits.base import BaseToolkit
@@ -40,7 +39,7 @@ class FileWriteToolkit(BaseToolkit):
     def __init__(
         self,
         output_dir: str = "./",
-        timeout: Optional[float] = None,
+        timeout: float | None = None,
         default_encoding: str = "utf-8",
         backup_enabled: bool = True,
     ) -> None:
@@ -241,7 +240,7 @@ class FileWriteToolkit(BaseToolkit):
     def _write_csv_file(
         self,
         file_path: Path,
-        content: Union[str, List[List]],
+        content: str | list[list],
         encoding: str = "utf-8",
     ) -> None:
         r"""Write CSV content to a file.
@@ -338,9 +337,9 @@ class FileWriteToolkit(BaseToolkit):
 
     def write_to_file(
         self,
-        content: Union[str, List[List[str]]],
+        content: str | list[list[str]],
         filename: str,
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
         use_latex: bool = False,
     ) -> str:
         r"""Write the given content to a file.
@@ -429,7 +428,7 @@ class FileWriteToolkit(BaseToolkit):
             logger.error(error_msg)
             return error_msg
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Return a list of FunctionTool objects representing the functions
         in the toolkit.
 

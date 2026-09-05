@@ -439,7 +439,7 @@ class TestSelfImprovingCoTPipeline(unittest.TestCase):
 
         def reason_side_effect(prompt):
             # Extract the problem text from the prompt
-            for problem_text in problem_to_trace.keys():
+            for problem_text in problem_to_trace:
                 if problem_text in prompt:
                     return MagicMock(
                         msg=MagicMock(content=problem_to_trace[problem_text])
@@ -449,7 +449,7 @@ class TestSelfImprovingCoTPipeline(unittest.TestCase):
 
         def evaluate_side_effect(prompt, response_format=None):
             # Extract the problem text from the prompt
-            for problem_text in problem_to_eval.keys():
+            for problem_text in problem_to_eval:
                 if problem_text in prompt:
                     return MagicMock(
                         msg=MagicMock(parsed=problem_to_eval[problem_text])

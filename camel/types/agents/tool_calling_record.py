@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, Dict
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -27,7 +27,7 @@ class ToolCallingRecord(BaseModel):
     """
 
     tool_name: str
-    args: Dict[str, Any]
+    args: dict[str, Any]
     result: Any
     tool_call_id: str
 

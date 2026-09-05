@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import time
-from typing import List
 
 import pytest
 
@@ -35,7 +34,7 @@ class AlwaysFailingWorker(SingleAgentWorker):
         super().__init__(description, agent)
 
     async def _process_task(
-        self, task: Task, dependencies: List[Task]
+        self, task: Task, dependencies: list[Task]
     ) -> TaskState:
         """Always return failed task."""
         task.state = TaskState.FAILED

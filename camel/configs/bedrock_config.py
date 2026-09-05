@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Dict, Optional, Union
 
 from camel.configs.base_config import BaseConfig
 
@@ -61,13 +60,13 @@ class BedrockConfig(BaseConfig):
             ignored. (default: :obj:`None`)
     """
 
-    max_tokens: Optional[int] = None
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    top_k: Optional[int] = None
-    stream: Optional[bool] = None
-    tool_choice: Optional[Union[Dict[str, str], str]] = None
-    reasoning_effort: Optional[str] = None
+    max_tokens: int | None = None
+    temperature: float | None = None
+    top_p: float | None = None
+    top_k: int | None = None
+    stream: bool | None = None
+    tool_choice: dict[str, str] | str | None = None
+    reasoning_effort: str | None = None
 
 
 BEDROCK_API_PARAMS = {param for param in BedrockConfig.model_fields.keys()}

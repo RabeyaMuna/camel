@@ -19,7 +19,7 @@ import os
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -54,18 +54,18 @@ class RewardTraceEvaluation(BaseModel):
 class TraceIteration(BaseModel):
     iteration: int
     trace: str
-    evaluation: Union[AgentTraceEvaluation, RewardTraceEvaluation]
+    evaluation: AgentTraceEvaluation | RewardTraceEvaluation
 
 
 class ProblemResult(BaseModel):
-    id: Optional[str] = None
-    type: Optional[str] = None
+    id: str | None = None
+    type: str | None = None
     problem: str
-    solution: Optional[str] = None
+    solution: str | None = None
     final_trace: str
-    agent_evaluate_success: Optional[bool] = None
+    agent_evaluate_success: bool | None = None
     boxed_answer_success: bool = False
-    improvement_history: List[TraceIteration]
+    improvement_history: list[TraceIteration]
 
 
 class SelfImprovingCoTPipeline:
@@ -82,18 +82,18 @@ class SelfImprovingCoTPipeline:
     def __init__(
         self,
         reason_agent: ChatAgent,
-        problems: List[Dict],
+        problems: list[dict],
         max_iterations: int = 3,
-        score_threshold: Union[float, Dict[str, float]] = 0.7,
-        rejection_sampling_n: Optional[int] = None,
-        evaluate_agent: Optional[ChatAgent] = None,
-        reward_model: Optional[BaseRewardModel] = None,
-        output_path: Optional[str] = None,
-        few_shot_examples: Optional[str] = None,
-        batch_size: Optional[int] = None,
-        max_workers: Optional[int] = None,
+        score_threshold: float | dict[str, float] = 0.7,
+        rejection_sampling_n: int | None = None,
+        evaluate_agent: ChatAgent | None = None,
+        reward_model: BaseRewardModel | None = None,
+        output_path: str | None = None,
+        few_shot_examples: str | None = None,
+        batch_size: int | None = None,
+        max_workers: int | None = None,
         solution_pattern: str = r'\\boxed{(.*?)}',
-        trace_pattern: Optional[str] = None,
+        trace_pattern: str | None = None,
     ):
         r"""Initialize the self-improving cot pipeline.
 
@@ -150,7 +150,7 @@ class SelfImprovingCoTPipeline:
         self.evaluator = (
             Evaluator(reward_model=reward_model) if reward_model else None
         )
-        self.reasoning_traces: List[Dict[str, Any]] = []
+        self.reasoning_traces: list[dict[str, Any]] = []
         self.few_shot_examples = few_shot_examples
         self.batch_processor = BatchProcessor(max_workers, batch_size)
         self.solution_pattern = solution_pattern
@@ -182,8 +182,8 @@ class SelfImprovingCoTPipeline:
         return data
 
     async def _batch_process_problems(
-        self, problems: List[Dict], rationalization: bool
-    ) -> List[ProblemResult]:
+        self, problems: list[dict], rationalization: bool
+    ) -> list[ProblemResult]:
         r"""Process multiple problems in parallel batches with dynamic sizing.
 
         Args:
@@ -254,10 +254,10 @@ class SelfImprovingCoTPipeline:
 
     async def _batch_evaluate_traces(
         self,
-        problems: List[Dict[str, Any]],
-        traces: List[str],
-        solutions: Optional[List[str]] = None,
-    ) -> List[Dict[str, Any]]:
+        problems: list[dict[str, Any]],
+        traces: list[str],
+        solutions: list[str] | None = None,
+    ) -> list[dict[str, Any]]:
         r"""Evaluate multiple traces in parallel batches with resource
         monitoring.
 
@@ -335,7 +335,7 @@ class SelfImprovingCoTPipeline:
 
         return results
 
-    def _check_score_threshold(self, scores: Dict[str, float]) -> bool:
+    def _check_score_threshold(self, scores: dict[str, float]) -> bool:
         r"""Check if scores meet the threshold requirements.
 
         Args:
@@ -363,7 +363,7 @@ class SelfImprovingCoTPipeline:
         # If score_threshold is None or invalid type, pass the check
         return True
 
-    def _generate_feedback(self, scores: Dict[str, float]) -> str:
+    def _generate_feedback(self, scores: dict[str, float]) -> str:
         r"""Generate feedback based on which dimensions need improvement.
 
         Args:
@@ -426,8 +426,8 @@ class SelfImprovingCoTPipeline:
 
     @retry_on_error()
     def evaluate_trace(
-        self, problem: str, trace: str, solution: Optional[str] = None
-    ) -> Dict[str, Any]:
+        self, problem: str, trace: str, solution: str | None = None
+    ) -> dict[str, Any]:
         r"""Evaluate the quality of a reasoning trace.
 
         Args:
@@ -564,7 +564,7 @@ class SelfImprovingCoTPipeline:
         problem: str,
         trace: str,
         feedback: str,
-        solution: Optional[str] = None,
+        solution: str | None = None,
     ) -> str:
         r"""Generate improved reasoning trace based on feedback.
 
@@ -589,7 +589,7 @@ class SelfImprovingCoTPipeline:
         response = self.reason_agent.step(prompt)
         return response.msg.content
 
-    def validate_problem_format(self, problem: Dict) -> None:
+    def validate_problem_format(self, problem: dict) -> None:
         r"""Validate that a problem dictionary has the required format.
 
         Args:
@@ -654,7 +654,7 @@ class SelfImprovingCoTPipeline:
         return False
 
     def process_problem(
-        self, problem: Dict, rationalization: bool = False
+        self, problem: dict, rationalization: bool = False
     ) -> ProblemResult:
         r"""Process a single problem through the self-improving cot pipeline.
 
@@ -729,7 +729,7 @@ class SelfImprovingCoTPipeline:
 
             # Only do improvement iterations if max_iterations > 0
             if self.max_iterations > 0:
-                for iteration in range(0, self.max_iterations):
+                for iteration in range(self.max_iterations):
                     # Check if quality threshold met
                     if self._check_score_threshold(scores):
                         break
@@ -819,7 +819,7 @@ class SelfImprovingCoTPipeline:
 
         return result
 
-    def generate(self, rationalization: bool = False) -> List[Dict[str, Any]]:
+    def generate(self, rationalization: bool = False) -> list[dict[str, Any]]:
         r"""Execute the self-improving cot pipeline on all problems.
 
         Process problems and return results. If output_path is specified,

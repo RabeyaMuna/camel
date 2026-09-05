@@ -125,16 +125,15 @@ def test_mouse_click():
 
 def test_get_mouse_position():
     r"""Test getting mouse position functionality."""
-    with patch('pyautogui.size', return_value=(1000, 800)):
-        with patch(
-            'pyautogui.position', return_value=(500, 400)
-        ) as mock_position:
-            toolkit = PyAutoGUIToolkit()
+    with patch('pyautogui.size', return_value=(1000, 800)), patch(
+        'pyautogui.position', return_value=(500, 400)
+    ) as mock_position:
+        toolkit = PyAutoGUIToolkit()
 
-            # Test normal operation
-            result = toolkit.get_mouse_position()
-            mock_position.assert_called_once()
-            assert "Mouse position: (500, 400)" in result
+        # Test normal operation
+        result = toolkit.get_mouse_position()
+        mock_position.assert_called_once()
+        assert "Mouse position: (500, 400)" in result
 
 
 def test_take_screenshot():
@@ -215,41 +214,39 @@ def test_mouse_drag():
 
 def test_scroll():
     r"""Test scroll functionality."""
-    with patch('pyautogui.size', return_value=(1000, 800)):
-        with patch(
-            'pyautogui.position', return_value=(500, 400)
-        ) as mock_position:
-            with patch('pyautogui.scroll') as mock_scroll:
-                with patch('pyautogui.moveTo') as mock_move:
-                    toolkit = PyAutoGUIToolkit()
+    with patch('pyautogui.size', return_value=(1000, 800)), patch(
+        'pyautogui.position', return_value=(500, 400)
+    ) as mock_position, patch('pyautogui.scroll') as mock_scroll:
+        with patch('pyautogui.moveTo') as mock_move:
+            toolkit = PyAutoGUIToolkit()
 
-                    # Test scroll with coordinates
-                    result = toolkit.scroll(10, x=300, y=300)
+            # Test scroll with coordinates
+            result = toolkit.scroll(10, x=300, y=300)
 
-                    # Verify scroll operation
-                    mock_scroll.assert_called_once_with(10, x=300, y=300)
+            # Verify scroll operation
+            mock_scroll.assert_called_once_with(10, x=300, y=300)
 
-                    # Verify move to center after scroll
-                    mock_move.assert_called_once_with(500, 400)
+            # Verify move to center after scroll
+            mock_move.assert_called_once_with(500, 400)
 
-                    # Verify result message
-                    assert "Scrolled 10 clicks at position 300, 300" in result
+            # Verify result message
+            assert "Scrolled 10 clicks at position 300, 300" in result
 
-                    # Test scroll at current position
-                    mock_position.reset_mock()
-                    mock_scroll.reset_mock()
-                    mock_move.reset_mock()
+            # Test scroll at current position
+            mock_position.reset_mock()
+            mock_scroll.reset_mock()
+            mock_move.reset_mock()
 
-                    result = toolkit.scroll(-5)
+            result = toolkit.scroll(-5)
 
-                    # Verify position was checked
-                    mock_position.assert_called_once()
+            # Verify position was checked
+            mock_position.assert_called_once()
 
-                    # Verify scroll operation at current position
-                    mock_scroll.assert_called_once_with(-5, x=500, y=400)
+            # Verify scroll operation at current position
+            mock_scroll.assert_called_once_with(-5, x=500, y=400)
 
-                    # Verify result message
-                    assert "Scrolled -5 clicks at position 500, 400" in result
+            # Verify result message
+            assert "Scrolled -5 clicks at position 500, 400" in result
 
 
 def test_keyboard_type():

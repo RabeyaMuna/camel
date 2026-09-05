@@ -16,7 +16,8 @@ import asyncio
 import json
 import platform
 import re
-from typing import Any, Callable, Dict, List, Optional, Union, cast
+from collections.abc import Callable
+from typing import Any, cast
 
 from camel.agents import ChatAgent
 from camel.logger import get_logger
@@ -114,16 +115,14 @@ class MCPAgent(ChatAgent):
 
     def __init__(
         self,
-        system_message: Optional[Union[str, BaseMessage]] = (
+        system_message: str | BaseMessage | None = (
             "You are an assistant with search capabilities using MCP tools."
         ),
-        model: Optional[BaseModelBackend] = None,
-        registry_configs: Optional[
-            Union[List[BaseMCPRegistryConfig], BaseMCPRegistryConfig]
-        ] = None,
-        local_config: Optional[Dict[str, Any]] = None,
-        local_config_path: Optional[str] = None,
-        tools: Optional[List[Union[FunctionTool, Callable]]] = None,
+        model: BaseModelBackend | None = None,
+        registry_configs: list[BaseMCPRegistryConfig] | BaseMCPRegistryConfig | None = None,
+        local_config: dict[str, Any] | None = None,
+        local_config_path: str | None = None,
+        tools: list[FunctionTool | Callable] | None = None,
         function_calling_available: bool = True,
         **kwargs,
     ):
@@ -205,11 +204,9 @@ class MCPAgent(ChatAgent):
     @classmethod
     async def create(
         cls,
-        config_path: Optional[str] = None,
-        registry_configs: Optional[
-            Union[List[BaseMCPRegistryConfig], BaseMCPRegistryConfig]
-        ] = None,
-        model: Optional[BaseModelBackend] = None,
+        config_path: str | None = None,
+        registry_configs: list[BaseMCPRegistryConfig] | BaseMCPRegistryConfig | None = None,
+        model: BaseModelBackend | None = None,
         function_calling_available: bool = False,
         **kwargs,
     ) -> "MCPAgent":
@@ -312,7 +309,7 @@ class MCPAgent(ChatAgent):
             await self.mcp_toolkit.disconnect()
 
     async def astep(
-        self, input_message: Union[BaseMessage, str], *args, **kwargs
+        self, input_message: BaseMessage | str, *args, **kwargs
     ) -> ChatAgentResponse:
         r"""Asynchronous step function. Make sure MCP toolkit is connected
         before proceeding.
@@ -408,7 +405,7 @@ class MCPAgent(ChatAgent):
                 return response
 
     def step(
-        self, input_message: Union[BaseMessage, str], *args, **kwargs
+        self, input_message: BaseMessage | str, *args, **kwargs
     ) -> ChatAgentResponse:
         r"""Synchronous step function. Make sure MCP toolkit is connected
         before proceeding.

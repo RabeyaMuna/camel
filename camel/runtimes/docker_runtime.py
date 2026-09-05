@@ -20,7 +20,7 @@ import time
 from functools import wraps
 from pathlib import Path
 from random import randint
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 import requests
 from pydantic import BaseModel
@@ -58,13 +58,13 @@ class DockerRuntime(BaseRuntime):
         import docker
 
         self.client = docker.from_env()
-        self.container: Optional[Container] = None
+        self.container: Container | None = None
 
         api_path = Path(__file__).parent / "api.py"
-        self.mounts: Dict[Path, Path] = dict()
-        self.cp: Dict[Path, Path] = {api_path: Path("/home")}
-        self.entrypoint: Dict[str, str] = dict()
-        self.tasks: List[TaskConfig] = []
+        self.mounts: dict[Path, Path] = dict()
+        self.cp: dict[Path, Path] = {api_path: Path("/home")}
+        self.entrypoint: dict[str, str] = dict()
+        self.tasks: list[TaskConfig] = []
 
         self.docker_config = kwargs
         self.image = image
@@ -247,10 +247,10 @@ class DockerRuntime(BaseRuntime):
 
     def add(  # type: ignore[override]
         self,
-        funcs: Union[FunctionTool, List[FunctionTool]],
+        funcs: FunctionTool | list[FunctionTool],
         entrypoint: str,
         redirect_stdout: bool = False,
-        arguments: Optional[Dict[str, Any]] = None,
+        arguments: dict[str, Any] | None = None,
     ) -> "DockerRuntime":
         r"""Add a function or list of functions to the runtime.
 
@@ -325,7 +325,7 @@ class DockerRuntime(BaseRuntime):
 
         return self.stop().build()
 
-    def stop(self, remove: Optional[bool] = None) -> "DockerRuntime":
+    def stop(self, remove: bool | None = None) -> "DockerRuntime":
         r"""stop the Docker container.
 
         Args:

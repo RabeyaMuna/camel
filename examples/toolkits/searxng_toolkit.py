@@ -13,7 +13,6 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import Optional
 
 from camel.agents import ChatAgent
 from camel.configs import ChatGPTConfig
@@ -25,7 +24,7 @@ from camel.types import ModelPlatformType, ModelType
 logger = get_logger(__name__)
 
 
-def get_searxng_instance() -> Optional[str]:
+def get_searxng_instance() -> str | None:
     r"""Get SearxNG instance URL from environment variable.
 
     Returns:

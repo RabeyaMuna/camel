@@ -20,7 +20,6 @@ import argparse
 import json
 import random
 from functools import partial
-from typing import Dict
 
 import gradio as gr
 from database_connection import DatabaseConnection
@@ -81,7 +80,7 @@ def parse_arguments():
     return args
 
 
-def load_dataset(data_path: str) -> Dict[str, Dict[str, str]]:
+def load_dataset(data_path: str) -> dict[str, dict[str, str]]:
     zip_inst = AutoZip(data_path, ext=".json")
     text_dict = zip_inst.as_dict(include_zip_name=True)
     res_dict = {}
@@ -102,7 +101,7 @@ def load_dataset(data_path: str) -> Dict[str, Dict[str, str]]:
 
 
 def construct_ui(
-    blocks, dataset: Dict[str, Dict[str, str]], has_connection: bool = True
+    blocks, dataset: dict[str, dict[str, str]], has_connection: bool = True
 ):
     """Build Gradio UI and populate with texts from JSONs.
 

@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import List
 
 import agentops
 from colorama import Fore
@@ -126,7 +125,7 @@ def main(
         # Print output from the assistant, including any function
         # execution information
         print_text_animated(Fore.GREEN + "AI Assistant:")
-        tool_calls: List[ToolCallingRecord] = [
+        tool_calls: list[ToolCallingRecord] = [
             ToolCallingRecord(**call.as_dict())
             for call in assistant_response.info['tool_calls']
         ]

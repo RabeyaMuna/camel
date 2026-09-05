@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Optional
+from typing import Any
 
 from camel.embeddings.base import BaseEmbedding
 from camel.types import EmbeddingModelType, GeminiEmbeddingTaskType
@@ -49,9 +49,9 @@ class GeminiEmbedding(BaseEmbedding[str]):
         model_type: EmbeddingModelType = (
             EmbeddingModelType.GEMINI_EMBEDDING_EXP
         ),
-        api_key: Optional[str] = None,
-        dimensions: Optional[int] = None,
-        task_type: Optional[GeminiEmbeddingTaskType] = None,
+        api_key: str | None = None,
+        dimensions: int | None = None,
+        task_type: GeminiEmbeddingTaskType | None = None,
     ) -> None:
         from google import genai
 

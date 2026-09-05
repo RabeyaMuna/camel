@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import Any, Optional
+from typing import Any
 from warnings import warn
 
 from camel.types.enums import JinaReturnFormat
@@ -48,7 +48,7 @@ class JinaURLReader:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         return_format: JinaReturnFormat = JinaReturnFormat.DEFAULT,
         json_response: bool = False,
         timeout: int = 30,

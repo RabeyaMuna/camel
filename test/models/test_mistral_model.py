@@ -56,10 +56,10 @@ def test_mistral_model_unexpected_argument():
     with pytest.raises(
         ValueError,
         match=re.escape(
-            (
+            
                 "Unexpected argument `model_path` is "
                 "input into Mistral model backend."
-            )
+            
         ),
     ):
         _ = MistralModel(model_type, model_config_dict)

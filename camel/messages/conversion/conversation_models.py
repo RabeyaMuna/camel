@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import json
-from typing import Any, Dict, List, Literal
+from typing import Any, Literal
 
 from pydantic import (
     BaseModel,
@@ -50,7 +50,7 @@ class ShareGPTMessage(BaseModel):
 class ShareGPTConversation(RootModel):
     r"""A full conversation in ShareGPT format with validation"""
 
-    root: List[ShareGPTMessage]
+    root: list[ShareGPTMessage]
 
     @model_validator(mode='after')
     def validate_conversation_flow(self) -> 'ShareGPTConversation':
@@ -102,13 +102,13 @@ class ToolCall(BaseModel):
         max_length=256,
         description="The name of the tool to call",
     )
-    arguments: Dict[str, Any] = Field(
+    arguments: dict[str, Any] = Field(
         description="The arguments to pass to the tool"
     )
 
     @field_validator('arguments')
     @classmethod
-    def validate_arguments(cls, v: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_arguments(cls, v: dict[str, Any]) -> dict[str, Any]:
         r"""Validate argument structure and content"""
 
         # Try to serialize arguments to ensure they're JSON-compatible
@@ -150,7 +150,7 @@ class ToolResponse(BaseModel):
 
     @field_validator('content')
     @classmethod
-    def validate_content(cls, v: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_content(cls, v: dict[str, Any]) -> dict[str, Any]:
         r"""Validate response content structure"""
 
         # Ensure content is JSON-serializable

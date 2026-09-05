@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar
 
 from camel.interpreters.base import BaseInterpreter
 from camel.interpreters.interpreter_error import InterpreterError
@@ -30,7 +30,7 @@ class E2BInterpreter(BaseInterpreter):
             code strings for security. (default: :obj:`True`)
     """
 
-    _CODE_TYPE_MAPPING: ClassVar[Dict[str, Optional[str]]] = {
+    _CODE_TYPE_MAPPING: ClassVar[dict[str, str | None]] = {
         "python": None,
         "py3": None,
         "python3": None,
@@ -134,11 +134,11 @@ class E2BInterpreter(BaseInterpreter):
 
         return str(execution.error)
 
-    def supported_code_types(self) -> List[str]:
+    def supported_code_types(self) -> list[str]:
         r"""Provides supported code types by the interpreter."""
         return list(self._CODE_TYPE_MAPPING.keys())
 
-    def update_action_space(self, action_space: Dict[str, Any]) -> None:
+    def update_action_space(self, action_space: dict[str, Any]) -> None:
         r"""Updates action space for *python* interpreter"""
         raise RuntimeError("E2B doesn't support " "`action_space`.")
 

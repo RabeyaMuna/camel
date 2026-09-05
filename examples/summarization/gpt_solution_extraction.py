@@ -17,7 +17,6 @@ import itertools
 import json
 import os
 import random
-from typing import Dict, Tuple
 
 import numpy as np
 
@@ -45,7 +44,7 @@ parser.add_argument(
 )
 
 
-def flatten_conversation(conversation: Dict) -> str:
+def flatten_conversation(conversation: dict) -> str:
     r"""Format a conversation into a string.
 
     Args:
@@ -112,7 +111,7 @@ def flatten_conversation(conversation: Dict) -> str:
     return formatted_data
 
 
-def format_combination(combination: Tuple[int, int, int]):
+def format_combination(combination: tuple[int, int, int]):
     assistant_role, user_role, task = combination
     assistant_role_str = str(assistant_role).zfill(3)
     user_role_str = str(user_role).zfill(3)
@@ -121,7 +120,7 @@ def format_combination(combination: Tuple[int, int, int]):
 
 
 def solution_extraction(
-    conversation: Dict,
+    conversation: dict,
     flattened_conversation: str,
     file_name: str,
     args: argparse.Namespace,

@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Dict, List, Optional
 
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
@@ -29,12 +28,12 @@ class IgnoreRiskToolkit(BaseToolkit):
 
     def __init__(
         self,
-        function_name: Optional[List[str]] = None,
-        verbose: Optional[bool] = False,
+        function_name: list[str] | None = None,
+        verbose: bool | None = False,
     ):
         self.verbose = verbose
         self.function_names = function_name or []
-        self.ignored_risks: Dict[str, str] = dict()
+        self.ignored_risks: dict[str, str] = dict()
 
     def add(self, name: str):
         r"""Adds a function to the toolkit.
@@ -61,7 +60,7 @@ class IgnoreRiskToolkit(BaseToolkit):
             print(f"Ignoring risk for function {name}: {reason}")
         return f"Ignored risk for function {name}!"
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

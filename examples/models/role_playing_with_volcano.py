@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import Dict, List, Optional, Tuple
 
 from camel.models import ModelFactory
 from camel.societies import RolePlaying
@@ -37,8 +36,8 @@ def main(
         "technical indicators."
     ),
     with_task_specify: bool = True,
-    model_config_dict: Optional[Dict] = None,
-) -> Tuple[List[Dict], List[Dict]]:
+    model_config_dict: dict | None = None,
+) -> tuple[list[dict], list[dict]]:
     r"""Run a role-playing session with Volcano Engine API.
 
     Args:

@@ -19,7 +19,6 @@ environments.
 """
 
 import asyncio
-from typing import List
 
 from camel.environments import (
     Action,
@@ -30,7 +29,7 @@ from camel.environments import (
 
 
 async def simulate_agent_response(
-    observation: Observation, actions: List[str]
+    observation: Observation, actions: list[str]
 ) -> str:
     """
     Simulate an agent's response by selecting from a list of predefined actions

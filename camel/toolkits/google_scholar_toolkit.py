@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
@@ -39,9 +39,9 @@ class GoogleScholarToolkit(BaseToolkit):
         author_identifier: str,
         is_author_name: bool = False,
         use_free_proxies: bool = False,
-        proxy_http: Optional[str] = None,
-        proxy_https: Optional[str] = None,
-        timeout: Optional[float] = None,
+        proxy_http: str | None = None,
+        proxy_https: str | None = None,
+        timeout: float | None = None,
     ) -> None:
         r"""Initializes the GoogleScholarToolkit with the author's identifier.
 
@@ -75,10 +75,10 @@ class GoogleScholarToolkit(BaseToolkit):
         self.scholarly = scholarly
         self.author_identifier = author_identifier
         self.is_author_name = is_author_name
-        self._author: Optional[Dict[str, Any]] = None
+        self._author: dict[str, Any] | None = None
 
     @property
-    def author(self) -> Dict[str, Any]:
+    def author(self) -> dict[str, Any]:
         r"""Getter for the author attribute, fetching details if not cached.
 
         Returns:
@@ -90,7 +90,7 @@ class GoogleScholarToolkit(BaseToolkit):
         return self._author or {}
 
     @author.setter
-    def author(self, value: Optional[Dict[str, Any]]) -> None:
+    def author(self, value: dict[str, Any] | None) -> None:
         r"""Sets or overrides the cached author information.
 
         Args:
@@ -105,7 +105,7 @@ class GoogleScholarToolkit(BaseToolkit):
         else:
             raise ValueError("Author must be a dictionary or None.")
 
-    def _extract_author_id(self) -> Optional[str]:
+    def _extract_author_id(self) -> str | None:
         r"""Extracts the author ID from a Google Scholar URL if provided.
 
         Returns:
@@ -136,7 +136,7 @@ class GoogleScholarToolkit(BaseToolkit):
 
     def get_author_publications(
         self,
-    ) -> List[str]:
+    ) -> list[str]:
         r"""Retrieves the titles of the author's publications.
 
         Returns:
@@ -149,7 +149,7 @@ class GoogleScholarToolkit(BaseToolkit):
 
     def get_publication_by_title(
         self, publication_title: str
-    ) -> Optional[dict]:
+    ) -> dict | None:
         r"""Retrieves detailed information about a specific publication by its
         title. Note that this method cannot retrieve the full content of the
         paper.
@@ -168,7 +168,7 @@ class GoogleScholarToolkit(BaseToolkit):
                 return self.scholarly.fill(publication)
         return None  # Return None if not found
 
-    def get_full_paper_content_by_link(self, pdf_url: str) -> Optional[str]:
+    def get_full_paper_content_by_link(self, pdf_url: str) -> str | None:
         r"""Retrieves the full paper content from a given PDF URL using the
         arxiv2text tool.
 
@@ -186,7 +186,7 @@ class GoogleScholarToolkit(BaseToolkit):
         except Exception:
             return None  # Return None in case of any error
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

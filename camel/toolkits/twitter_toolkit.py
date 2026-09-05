@@ -15,7 +15,7 @@ import datetime
 import os
 from http import HTTPStatus
 from http.client import responses
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import requests
 
@@ -39,9 +39,9 @@ logger = get_logger(__name__)
 )
 def create_tweet(
     text: str,
-    poll_options: Optional[List[str]] = None,
-    poll_duration_minutes: Optional[int] = None,
-    quote_tweet_id: Optional[Union[int, str]] = None,
+    poll_options: list[str] | None = None,
+    poll_duration_minutes: int | None = None,
+    quote_tweet_id: int | str | None = None,
 ) -> str:
     r"""Creates a new tweet, optionally including a poll or a quote tweet,
     or simply a text-only tweet.
@@ -106,7 +106,7 @@ def create_tweet(
             "(`poll_options` or `poll_duration_minutes`)."
         )
 
-    payload: Dict[str, Any] = {"text": text}
+    payload: dict[str, Any] = {"text": text}
 
     if poll_options is not None and poll_duration_minutes is not None:
         payload["poll"] = {
@@ -254,7 +254,7 @@ def get_user_by_username(username: str) -> str:
     return _get_user_info(username)
 
 
-def _get_user_info(username: Optional[str] = None) -> str:
+def _get_user_info(username: str | None = None) -> str:
     r"""Generates a formatted report of the user information from the
     JSON response.
 
@@ -443,7 +443,7 @@ class TwitterToolkit(BaseToolkit):
             API.
     """
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

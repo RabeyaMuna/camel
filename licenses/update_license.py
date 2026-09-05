@@ -15,18 +15,17 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import List
 
 
 # The license template file is hard-coded with specific start and end lines
-def fine_license_start_line(lines: List[str], start_with: str) -> int:
+def fine_license_start_line(lines: list[str], start_with: str) -> int:
     for i in range(len(lines)):
         if lines[i].startswith(start_with):
             return i
     return None
 
 
-def find_license_end_line(lines: List[str], start_with: str) -> int:
+def find_license_end_line(lines: list[str], start_with: str) -> int:
     for i in range(len(lines) - 1, -1, -1):
         if lines[i].startswith(start_with):
             return i

@@ -76,9 +76,8 @@ def test_convert_file_conversion_error(mock_files):
         converter.converter,
         "convert",
         side_effect=Exception("Mock conversion error"),
-    ):
-        with pytest.raises(Exception, match="Mock conversion error"):
-            converter.convert_file(mock_files["demo_html"])
+    ), pytest.raises(Exception, match="Mock conversion error"):
+        converter.convert_file(mock_files["demo_html"])
 
 
 def test_convert_files_success(mock_files):

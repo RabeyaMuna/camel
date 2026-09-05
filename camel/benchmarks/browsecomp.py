@@ -20,7 +20,7 @@ import random
 import traceback
 from collections import defaultdict
 from multiprocessing.pool import ThreadPool
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -37,10 +37,10 @@ logger = get_logger(__name__)
 class Message(BaseModel):
     role: str
     content: str
-    variant: Optional[str] = None
+    variant: str | None = None
 
 
-MessageList = List[Message]
+MessageList = list[Message]
 
 
 class QueryResponse(BaseModel):
@@ -55,7 +55,7 @@ class QueryResponse(BaseModel):
     )
     exact_answer: str = Field(description="""your succinct, final answer.""")
     confidence: str = Field(
-        description="""
+        description=r"""
 your confidence score between 0|\%| and 100|\%| for your answer.
 """
     )
@@ -92,7 +92,7 @@ inconsistency, ambiguity, non-equivalency, or if the extracted answer is
 incorrect."""
     )
     confidence: str = Field(
-        description="""The extracted confidence score between 0|\%| 
+        description=r"""The extracted confidence score between 0|\%| 
 and 100|\%| from [response]. Put 100 if there is no confidence score available.
 """
     )
@@ -105,10 +105,10 @@ class SingleEvalResult(BaseModel):
     including score, HTML representation, conversation history, and metrics.
     """
 
-    score: Optional[float] = None
+    score: float | None = None
     html: str
     convo: MessageList
-    metrics: Dict[str, float] = Field(default_factory=dict)
+    metrics: dict[str, float] = Field(default_factory=dict)
 
 
 class EvalResult(BaseModel):
@@ -118,10 +118,10 @@ class EvalResult(BaseModel):
     the overall score, detailed metrics, HTML reports, and conversation logs.
     """
 
-    score: Optional[float] = None  # top-line metric
-    metrics: Optional[Dict[str, float]] = None  # other metrics
-    htmls: List[str]  # strings of valid HTML
-    convos: List[MessageList]  # sampled conversations
+    score: float | None = None  # top-line metric
+    metrics: dict[str, float] | None = None  # other metrics
+    htmls: list[str]  # strings of valid HTML
+    convos: list[MessageList]  # sampled conversations
 
 
 # Define the message template first
@@ -160,7 +160,7 @@ format content into json:
 {content}
 """
 
-GRADER_TEMPLATE = """
+GRADER_TEMPLATE = r"""
 Judge whether the following [response] to [question] is correct or not 
 based on the precise and unambiguous [correct_answer] below.
 
@@ -285,7 +285,7 @@ class JinjaEnv:
     def __new__(cls):
         r"""Implement singleton pattern to ensure only one instance exists."""
         if cls._instance is None:
-            cls._instance = super(JinjaEnv, cls).__new__(cls)
+            cls._instance = super().__new__(cls)
             cls._instance._initialized = False
         return cls._instance
 
@@ -387,9 +387,9 @@ def _compute_stat(values: list, stat: str):
 
 
 def aggregate_results(
-    single_eval_results: List[SingleEvalResult],
-    default_stats: Tuple[str, str] = ("mean", "std"),
-    name2stats: Optional[Dict[str, Tuple[str]]] = None,
+    single_eval_results: list[SingleEvalResult],
+    default_stats: tuple[str, str] = ("mean", "std"),
+    name2stats: dict[str, tuple[str]] | None = None,
 ) -> EvalResult:
     r"""Aggregate results from multiple evaluations into a single EvalResult.
 
@@ -444,7 +444,7 @@ class BrowseCompBenchmark(BaseBenchmark):
         self,
         save_to: str,
         processes: int = 1,
-        num_examples: Optional[int] = None,
+        num_examples: int | None = None,
         n_repeats: int = 1,
     ):
         r"""Initialize the BrowseComp benchmark.
@@ -467,10 +467,10 @@ class BrowseCompBenchmark(BaseBenchmark):
         super().__init__("browsecomp", current_path, save_to, processes)
         self.num_examples = num_examples
         self.n_repeats = n_repeats
-        self.examples: List[Dict[str, Any]] = []
+        self.examples: list[dict[str, Any]] = []
         self.load()
-        self._raw_results: List[Any] = []
-        self._validated_results: List[SingleEvalResult] = []
+        self._raw_results: list[Any] = []
+        self._validated_results: list[SingleEvalResult] = []
         self._eval_result: EvalResult
         self.jinja_env = JinjaEnv.get_instance()
 
@@ -533,10 +533,10 @@ class BrowseCompBenchmark(BaseBenchmark):
 
     def run(  # type: ignore[override]
         self,
-        pipeline_template: Union[ChatAgent, RolePlaying, Workforce],
+        pipeline_template: ChatAgent | RolePlaying | Workforce,
         chat_turn_limit: int = 10,
-        roleplaying_summarizer: Optional[ChatAgent] = None,
-        task_json_formatter: Optional[ChatAgent] = None,
+        roleplaying_summarizer: ChatAgent | None = None,
+        task_json_formatter: ChatAgent | None = None,
     ) -> None:
         r"""Run the benchmark by processing each example in parallel.
 
@@ -562,7 +562,7 @@ class BrowseCompBenchmark(BaseBenchmark):
         from tqdm import tqdm
 
         # Use a process pool for parallel execution
-        def process_benchmark_row(row: Dict[str, Any]) -> Dict[str, Any]:
+        def process_benchmark_row(row: dict[str, Any]) -> dict[str, Any]:
             r"""This inner function processes a single benchmark row by
             extracting the problem and answer, creating a pipeline instance,
             and generating a response using the appropriate method based on
@@ -700,7 +700,7 @@ class BrowseCompBenchmark(BaseBenchmark):
             htmls=eval_result.htmls,
         )
 
-    def validate(self, grader: Optional[ChatAgent] = None) -> None:
+    def validate(self, grader: ChatAgent | None = None) -> None:
         r"""Validate the raw results using the GRADER_TEMPLATE and ChatAgent.
 
         This method evaluates the correctness of each response by
@@ -716,7 +716,7 @@ class BrowseCompBenchmark(BaseBenchmark):
         """
         from tqdm import tqdm
 
-        def validate_each_one(raw_result: Dict[str, Any]) -> SingleEvalResult:
+        def validate_each_one(raw_result: dict[str, Any]) -> SingleEvalResult:
             r"""This inner function formats the prompt for the ChatAgent
             grader, sends it for evaluation, extracts the correctness
             assessment, and creates an HTML representation of the result.

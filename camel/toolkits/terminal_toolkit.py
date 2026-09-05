@@ -21,7 +21,7 @@ import sys
 import threading
 import venv
 from queue import Queue
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from camel.logger import get_logger
 from camel.toolkits.base import BaseToolkit
@@ -65,8 +65,8 @@ class TerminalToolkit(BaseToolkit):
 
     def __init__(
         self,
-        timeout: Optional[float] = None,
-        shell_sessions: Optional[Dict[str, Any]] = None,
+        timeout: float | None = None,
+        shell_sessions: dict[str, Any] | None = None,
         working_dir: str = "./workspace",
         need_terminal: bool = True,
         use_shell_mode: bool = True,
@@ -290,7 +290,7 @@ class TerminalToolkit(BaseToolkit):
         abs_path = os.path.abspath(path)
         return abs_path.startswith(self.working_dir)
 
-    def _enforce_working_dir_for_execution(self, path: str) -> Optional[str]:
+    def _enforce_working_dir_for_execution(self, path: str) -> str | None:
         r"""Enforce working directory restrictions, return error message
         if execution path is not within the working directory.
 
@@ -310,7 +310,7 @@ class TerminalToolkit(BaseToolkit):
 
     def _copy_external_file_to_workdir(
         self, external_file: str
-    ) -> Optional[str]:
+    ) -> str | None:
         r"""Copy external file to working directory.
 
         Args:
@@ -419,7 +419,7 @@ class TerminalToolkit(BaseToolkit):
             logger.error(f"Error finding files by name: {e}")
             return f"Error: {e!s}"
 
-    def _sanitize_command(self, command: str, exec_dir: str) -> Tuple:
+    def _sanitize_command(self, command: str, exec_dir: str) -> tuple:
         r"""Check and modify command to ensure safety.
 
         Args:
@@ -787,7 +787,7 @@ class TerminalToolkit(BaseToolkit):
             logger.error(error_msg)
             return f"Error: {e!s}"
 
-    def shell_wait(self, id: str, seconds: Optional[int] = None) -> str:
+    def shell_wait(self, id: str, seconds: int | None = None) -> str:
         r"""Wait for the running process in a specified shell session to
         return.
 
@@ -1166,7 +1166,7 @@ class TerminalToolkit(BaseToolkit):
 
         logger.info("TerminalToolkit cleanup completed")
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions
         in the toolkit.
 

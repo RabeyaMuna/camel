@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar
 
 from pydantic import BaseModel, Field
 
@@ -44,20 +44,20 @@ class MultiHopQA(BaseModel):
     question: str = Field(
         ..., description="The question that requires multi-hop reasoning."
     )
-    reasoning_steps: List[ReasoningStep] = Field(
+    reasoning_steps: list[ReasoningStep] = Field(
         ...,
         description="The steps involved in reasoning to answer the question.",
     )
     answer: str = Field(
         ..., description="The answer to the multi-hop question."
     )
-    supporting_facts: List[str] = Field(
+    supporting_facts: list[str] = Field(
         ..., description="Facts that support the reasoning and answer."
     )
     type: str = Field(description="The type of question-answer pair.")
 
     class Config:
-        json_schema_extra: ClassVar[Dict[str, Any]] = {
+        json_schema_extra: ClassVar[dict[str, Any]] = {
             "example": {
                 "question": "What is the capital of France?",
                 "reasoning_steps": [
@@ -87,7 +87,7 @@ class ContextPrompt(BaseModel):
         description="The main context for generating"
         " the question-answer pair.",
     )
-    related_contexts: Optional[List[str]] = Field(
+    related_contexts: list[str] | None = Field(
         default=None,
         description="Additional contexts related to the main context.",
     )

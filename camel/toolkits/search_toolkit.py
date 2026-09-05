@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import Any, Dict, List, Literal, Optional, TypeAlias, Union, cast
+from typing import Any, Literal, TypeAlias, cast
 
 import requests
 
@@ -76,8 +76,8 @@ class SearchToolkit(BaseToolkit):
         output_type: Literal[
             "searchResults", "sourcedAnswer", "structured"
         ] = "searchResults",
-        structured_output_schema: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        structured_output_schema: str | None = None,
+    ) -> dict[str, Any]:
         r"""Search for a query in the Linkup API and return results in various
         formats.
 
@@ -142,7 +142,7 @@ class SearchToolkit(BaseToolkit):
     @dependencies_required("duckduckgo_search")
     def search_duckduckgo(
         self, query: str, source: str = "text", max_results: int = 5
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Use DuckDuckGo search engine to search information for
         the given query.
 
@@ -164,7 +164,7 @@ class SearchToolkit(BaseToolkit):
         from requests.exceptions import RequestException
 
         ddgs = DDGS()
-        responses: List[Dict[str, Any]] = []
+        responses: list[dict[str, Any]] = []
 
         if source == "text":
             try:
@@ -241,15 +241,15 @@ class SearchToolkit(BaseToolkit):
         count: int = 20,
         offset: int = 0,
         safesearch: str = "moderate",
-        freshness: Optional[str] = None,
+        freshness: str | None = None,
         text_decorations: bool = True,
         spellcheck: bool = True,
-        result_filter: Optional[str] = None,
-        goggles_id: Optional[str] = None,
-        units: Optional[str] = None,
-        extra_snippets: Optional[bool] = None,
-        summary: Optional[bool] = None,
-    ) -> Dict[str, Any]:
+        result_filter: str | None = None,
+        goggles_id: str | None = None,
+        units: str | None = None,
+        extra_snippets: bool | None = None,
+        summary: bool | None = None,
+    ) -> dict[str, Any]:
         r"""This function queries the Brave search engine API and returns a
         dictionary, representing a search result.
         See https://api.search.brave.com/app/documentation/web-search/query
@@ -350,9 +350,9 @@ class SearchToolkit(BaseToolkit):
             "X-Subscription-Token": BRAVE_API_KEY,
         }
 
-        ParamsType: TypeAlias = Dict[
+        ParamsType: TypeAlias = dict[
             str,
-            Union[str, int, float, List[Union[str, int, float]], None],
+            str | int | float | list[str | int | float] | None,
         ]
 
         params: ParamsType = {
@@ -385,7 +385,7 @@ class SearchToolkit(BaseToolkit):
     )
     def search_google(
         self, query: str, num_result_pages: int = 5
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Use Google search engine to search information for the given query.
 
         Args:
@@ -490,7 +490,7 @@ class SearchToolkit(BaseToolkit):
 
     def tavily_search(
         self, query: str, num_results: int = 5, **kwargs
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         r"""Use Tavily Search API to search information for the given query.
 
         Args:
@@ -545,7 +545,7 @@ class SearchToolkit(BaseToolkit):
         summary: bool = False,
         count: int = 10,
         page: int = 1,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Query the Bocha AI search API and return search results.
 
         Args:
@@ -600,7 +600,7 @@ class SearchToolkit(BaseToolkit):
         except requests.exceptions.RequestException as e:
             return {"error": f"Bocha AI search failed: {e!s}"}
 
-    def search_baidu(self, query: str, max_results: int = 5) -> Dict[str, Any]:
+    def search_baidu(self, query: str, max_results: int = 5) -> dict[str, Any]:
         r"""Search Baidu using web scraping to retrieve relevant search
         results. This method queries Baidu's search engine and extracts search
         results including titles, descriptions, and URLs.
@@ -669,7 +669,7 @@ class SearchToolkit(BaseToolkit):
         except Exception as e:
             return {"error": f"Baidu scraping error: {e!s}"}
 
-    def search_bing(self, query: str, max_results: int = 5) -> Dict[str, Any]:
+    def search_bing(self, query: str, max_results: int = 5) -> dict[str, Any]:
         r"""Use Bing search engine to search information for the given query.
 
         This function queries the Chinese version of Bing search engine (cn.
@@ -693,7 +693,7 @@ class SearchToolkit(BaseToolkit):
                     - 'link': The URL of the search result.
                 - or 'error': An error message if something went wrong.
         """
-        from typing import Any, Dict, List, cast
+        from typing import Any, cast
         from urllib.parse import urlencode
 
         from bs4 import BeautifulSoup, Tag
@@ -731,7 +731,7 @@ class SearchToolkit(BaseToolkit):
             b_results_tag = cast(Tag, b_results_element)
             result_items = b_results_tag.find_all("li")
 
-            results: List[Dict[str, Any]] = []
+            results: list[dict[str, Any]] = []
             for i in range(min(len(result_items), max_results)):
                 row = result_items[i]
                 if not isinstance(row, Tag):
@@ -784,25 +784,13 @@ class SearchToolkit(BaseToolkit):
         self,
         query: str,
         search_type: Literal["auto", "neural", "keyword"] = "auto",
-        category: Optional[
-            Literal[
-                "company",
-                "research paper",
-                "news",
-                "pdf",
-                "github",
-                "tweet",
-                "personal site",
-                "linkedin profile",
-                "financial report",
-            ]
-        ] = None,
+        category: Literal["company", "research paper", "news", "pdf", "github", "tweet", "personal site", "linkedin profile", "financial report"] | None = None,
         num_results: int = 10,
-        include_text: Optional[List[str]] = None,
-        exclude_text: Optional[List[str]] = None,
+        include_text: list[str] | None = None,
+        exclude_text: list[str] | None = None,
         use_autoprompt: bool = True,
         text: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Use Exa search API to perform intelligent web search with optional
         content extraction.
 
@@ -865,7 +853,7 @@ class SearchToolkit(BaseToolkit):
             # Call Exa API with direct parameters
             if text:
                 results = cast(
-                    Dict[str, Any],
+                    dict[str, Any],
                     exa.search_and_contents(
                         query=query,
                         type=search_type,
@@ -879,7 +867,7 @@ class SearchToolkit(BaseToolkit):
                 )
             else:
                 results = cast(
-                    Dict[str, Any],
+                    dict[str, Any],
                     exa.search(
                         query=query,
                         type=search_type,
@@ -903,22 +891,12 @@ class SearchToolkit(BaseToolkit):
         time_range: Literal[
             "OneDay", "OneWeek", "OneMonth", "OneYear", "NoLimit"
         ] = "NoLimit",
-        industry: Optional[
-            Literal[
-                "finance",
-                "law",
-                "medical",
-                "internet",
-                "tax",
-                "news_province",
-                "news_center",
-            ]
-        ] = None,
+        industry: Literal["finance", "law", "medical", "internet", "tax", "news_province", "news_center"] | None = None,
         page: int = 1,
         return_main_text: bool = False,
         return_markdown_text: bool = True,
         enable_rerank: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Query the Alibaba Tongxiao search API and return search results.
 
         A powerful search API optimized for Chinese language queries with
@@ -971,7 +949,7 @@ class SearchToolkit(BaseToolkit):
         }
 
         # Convert boolean parameters to string for compatibility with requests
-        params: Dict[str, Union[str, int]] = {
+        params: dict[str, str | int] = {
             "query": query,
             "timeRange": time_range,
             "page": page,
@@ -1062,7 +1040,7 @@ class SearchToolkit(BaseToolkit):
                 f"search: {e!s}"
             }
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the
         functions in the toolkit.
 

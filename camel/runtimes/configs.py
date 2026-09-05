@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Dict, List, Optional, Union
 
 from pydantic import BaseModel
 
@@ -41,7 +40,7 @@ class TaskConfig(BaseModel):
             `False`)
     """
 
-    cmd: Union[str, List[str]]
+    cmd: str | list[str]
     stdout: bool = True
     stderr: bool = True
     stdin: bool = False
@@ -51,6 +50,6 @@ class TaskConfig(BaseModel):
     detach: bool = False
     stream: bool = False
     socket: bool = False
-    environment: Optional[Union[Dict[str, str], List[str]]] = None
-    workdir: Optional[str] = None
+    environment: dict[str, str] | list[str] | None = None
+    workdir: str | None = None
     demux: bool = False

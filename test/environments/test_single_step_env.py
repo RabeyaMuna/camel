@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import re
-from typing import Dict, List
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -33,12 +32,12 @@ class MockSingleStepEnv(SingleStepEnv):
         self,
         proposed_solution: str,
         verification_result: VerificationResult,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         return {"custom_reward": 5}
 
 
 class MockGenerator(BaseGenerator):
-    def __init__(self, predefined_data: List[Dict], *args, **kwargs):
+    def __init__(self, predefined_data: list[dict], *args, **kwargs):
         if 'buffer' not in kwargs:
             kwargs['buffer'] = 1
         super().__init__(*args, **kwargs)

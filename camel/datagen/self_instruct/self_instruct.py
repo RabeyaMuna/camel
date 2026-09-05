@@ -16,7 +16,7 @@ import json
 import os
 import random
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -58,20 +58,20 @@ class SelfInstructPipeline:
         agent: ChatAgent,
         seed: str,
         num_machine_instructions: int = 5,
-        data_output_path: Optional[str] = './data_output.json',
+        data_output_path: str | None = './data_output.json',
         human_to_machine_ratio: tuple = (6, 2),
-        instruction_filter: Optional[InstructionFilter] = None,
-        filter_config: Optional[Dict[str, Dict[str, Any]]] = None,
+        instruction_filter: InstructionFilter | None = None,
+        filter_config: dict[str, dict[str, Any]] | None = None,
         stop_on_first_failure: bool = False,
     ):
         self.agent = agent
         self.num_machine_instructions = num_machine_instructions
         self.data_output_path = data_output_path
         self.human_to_machine_ratio = human_to_machine_ratio
-        self.human_tasks: List[Dict] = []
-        self.machine_tasks: List[Dict] = []
+        self.human_tasks: list[dict] = []
+        self.machine_tasks: list[dict] = []
         self.load_seed(seed)
-        default_config: Dict[str, Dict[str, Any]] = {
+        default_config: dict[str, dict[str, Any]] = {
             "length": {},
             "keyword": {},
             "punctuation": {},
@@ -111,7 +111,7 @@ class SelfInstructPipeline:
         else:
             raise FileNotFoundError(f"Seed file not found at path: {path}")
 
-    def sample_human_tasks(self, count: int) -> List[dict]:
+    def sample_human_tasks(self, count: int) -> list[dict]:
         r"""Sample a specified number of human tasks from the loaded seed.
 
         Args:
@@ -124,7 +124,7 @@ class SelfInstructPipeline:
             self.human_tasks, min(count, len(self.human_tasks))
         )
 
-    def sample_machine_tasks(self, count: int) -> List[dict]:
+    def sample_machine_tasks(self, count: int) -> list[dict]:
         r"""Sample a specified number of machine tasks.
 
         Args:
@@ -145,7 +145,7 @@ class SelfInstructPipeline:
 
         return random.sample(self.machine_tasks, count)
 
-    def generate_machine_instruction(self) -> List:
+    def generate_machine_instruction(self) -> list:
         r"""Generate a machine instruction using the agent.
 
         Combines human and machine tasks based on the configured ratio to
@@ -272,7 +272,7 @@ class SelfInstructPipeline:
 
     def parse_classification_output(
         self, generated_text: str
-    ) -> List[Dict[str, str]]:
+    ) -> list[dict[str, str]]:
         r"""Parse the generated text for classification tasks into input-output
         pairs.
 
@@ -322,7 +322,7 @@ class SelfInstructPipeline:
 
     def parse_non_classification_output(
         self, generated_text: str
-    ) -> List[Dict[str, str]]:
+    ) -> list[dict[str, str]]:
         r"""Parse the generated text for non-classification tasks into
         input-output pairs.
 

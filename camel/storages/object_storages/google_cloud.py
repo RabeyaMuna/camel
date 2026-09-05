@@ -12,7 +12,6 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 from pathlib import Path, PurePath
-from typing import Tuple
 from warnings import warn
 
 from camel.loaders import File, create_file_from_raw_bytes
@@ -59,7 +58,7 @@ class GoogleCloudStorage(BaseObjectStorage):
         self._prepare_and_check()
 
     @staticmethod
-    def canonicalize_path(file_path: PurePath) -> Tuple[str, str]:
+    def canonicalize_path(file_path: PurePath) -> tuple[str, str]:
         r"""Canonicalize the path for Google Cloud Storage.
 
         Args:
