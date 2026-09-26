@@ -404,6 +404,7 @@ class InternalPythonInterpreter(BaseInterpreter):
         kwargs = {
             keyword.arg: self._execute_ast(keyword.value)
             for keyword in call.keywords
+            if keyword.arg is not None
         }
         return callable_func(*args, **kwargs)
 

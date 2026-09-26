@@ -207,10 +207,11 @@ class MistralModel(BaseModelBackend):
                     else [tool_calls]
                 )
                 for tool_call in tool_calls_list:
-                    mistral_function_call = FunctionCall(
-                        name=tool_call["function"].get("name"),  # type: ignore[attr-defined]
-                        arguments=tool_call["function"].get("arguments"),  # type: ignore[attr-defined]
-                    )
+                    if isinstance(tool_call, dict):
+                        mistral_function_call = FunctionCall(
+                            name=tool_call["function"].get("name"),
+                            arguments=tool_call["function"].get("arguments"),
+                        )
 
             tool_calls = None
             if mistral_function_call:
