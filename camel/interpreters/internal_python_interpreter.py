@@ -401,10 +401,14 @@ class InternalPythonInterpreter(BaseInterpreter):
 
         # Todo deal with args
         args = [self._execute_ast(arg) for arg in call.args]
-        kwargs = {
-            keyword.arg: self._execute_ast(keyword.value)
-            for keyword in call.keywords
-        }
+        kwargs: dict[str, Any] = {}
+        for keyword in call.keywords:
+            if keyword.arg is not None:
+                kwargs[keyword.arg] = self._execute_ast(keyword.value)
+            else:
+                extra_kwargs = self._execute_ast(keyword.value)
+                if isinstance(extra_kwargs, dict):
+                    kwargs.update(extra_kwargs)
         return callable_func(*args, **kwargs)
 
     def _execute_subscript(self, subscript: ast.Subscript):

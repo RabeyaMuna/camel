@@ -1,12 +1,16 @@
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling",
+]
 build-backend = "hatchling.build"
 
 [project]
 name = "camel-ai"
 version = "0.2.71a5"
 description = "Communicative Agents for AI Society Study"
-authors = [{ name = "CAMEL-AI.org" }]
+authors = [
+    { name = "CAMEL-AI.org" },
+]
 requires-python = ">=3.10,<3.13"
 readme = "README.md"
 license = "Apache-2.0"
@@ -32,7 +36,6 @@ dependencies = [
     "pillow>=10.1.0,<11.0.0",
     "openai>=1.86.0,<2",
 ]
-
 
 [project.dependency-groups]
 test = [
@@ -75,7 +78,7 @@ rag = [
     "pymilvus>=2.4.0,<3",
     "pytidb-experimental==0.0.1.dev4",
     "faiss-cpu>=1.7.2,<2",
-    "weaviate-client>=4.15.0",      
+    "weaviate-client>=4.15.0",
     "neo4j>=5.18.0,<6",
     "nebula3-python==3.8.2",
     "rank-bm25>=0.2.2,<0.3",
@@ -140,7 +143,6 @@ media_tools = [
     "scenedetect>=0.6.5.2",
     "pytesseract>=0.3.13",
 ]
-
 communication_tools = [
     "slack-sdk>=3.27.2,<4",
     "slack-bolt>=1.20.1,<2",
@@ -160,7 +162,7 @@ data_tools = [
     "aiosqlite>=0.20.0,<0.21",
     "stripe>=11.3.0,<12",
     "networkx>=3.4.2,<4",
-    "math-verify>=0.7.0,<0.8", 
+    "math-verify>=0.7.0,<0.8",
 ]
 research_tools = [
     "arxiv>=2.1.3,<3",
@@ -400,10 +402,14 @@ Repository = "https://github.com/camel-ai/camel"
 Documentation = "https://docs.camel-ai.org"
 
 [tool.hatch.build.targets.sdist]
-include = ["camel"]
+include = [
+    "camel",
+]
 
 [tool.hatch.build.targets.wheel]
-include = ["camel"]
+include = [
+    "camel",
+]
 
 [tool.hatch.metadata]
 allow-direct-references = true
@@ -418,32 +424,37 @@ quote-style = "preserve"
 
 [tool.ruff.lint]
 extend-select = [
-    "I", # isort
-    "B", # flake8-bugbear
-    "C4", # flake8-comprehensions
-    "PGH", # pygrep-hooks
-    "RUF", # ruff
+    "I",
+    "B",
+    "C4",
+    "PGH",
+    "RUF",
     "E",
 ]
-
 ignore = [
-    "B028", # Warning without stacklevel
-    "B904", # use 'raise ... from err'
-    "B905", # use explicit 'strict=' parameter with 'zip()'
-    "N818", #  Exception name should be named with an Error suffix
-    "C416", # I think comprehension is more clear https://docs.astral.sh/ruff/rules/unnecessary-comprehension/
-    "C408", # we have used lots of dict(...) instead of literal
+    "B028",
+    "B904",
+    "B905",
+    "N818",
+    "C416",
+    "C408",
 ]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [tool.ruff.lint.isort]
-known-first-party = ["camel"]
+known-first-party = [
+    "camel",
+]
 
 [tool.pytest.ini_options]
-pythonpath = ["."]
-addopts = ["--strict-markers"]
+pythonpath = [
+    ".",
+]
+addopts = [
+    "--strict-markers",
+]
 markers = [
     "asyncio: mark a test as asyncio-based.",
     "very_slow: mark a very slow test to run only in full test mode",
@@ -456,9 +467,10 @@ include_namespace_packages = true
 
 [tool.mypy]
 exclude = [
-    '\.venv/.*',  # exclude .venv directory
-    'site-packages/.*',  # exclude site-packages
+    "\\.venv/.*",
+    "site-packages/.*",
 ]
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = [
@@ -466,8 +478,10 @@ module = [
     "packaging.*",
     "tiktoken",
     "openai",
+    "openai.*",
     "openai.error",
     "anthropic",
+    "anthropic.*",
     "pytest",
     "psutil",
     "_pytest.config",
@@ -489,6 +503,7 @@ module = [
     "googlemaps",
     "requests_oauthlib",
     "fastapi",
+    "fastapi.*",
     "prance",
     "xls2xlsx",
     "tabulate",
@@ -506,30 +521,35 @@ module = [
     "e2b_code_interpreter",
     "firecrawl",
     "imageio",
+    "imageio.*",
     "rank_bm25",
     "cohere",
+    "cohere.*",
     "fish_audio_sdk",
     "pymilvus",
     "pytidb.schema",
     "faiss",
     "pillow",
     "slack-sdk",
+    "slack-sdk.*",
     "slack-bolt",
+    "slack-bolt.*",
     "pydub",
     "pygithub",
     "litellm",
     "pyTelegramBotAPI",
     "dappier",
     "discord.py",
+    "discord.py.*",
     "docker.*",
     "google.*",
     "google_generativeai",
     "google_auth_oauthlib.flow",
     "googleapiclient.discovery",
     "mistralai.*",
-    "cohere",
     "fish-audio-sdk",
     "reka-api",
+    "reka-api.*",
     "agentops",
     "botocore.*",
     "arxiv",
@@ -541,14 +561,18 @@ module = [
     "tavily-python",
     "scholarly",
     "notion-client",
+    "notion-client.*",
     "ffmpeg",
     "yt_dlp",
     "datasets",
     "pandas",
     "tree-sitter-python",
+    "tree-sitter-python.*",
     "tree-sitter",
+    "tree-sitter.*",
     "networkx",
     "pandasai",
+    "pandasai.*",
     "sklearn.metrics.pairwise",
     "sympy.*",
     "astor",
@@ -557,20 +581,23 @@ module = [
     "yaml",
     "mock",
     "uvicorn",
-    "xls2xlsx",
-    "tabulate",
-    "openpyxl",
     "scenedetect",
     "scenedetect.detectors",
     "playwright",
+    "playwright.*",
     "html2text",
     "docx",
+    "docx.*",
     "reportlab",
     "mcp",
+    "mcp.*",
     "typer",
+    "typer.*",
     "mem0",
+    "mem0.*",
     "math_verify.*",
     "exa_py",
+    "exa_py.*",
     "crawl4ai.*",
     "pyautogui",
     "pyobvector.*",
@@ -587,21 +614,81 @@ module = [
     "torch.*",
     "sentence_transformers.*",
     "cv2",
+    "cv2.*",
     "rlcard.*",
     "pytesseract",
+    "pytesseract.*",
     "psycopg.*",
     "pgvecto.*",
     "pgvector.*",
-    "reportlab.*"
+    "reportlab.*",
+    "pydantic.*",
+    "pydantic",
+    "dotenv",
+    "httpx",
+    "PIL",
+    "jupyter_client.*",
+    "jupyter_client",
+    "pptx.*",
+    "pptx",
+    "pytest_asyncio",
+    "redis.*",
+    "redis",
+    "stripe",
+    "tavily",
+    "weaviate.*",
+    "weaviate",
+    "neo4j.*",
+    "neo4j",
+    "nebula3.*",
+    "nebula3",
+    "github.*",
+    "github",
+    "chromadb.*",
+    "chromadb",
+    "apify_client.*",
+    "apify_client",
+    "azure.*",
+    "azure",
+    "boto3.*",
+    "boto3",
+    "starlette",
+    "telebot",
+    "telebot.*",
+    "linkup",
+    "markitdown",
+    "docstring_parser",
+    "jinja2",
+    "flask",
+    "requests",
+    "sklearn.*",
+    "sklearn",
+    "pytidb.*",
+    "pytidb",
+    "slack_sdk.*",
+    "slack_sdk",
+    "slack_bolt.*",
+    "slack_bolt",
+    "reka.*",
+    "reka",
+    "aci.*",
+    "aci",
+    "tree_sitter.*",
+    "tree_sitter",
+    "tree_sitter_python.*",
+    "tree_sitter_python",
+    "discord",
+    "notion_client.*",
+    "notion_client",
+    "PIL.*",
+    "tqdm.*",
+    "httpx.*",
+    "requests.*",
 ]
 ignore_missing_imports = true
 
 [tool.codespell]
-# Ref: https://github.com/codespell-project/codespell#using-a-config-file
-# the .py file needs to be listed twice since pre-commit and codespell treat
-# that path differently.
-skip = '.git*,*.pdf,*.svg,*.lock,*.css,examples/toolkits/semantic_scholar_toolkit.py,./examples/toolkits/semantic_scholar_toolkit.py,examples/usecases,./examples/usecases'
+skip = ".git*,*.pdf,*.svg,*.lock,*.css,examples/toolkits/semantic_scholar_toolkit.py,./examples/toolkits/semantic_scholar_toolkit.py,examples/usecases,./examples/usecases"
 check-hidden = true
-# Ignore long lines as usually some kind of base64 encodings e.g. in ipynb
-ignore-regex = '^\s*"image/\S+": ".*|^.{300,}|\b(NotIn|Unsupport)\b'
-ignore-words-list = 'ans,datas,rouge,doubleClick,OCE,ACI,aci,Pinter,SoM,'
+ignore-regex = "^\\s*\"image/\\S+\": \".*|^.{300,}|\\b(NotIn|Unsupport)\\b"
+ignore-words-list = "ans,datas,rouge,doubleClick,OCE,ACI,aci,Pinter,SoM,"
