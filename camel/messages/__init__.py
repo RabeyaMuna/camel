@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
-from typing import Union
+from typing import TypeAlias
 
 from camel.types import (
     ChatCompletionAssistantMessageParam,
@@ -33,15 +33,14 @@ from .conversion.sharegpt.function_call_formatter import (
     FunctionCallFormatter,
 )
 
-OpenAISystemMessage = ChatCompletionSystemMessageParam
-OpenAIAssistantMessage = Union[
-    ChatCompletionAssistantMessageParam,
-    ChatCompletionToolMessageParam,
-]
-OpenAIUserMessage = ChatCompletionUserMessageParam
-OpenAIToolMessageParam = ChatCompletionToolMessageParam
+OpenAISystemMessage: TypeAlias = ChatCompletionSystemMessageParam
+OpenAIAssistantMessage: TypeAlias = (
+    ChatCompletionAssistantMessageParam | ChatCompletionToolMessageParam
+)
+OpenAIUserMessage: TypeAlias = ChatCompletionUserMessageParam
+OpenAIToolMessageParam: TypeAlias = ChatCompletionToolMessageParam
 
-OpenAIMessage = ChatCompletionMessageParam
+OpenAIMessage: TypeAlias = ChatCompletionMessageParam
 
 
 from .base import BaseMessage  # noqa: E402
