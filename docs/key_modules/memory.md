@@ -53,8 +53,8 @@ icon: memory
                   role_name="Agent",
                   meta_dict=None,
                   content="CAMEL-AI.org is the 1st LLM multi-agent framework and "
-                          "an open-source community dedicated to finding the scaling law "
-                          "of agents.",
+                  "an open-source community dedicated to finding the scaling law "
+                  "of agents.",
               ),
               role_at_backend=OpenAIBackendRole.ASSISTANT,
           ),
@@ -308,9 +308,9 @@ Add [Mem0](https://mem0.ai/) for cloud-based memory with automatic sync.
         ),
         storage=Mem0Storage(
             api_key="your_mem0_api_key",  # Or set MEM0_API_KEY env var
-            agent_id="agent123"
+            agent_id="agent123",
         ),
-        agent_id="agent123"
+        agent_id="agent123",
     )
     # ...write and retrieve as usual...
     ```
@@ -344,11 +344,12 @@ You can subclass `BaseContextCreator` for advanced control.
     ```python
     from camel.memories import BaseContextCreator
 
+
     class MyCustomContextCreator(BaseContextCreator):
         @property
         def token_counter(self):
             # Implement your token counting logic
-            return 
+            return
 
         @property
         def token_limit(self):

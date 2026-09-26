@@ -120,7 +120,7 @@ mcp run services/agent_mcp_server.py
 response = await step(
     name="search",
     message="What is the latest news about artificial intelligence?",
-    ctx=context
+    ctx=context,
 )
 ```
 

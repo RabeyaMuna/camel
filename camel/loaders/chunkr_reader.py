@@ -157,9 +157,9 @@ class ChunkrReader:
 
         return json.dumps(
             response_json,
-            default=lambda o: o.isoformat()
-            if isinstance(o, datetime)
-            else None,
+            default=lambda o: (
+                o.isoformat() if isinstance(o, datetime) else None
+            ),
             indent=4,
         )
 

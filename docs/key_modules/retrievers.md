@@ -90,7 +90,7 @@ ar = AutoRetriever(
 )
 
 retrieved_info = ar.run_vector_retriever(
-    contents=["https://www.camel-ai.org/"],   # One or many URLs/files
+    contents=["https://www.camel-ai.org/"],  # One or many URLs/files
     query="What is CAMEL-AI",
     return_detailed_info=True,
 )

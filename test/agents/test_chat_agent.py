@@ -103,7 +103,7 @@ def test_chat_agent(model, step_call_count=3):
     assistant_without_sys_msg = ChatAgent(model=model)
 
     assert str(assistant_with_sys_msg) == (
-        "ChatAgent(doctor, " f"RoleType.ASSISTANT, {ModelType.GPT_4_1_MINI})"
+        f"ChatAgent(doctor, RoleType.ASSISTANT, {ModelType.GPT_4_1_MINI})"
     )
     assert str(assistant_without_sys_msg) == (
         "ChatAgent(assistant, "
@@ -129,14 +129,20 @@ def test_chat_agent(model, step_call_count=3):
         for i in range(step_call_count):
             for user_msg in [user_msg_bm, user_msg_str]:
                 response = assistant.step(user_msg)
-                assert isinstance(response.msgs, list), f"Error in round {i+1}"
-                assert len(response.msgs) > 0, f"Error in round {i+1}"
+                assert isinstance(
+                    response.msgs, list
+                ), f"Error in round {i + 1}"
+                assert len(response.msgs) > 0, f"Error in round {i + 1}"
                 assert isinstance(
                     response.terminated, bool
-                ), f"Error in round {i+1}"
-                assert response.terminated is False, f"Error in round {i+1}"
-                assert isinstance(response.info, dict), f"Error in round {i+1}"
-                assert response.info['id'] is not None, f"Error in round {i+1}"
+                ), f"Error in round {i + 1}"
+                assert response.terminated is False, f"Error in round {i + 1}"
+                assert isinstance(
+                    response.info, dict
+                ), f"Error in round {i + 1}"
+                assert (
+                    response.info['id'] is not None
+                ), f"Error in round {i + 1}"
 
 
 @pytest.mark.model_backend
@@ -227,13 +233,13 @@ def test_chat_agent_step_with_structure_response(step_call_count=3):
         response_content_keys = set(response_content_json.keys())
 
         assert joke_response_keys.issubset(response_content_keys), (
-            f"Error in calling round {i+1}: "
+            f"Error in calling round {i + 1}: "
             f"Missing keys: {joke_response_keys - response_content_keys}"
         )
 
         for key in joke_response_keys:
             assert key in response_content_json, (
-                f"Error in calling round {i+1}: "
+                f"Error in calling round {i + 1}: "
                 f"Key {key} not found in response content"
             )
 
@@ -366,7 +372,7 @@ def test_chat_agent_step_with_external_tools(step_call_count=3):
         ]
         assert (
             external_tool_call_requests[0].tool_name == "sub"
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
 
 
 @pytest.mark.model_backend
@@ -510,7 +516,7 @@ async def test_chat_agent_astep_with_external_tools(step_call_count=3):
         ]
         assert (
             external_tool_call_requests[0].tool_name == "sub"
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
 
 
 @pytest.mark.model_backend
@@ -573,8 +579,8 @@ def test_chat_agent_step_exceed_token_number(step_call_count=3):
 
     for i in range(step_call_count):
         response = assistant.step(user_msg)
-        assert len(response.msgs) == 0, f"Error in calling round {i+1}"
-        assert response.terminated, f"Error in calling round {i+1}"
+        assert len(response.msgs) == 0, f"Error in calling round {i + 1}"
+        assert response.terminated, f"Error in calling round {i + 1}"
 
 
 @pytest.mark.model_backend
@@ -638,16 +644,16 @@ def test_chat_agent_multiple_return_messages(n, step_call_count=3):
     for i in range(step_call_count):
         assert (
             assistant_with_sys_msg_response.msgs is not None
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
         assert (
             len(assistant_with_sys_msg_response.msgs) == n
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
         assert (
             assistant_without_sys_msg_response.msgs is not None
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
         assert (
             len(assistant_without_sys_msg_response.msgs) == n
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
 
 
 @pytest.mark.model_backend
@@ -727,20 +733,20 @@ def test_chat_agent_stream_output(step_call_count=3):
         stream_assistant_response = stream_assistant.step(user_msg)
 
         for msg in stream_assistant_response.msgs:
-            assert len(msg.content) > 0, f"Error in calling round {i+1}"
+            assert len(msg.content) > 0, f"Error in calling round {i + 1}"
 
         stream_usage = stream_assistant_response.info["usage"]
         assert (
             stream_usage["completion_tokens"] > 0
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
         assert (
             stream_usage["prompt_tokens"] > 0
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
         assert (
             stream_usage["total_tokens"]
             == stream_usage["completion_tokens"]
             + stream_usage["prompt_tokens"]
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
 
 
 @pytest.mark.model_backend
@@ -964,19 +970,19 @@ def test_tool_calling_sync(step_call_count=3):
             call for call in agent_response.info['tool_calls']
         ]
 
-        assert len(tool_calls) > 0, f"Error in calling round {i+1}"
+        assert len(tool_calls) > 0, f"Error in calling round {i + 1}"
         assert str(tool_calls[0]).startswith(
             "Tool Execution"
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
         assert (
             tool_calls[0].tool_name == "multiply"
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
         assert tool_calls[0].args == {
             "a": 2,
             "b": 8,
             'decimal_places': 0,
-        }, f"Error in calling round {i+1}"
-        assert tool_calls[0].result == 16, f"Error in calling round {i+1}"
+        }, f"Error in calling round {i + 1}"
+        assert tool_calls[0].result == 16, f"Error in calling round {i + 1}"
 
 
 @pytest.mark.model_backend
@@ -1091,13 +1097,13 @@ async def test_tool_calling_math_async(step_call_count=3):
 
         assert (
             tool_calls[0].tool_name == "multiply"
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
         assert tool_calls[0].args == {
             "a": 2,
             "b": 8,
             'decimal_places': 0,
-        }, f"Error in calling round {i+1}"
-        assert tool_calls[0].result == 16, f"Error in calling round {i+1}"
+        }, f"Error in calling round {i + 1}"
+        assert tool_calls[0].result == 16, f"Error in calling round {i + 1}"
 
 
 @pytest.mark.model_backend
@@ -1177,18 +1183,18 @@ async def test_tool_calling_async(step_call_count=3):
 
         tool_calls = agent_response.info['tool_calls']
 
-        assert tool_calls, f"Error in calling round {i+1}"
+        assert tool_calls, f"Error in calling round {i + 1}"
         assert str(tool_calls[0]).startswith(
             "Tool Execution"
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
 
         assert (
             tool_calls[0].tool_name == "async_sleep"
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
         assert tool_calls[0].args == {
             'second': 1
-        }, f"Error in calling round {i+1}"
-        assert tool_calls[0].result == 1, f"Error in calling round {i+1}"
+        }, f"Error in calling round {i + 1}"
+        assert tool_calls[0].result == 1, f"Error in calling round {i + 1}"
 
 
 def test_response_words_termination(step_call_count=3):
@@ -1216,11 +1222,11 @@ def test_response_words_termination(step_call_count=3):
     for i in range(step_call_count):
         agent_response = agent.step(user_msg)
 
-        assert agent.terminated, f"Error in calling round {i+1}"
-        assert agent_response.terminated, f"Error in calling round {i+1}"
+        assert agent.terminated, f"Error in calling round {i + 1}"
+        assert agent_response.terminated, f"Error in calling round {i + 1}"
         assert (
             "goodbye" in agent_response.info['termination_reasons'][0]
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
 
 
 def test_chat_agent_vision(step_call_count=3):
@@ -1288,7 +1294,7 @@ def test_chat_agent_vision(step_call_count=3):
         agent_response = agent.step(user_msg)
         assert (
             agent_response.msgs[0].content == "Yes."
-        ), f"Error in calling round {i+1}"
+        ), f"Error in calling round {i + 1}"
 
 
 @pytest.mark.model_backend

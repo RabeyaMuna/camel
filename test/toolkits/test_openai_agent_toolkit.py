@@ -234,8 +234,8 @@ class TestOpenAIAgentToolkitIntegration:
                 toolkit.model = mock_model
 
                 toolkit.web_search = lambda query: "Search results"
-                toolkit.file_search = (
-                    lambda query, vector_store_id: "Search results"
+                toolkit.file_search = lambda query, vector_store_id: (
+                    "Search results"
                 )
 
                 # Execute the get_tools method

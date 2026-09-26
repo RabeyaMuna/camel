@@ -158,8 +158,7 @@ Begin the docstring with `r"""` to indicate a raw docstring. This prevents any i
 
 Example:
 ```python
-r"""Class for managing conversations of CAMEL Chat Agents.
-"""
+r"""Class for managing conversations of CAMEL Chat Agents."""
 ```
 
 #### 3. Document Parameters in the Args Section

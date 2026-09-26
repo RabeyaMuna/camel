@@ -108,6 +108,7 @@ We recommend starting with a simple role-playing scenario to understand CAMEL's 
     - Set up your environment variables by loading the `.env` file:
       ```python
       from dotenv import load_dotenv
+
       load_dotenv()
       ```
 
@@ -210,6 +211,7 @@ uv pip install -e ".[all, dev, docs]"
     Load in Python:
     ```python
     from dotenv import load_dotenv
+
     load_dotenv()  # Use load_dotenv(override=True) to overwrite existing variables
     ```
   </Step>

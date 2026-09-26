@@ -588,7 +588,10 @@ class PPTXToolkit(BaseToolkit):
                 'per_page': 3,
             }
             response = requests.get(
-                url, headers=headers, params=params, timeout=12
+                url,
+                headers=headers,  # type: ignore[arg-type]
+                params=params,
+                timeout=12,
             )
             response.raise_for_status()
             json_response = response.json()
@@ -602,7 +605,10 @@ class PPTXToolkit(BaseToolkit):
                 if photo_url:
                     # Download and insert the image
                     img_response = requests.get(
-                        photo_url, headers=headers, stream=True, timeout=12
+                        photo_url,
+                        headers=headers,  # type: ignore[arg-type]
+                        stream=True,
+                        timeout=12,  # type: ignore[arg-type]
                     )
                     img_response.raise_for_status()
                     image_data = BytesIO(img_response.content)

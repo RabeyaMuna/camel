@@ -184,7 +184,9 @@ print("\n" + "-" \* 80)
 <strong>5. Stage elements for use with other platforms:</strong>
 <CodeGroup>
 ```python unstructured_io_stage.py
-staged_element = uio.stage_elements(elements=elements, stage_type="stage_for_baseplate")
+staged_element = uio.stage_elements(
+    elements=elements, stage_type="stage_for_baseplate"
+)
 print(staged_element)
 ```
 ```markdown staged_elements.md
@@ -208,18 +210,17 @@ from camel.loaders import Apify
 apify = Apify()
 
 run_input = {
-"startUrls": [{"url": "https://www.camel-ai.org/"}],
-"maxCrawlDepth": 0,
-"maxCrawlPages": 1,
+    "startUrls": [{"url": "https://www.camel-ai.org/"}],
+    "maxCrawlDepth": 0,
+    "maxCrawlPages": 1,
 }
 actor_result = apify.run_actor(
-actor_id="apify/website-content-crawler", run_input=run_input
+    actor_id="apify/website-content-crawler", run_input=run_input
 )
 dataset_result = apify.get_dataset_items(
-dataset_id=actor_result["defaultDatasetId"]
+    dataset_id=actor_result["defaultDatasetId"]
 )
 print(dataset_result)
-
 ````
 ```markdown apify_output.md
 >>>[{'url': 'https://www.camel-ai.org/', 'crawl': {'loadedUrl': 'https://www.camel-ai.org/', ...}, 'metadata': {'canonicalUrl': 'https://www.camel-ai.org/', ...}, ... }]
@@ -298,13 +299,14 @@ Initialize the `ChunkrReader` and `ChunkrReaderConfig`, set the file path and ch
 import asyncio
 from camel.loaders import ChunkrReader, ChunkrReaderConfig
 
+
 async def main():
     chunkr = ChunkrReader()
 
     config = ChunkrReaderConfig(
-        chunk_processing=512,      # Example: target chunk length
-        ocr_strategy="Auto",       # Example: OCR strategy
-        high_resolution=False      # False for faster processing (old "Fast" model)
+        chunk_processing=512,  # Example: target chunk length
+        ocr_strategy="Auto",  # Example: OCR strategy
+        high_resolution=False,  # False for faster processing (old "Fast" model)
     )
 
     # Replace with your actual file path.
@@ -318,12 +320,16 @@ async def main():
 
         # Poll and fetch the output.
         if task_id:
-            task_output_json_str = await chunkr.get_task_output(task_id=task_id)
+            task_output_json_str = await chunkr.get_task_output(
+                task_id=task_id
+            )
             if task_output_json_str:
                 print("Task Output:")
                 print(task_output_json_str)
             else:
-                print(f"Failed to get output for task {task_id}, or task did not succeed/was cancelled.")
+                print(
+                    f"Failed to get output for task {task_id}, or task did not succeed/was cancelled."
+                )
     except ValueError as e:
         print(f"An error occurred during task submission or retrieval: {e}")
     except FileNotFoundError:
@@ -331,8 +337,11 @@ async def main():
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+
 if __name__ == "__main__":
-    print("To run this example, replace '/path/to/your/document.pdf' with a real file path, ensure CHUNKR_API_KEY is set, and uncomment 'asyncio.run(main())'.")
+    print(
+        "To run this example, replace '/path/to/your/document.pdf' with a real file path, ensure CHUNKR_API_KEY is set, and uncomment 'asyncio.run(main())'."
+    )
     # asyncio.run(main()) # Uncomment to run the example
 ```
 

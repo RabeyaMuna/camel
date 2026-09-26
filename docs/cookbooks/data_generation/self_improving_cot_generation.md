@@ -180,7 +180,7 @@ pipeline = SelfImprovingCoTPipeline(
     evaluate_agent=evaluate_agent,
     problems=problems,
     max_iterations=3,
-    output_path="star_output.json"
+    output_path="star_output.json",
 )
 
 results = pipeline.generate()
@@ -218,7 +218,9 @@ async def _batch_process_problems(
         batch = problems[processed : processed + batch_size]
         batch_start_time = time.time()
 
-        with ThreadPoolExecutor(max_workers=self.batch_processor.max_workers) as executor:
+        with ThreadPoolExecutor(
+            max_workers=self.batch_processor.max_workers
+        ) as executor:
             futures = [
                 executor.submit(
                     self.process_problem,
@@ -254,7 +256,9 @@ def retry_on_error(
                     time.sleep(delay)
                     delay *= 2
             raise
+
         return wrapper
+
     return decorator
 ```
 

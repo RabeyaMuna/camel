@@ -143,7 +143,9 @@ interpreter = JupyterKernelInterpreter(
 )
 
 python_code_in_jupyter_kernel = "print('Hello from JupyterKernelInterpreter!')"
-result = interpreter.run(code=python_code_in_jupyter_kernel, code_type="python")
+result = interpreter.run(
+    code=python_code_in_jupyter_kernel, code_type="python"
+)
 print(result)
 ````
 

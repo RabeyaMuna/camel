@@ -373,7 +373,7 @@ class SearchToolkit(BaseToolkit):
             "summary": summary,
         }
 
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=headers, params=params)  # type: ignore[arg-type]
         data = response.json()["web"]
         return data
 
@@ -715,8 +715,7 @@ class SearchToolkit(BaseToolkit):
             if response.status_code != 200:
                 return {
                     "error": (
-                        f"Bing returned status code: "
-                        f"{response.status_code}"
+                        f"Bing returned status code: {response.status_code}"
                     )
                 }
 
@@ -987,7 +986,10 @@ class SearchToolkit(BaseToolkit):
         try:
             # Send GET request with proper typing for params
             response = requests.get(
-                base_url, headers=headers, params=params, timeout=10
+                base_url,
+                headers=headers,  # type: ignore[arg-type]
+                params=params,
+                timeout=10,
             )
 
             # Check response status

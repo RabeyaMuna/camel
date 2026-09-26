@@ -91,10 +91,14 @@ from camel.types import ModelPlatformType, ModelType
 agent_1 = ChatAgent("You are a helpful assistant.", model="gpt-4o-mini")
 
 # Method 2: Using a ModelType enum (default model platform is used)
-agent_2 = ChatAgent("You are a helpful assistant.", model=ModelType.GPT_4O_MINI)
+agent_2 = ChatAgent(
+    "You are a helpful assistant.", model=ModelType.GPT_4O_MINI
+)
 
 # Method 3: Using a tuple of strings (platform, model)
-agent_3 = ChatAgent("You are a helpful assistant.", model=("openai", "gpt-4o-mini"))
+agent_3 = ChatAgent(
+    "You are a helpful assistant.", model=("openai", "gpt-4o-mini")
+)
 
 # Method 4: Using a tuple of enums
 agent_4 = ChatAgent(
@@ -108,14 +112,14 @@ agent_5 = ChatAgent("You are a helpful assistant.")
 # Method 6: Using a pre-created model with ModelFactory (original approach)
 model = ModelFactory.create(
     model_platform=ModelPlatformType.OPENAI,  # Using enum
-    model_type=ModelType.GPT_4O_MINI,         # Using enum
+    model_type=ModelType.GPT_4O_MINI,  # Using enum
 )
 agent_6 = ChatAgent("You are a helpful assistant.", model=model)
 
 # Method 7: Using ModelFactory with string parameters
 model = ModelFactory.create(
-    model_platform="openai",     # Using string
-    model_type="gpt-4o-mini",    # Using string
+    model_platform="openai",  # Using string
+    model_type="gpt-4o-mini",  # Using string
 )
 agent_7 = ChatAgent("You are a helpful assistant.", model=model)
 ```
@@ -126,9 +130,11 @@ agent_7 = ChatAgent("You are a helpful assistant.", model=model)
 from camel.agents import ChatAgent
 from camel.toolkits import FunctionTool
 
+
 # Define a tool
 def calculator(a: int, b: int) -> int:
     return a + b
+
 
 # Create agent with tool
 agent = ChatAgent(tools=[calculator])
@@ -143,13 +149,17 @@ response = agent.step("What is 5 + 3?")
 from pydantic import BaseModel
 from typing import List
 
+
 class ResponseFormat(BaseModel):
     points: List[str]
     summary: str
 
+
 # Create agent with structured output
 agent = ChatAgent()
-response = agent.step("List benefits of exercise", response_format=ResponseFormat)
+response = agent.step(
+    "List benefits of exercise", response_format=ResponseFormat
+)
 ```
 
 ## Best Practices
@@ -203,6 +213,7 @@ response = agent.step("List benefits of exercise", response_format=ResponseForma
       def custom_strategy(models):
           # Custom model selection logic
           return models[0]
+
 
       agent.add_model_scheduling_strategy("custom", custom_strategy)
       ```

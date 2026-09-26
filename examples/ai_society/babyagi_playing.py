@@ -61,8 +61,7 @@ def main(model=None, chat_turn_limit=15) -> None:
             f"{assistant_response.info['task_name']}\n"
         )
         print_text_animated(
-            Fore.GREEN + "AI Assistant:\n\n"
-            f"{assistant_response.msg.content}\n"
+            Fore.GREEN + f"AI Assistant:\n\n{assistant_response.msg.content}\n"
         )
         print_text_animated(
             Fore.BLUE + "Remaining Subtasks:\n\n"

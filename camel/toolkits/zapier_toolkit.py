@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import requests
 
@@ -44,7 +44,7 @@ class ZapierToolkit(BaseToolkit):
             (None, "ZAPIER_NLA_API_KEY"),
         ]
     )
-    def __init__(self, timeout: Optional[float] = None) -> None:
+    def __init__(self, timeout: float | None = None) -> None:
         super().__init__(timeout=timeout)
         r"""Initialize the ZapierToolkit with API client. The API key is
         retrieved from environment variables.
@@ -52,7 +52,7 @@ class ZapierToolkit(BaseToolkit):
         self.api_key = os.environ.get("ZAPIER_NLA_API_KEY")
         self.base_url = "https://actions.zapier.com/api/v1/"
 
-    def list_actions(self) -> Dict[str, Any]:
+    def list_actions(self) -> dict[str, Any]:
         r"""List all available Zapier actions.
 
         Returns:
@@ -66,7 +66,7 @@ class ZapierToolkit(BaseToolkit):
         response = requests.get(
             f"{self.base_url}exposed/",
             params={'api_key': self.api_key},
-            headers=headers,
+            headers=headers,  # type: ignore[arg-type]
         )
         response.raise_for_status()
         return response.json()
@@ -75,7 +75,7 @@ class ZapierToolkit(BaseToolkit):
         self,
         action_id: str,
         instructions: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Execute a specific Zapier action using natural language
         instructions.
 
@@ -102,8 +102,8 @@ class ZapierToolkit(BaseToolkit):
             response = requests.post(
                 f"{self.base_url}exposed/{action_id}/execute/",
                 params={'api_key': self.api_key},
-                headers=headers,
-                json=data,
+                headers=headers,  # type: ignore[arg-type]
+                json=data,  # type: ignore[arg-type]
             )
             response.raise_for_status()
             return response.json()
@@ -116,7 +116,7 @@ class ZapierToolkit(BaseToolkit):
         self,
         action_id: str,
         instructions: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         r"""Preview a specific Zapier action using natural language
         instructions.
 
@@ -143,8 +143,8 @@ class ZapierToolkit(BaseToolkit):
             response = requests.post(
                 f"{self.base_url}exposed/{action_id}/execute/",
                 params={'api_key': self.api_key},
-                headers=headers,
-                json=data,
+                headers=headers,  # type: ignore[arg-type]
+                json=data,  # type: ignore[arg-type]
             )
             response.raise_for_status()
             return response.json()
@@ -153,7 +153,7 @@ class ZapierToolkit(BaseToolkit):
         except ValueError:
             return {"error": "Response is not valid JSON"}
 
-    def get_execution_result(self, execution_id: str) -> Dict[str, Any]:
+    def get_execution_result(self, execution_id: str) -> dict[str, Any]:
         r"""Get the execution result of a Zapier action.
 
         Args:
@@ -171,7 +171,7 @@ class ZapierToolkit(BaseToolkit):
             response = requests.get(
                 f"{self.base_url}execution-log/{execution_id}/",
                 params={'api_key': self.api_key},
-                headers=headers,
+                headers=headers,  # type: ignore[arg-type]
             )
             response.raise_for_status()
             return response.json()
@@ -180,7 +180,7 @@ class ZapierToolkit(BaseToolkit):
         except ValueError:
             return {"error": "Response is not valid JSON"}
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions
         in the toolkit.
 

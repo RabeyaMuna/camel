@@ -62,7 +62,10 @@ If Tesseract is not found, add this in your Python code:
 
 ```python
 import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+pytesseract.pytesseract.tesseract_cmd = (
+    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+)
 ```
 
 Ensure the path is correct based on your installation.

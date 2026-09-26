@@ -98,10 +98,7 @@ Integrate your favorite models into CAMEL-AI with straightforward Python calls. 
       model_config_dict=ChatGPTConfig(temperature=0.2).as_dict(),
   )
 
-  agent = ChatAgent(
-      system_message="You are a helpful assistant.",
-      model=model
-  )
+  agent = ChatAgent(system_message="You are a helpful assistant.", model=model)
 
   response = agent.step("Say hi to CAMEL AI community.")
   print(response.msg.content)
@@ -125,10 +122,7 @@ Integrate your favorite models into CAMEL-AI with straightforward Python calls. 
       model_config_dict=GeminiConfig(temperature=0.2).as_dict(),
   )
 
-  agent = ChatAgent(
-      system_message="You are a helpful assistant.",
-      model=model
-  )
+  agent = ChatAgent(system_message="You are a helpful assistant.", model=model)
 
   response = agent.step("Say hi to CAMEL AI community.")
   print(response.msgs[0].content)
@@ -152,10 +146,7 @@ Integrate your favorite models into CAMEL-AI with straightforward Python calls. 
       model_config_dict=MistralConfig(temperature=0.0).as_dict(),
   )
 
-  agent = ChatAgent(
-      system_message="You are a helpful assistant.",
-      model=model
-  )
+  agent = ChatAgent(system_message="You are a helpful assistant.", model=model)
 
   response = agent.step("Say hi to CAMEL AI community.")
   print(response.msgs[0].content)
@@ -179,10 +170,7 @@ Integrate your favorite models into CAMEL-AI with straightforward Python calls. 
       model_config_dict=AnthropicConfig(temperature=0.2).as_dict(),
   )
 
-  agent = ChatAgent(
-      system_message="You are a helpful assistant.",
-      model=model
-  )
+  agent = ChatAgent(system_message="You are a helpful assistant.", model=model)
 
   response = agent.step("Say hi to CAMEL AI community.")
   print(response.msgs[0].content)
@@ -228,10 +216,7 @@ Integrate your favorite models into CAMEL-AI with straightforward Python calls. 
       model_config_dict=GroqConfig(temperature=0.2).as_dict(),
   )
 
-  agent = ChatAgent(
-      system_message="You are a helpful assistant.",
-      model=model
-  )
+  agent = ChatAgent(system_message="You are a helpful assistant.", model=model)
 
   response = agent.step("Say hi to CAMEL AI community.")
   print(response.msgs[0].content)

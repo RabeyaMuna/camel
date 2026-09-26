@@ -219,14 +219,14 @@ class MCPToolkit(BaseToolkit):
                 try:
                     # Use MCPClient directly as async context manager
                     await self._exit_stack.enter_async_context(client)
-                    msg = f"Connected to client {i+1}/{len(self.clients)}"
+                    msg = f"Connected to client {i + 1}/{len(self.clients)}"
                     logger.debug(msg)
                 except Exception as e:
-                    logger.error(f"Failed to connect to client {i+1}: {e}")
+                    logger.error(f"Failed to connect to client {i + 1}: {e}")
                     # AsyncExitStack will handle cleanup of already connected
                     await self._exit_stack.aclose()
                     self._exit_stack = None
-                    error_msg = f"Failed to connect to client {i+1}: {e}"
+                    error_msg = f"Failed to connect to client {i + 1}: {e}"
                     raise MCPConnectionError(error_msg) from e
 
             self._is_connected = True
@@ -571,11 +571,11 @@ class MCPToolkit(BaseToolkit):
 
                 all_tools.extend(strict_tools)
                 logger.debug(
-                    f"Client {i+1} contributed {len(strict_tools)} "
+                    f"Client {i + 1} contributed {len(strict_tools)} "
                     f"tools (strict mode enabled)"
                 )
             except Exception as e:
-                logger.error(f"Failed to get tools from client {i+1}: {e}")
+                logger.error(f"Failed to get tools from client {i + 1}: {e}")
 
         logger.info(
             f"Total tools available: {len(all_tools)} (all with strict "
@@ -601,11 +601,11 @@ class MCPToolkit(BaseToolkit):
                 client_tools_text = client.get_text_tools()
                 if client_tools_text:
                     tool_descriptions.append(
-                        f"=== Client {i+1} Tools ===\n{client_tools_text}"
+                        f"=== Client {i + 1} Tools ===\n{client_tools_text}"
                     )
             except Exception as e:
                 logger.error(
-                    f"Failed to get tool descriptions from client {i+1}: {e}"
+                    f"Failed to get tool descriptions from client {i + 1}: {e}"
                 )
 
         return "\n\n".join(tool_descriptions)
@@ -665,12 +665,14 @@ class MCPToolkit(BaseToolkit):
                     result = await client.call_tool(tool_name, tool_args)
                     logger.debug(
                         f"Tool '{tool_name}' called successfully "
-                        f"on client {i+1}"
+                        f"on client {i + 1}"
                     )
                     return result
             except Exception as e:
                 last_error = e
-                logger.debug(f"Tool '{tool_name}' failed on client {i+1}: {e}")
+                logger.debug(
+                    f"Tool '{tool_name}' failed on client {i + 1}: {e}"
+                )
                 continue
 
         # If we get here, the tool wasn't found or all calls failed
@@ -698,9 +700,9 @@ class MCPToolkit(BaseToolkit):
             try:
                 tools = client.get_tools()
                 tool_names = [tool.func.__name__ for tool in tools]
-                available_tools[f"client_{i+1}"] = tool_names
+                available_tools[f"client_{i + 1}"] = tool_names
             except Exception as e:
-                logger.error(f"Failed to list tools from client {i+1}: {e}")
-                available_tools[f"client_{i+1}"] = []
+                logger.error(f"Failed to list tools from client {i + 1}: {e}")
+                available_tools[f"client_{i + 1}"] = []
 
         return available_tools

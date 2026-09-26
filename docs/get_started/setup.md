@@ -32,8 +32,10 @@ Obtain your `OPENAI_API_KEY` from [OpenAI Dashboard](https://platform.openai.com
     Load in Python:
     ```python
     from dotenv import load_dotenv
+
     load_dotenv()
     import os
+
     print(os.getenv("OPENAI_API_KEY"))
     ```
   </Step>
