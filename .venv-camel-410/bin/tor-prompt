@@ -1,0 +1,10 @@
+#!/bin/sh
+'''exec' '/home/yisenxu/rabeya/mini-swe-agent-ci-based/results/think_repair_deepseek/d2fc7ed0a8fbbc659c3bc88ed1a352815a3c3e71/testbed/.venv-camel-410/bin/python3' "$0" "$@"
+' '''
+# Copyright 2014-2017, Damian Johnson and The Tor Project
+# See LICENSE for licensing information
+
+import stem.interpreter
+
+if __name__ == '__main__':
+  stem.interpreter.main()
