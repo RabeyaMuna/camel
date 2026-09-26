@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
@@ -38,7 +38,7 @@ class DataCommonsToolkit(BaseToolkit):
     Refer to https://datacommons.org/browser/ for more details.
     """
 
-    def __init__(self, timeout: Optional[float] = None):
+    def __init__(self, timeout: float | None = None):
         r"""Initialize the DataCommonsToolkit.
 
         Args:
@@ -51,7 +51,7 @@ class DataCommonsToolkit(BaseToolkit):
     def query_data_commons(
         self,
         query_string: str,
-    ) -> Optional[List[Dict[str, Any]]]:
+    ) -> list[dict[str, Any]] | None:
         r"""Query the Data Commons knowledge graph using SPARQL.
 
         Args:
@@ -90,8 +90,8 @@ class DataCommonsToolkit(BaseToolkit):
             return None
 
     def get_triples(
-        self, dcids: Union[str, List[str]], limit: int = 500
-    ) -> Optional[Dict[str, List[tuple]]]:
+        self, dcids: str | list[str], limit: int = 500
+    ) -> dict[str, list[tuple]] | None:
         r"""Retrieve triples associated with nodes.
 
         Args:
@@ -133,11 +133,11 @@ class DataCommonsToolkit(BaseToolkit):
         self,
         place: str,
         stat_var: str,
-        measurement_method: Optional[str] = None,
-        observation_period: Optional[str] = None,
-        unit: Optional[str] = None,
-        scaling_factor: Optional[str] = None,
-    ) -> Optional[Dict[str, Any]]:
+        measurement_method: str | None = None,
+        observation_period: str | None = None,
+        unit: str | None = None,
+        scaling_factor: str | None = None,
+    ) -> dict[str, Any] | None:
         r"""Retrieve statistical time series for a place.
 
         Args:
@@ -179,8 +179,8 @@ class DataCommonsToolkit(BaseToolkit):
             return None
 
     def get_property_labels(
-        self, dcids: Union[str, List[str]], out: bool = True
-    ) -> Optional[Dict[str, List[str]]]:
+        self, dcids: str | list[str], out: bool = True
+    ) -> dict[str, list[str]] | None:
         r"""Retrieves and analyzes property labels for given DCIDs.
 
         Args:
@@ -208,12 +208,12 @@ class DataCommonsToolkit(BaseToolkit):
 
     def get_property_values(
         self,
-        dcids: Union[str, List[str]],
+        dcids: str | list[str],
         prop: str,
-        out: Optional[bool] = True,
-        value_type: Optional[str] = None,
-        limit: Optional[int] = None,
-    ) -> Optional[Dict[str, Any]]:
+        out: bool | None = True,
+        value_type: str | None = None,
+        limit: int | None = None,
+    ) -> dict[str, Any] | None:
         r"""Retrieves and analyzes property values for given DCIDs.
 
         Args:
@@ -252,7 +252,7 @@ class DataCommonsToolkit(BaseToolkit):
 
     def get_places_in(
         self, dcids: list, place_type: str
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         r"""Retrieves places within a given place type.
 
         Args:
@@ -283,12 +283,12 @@ class DataCommonsToolkit(BaseToolkit):
         self,
         place: str,
         stat_var: str,
-        date: Optional[str] = None,
-        measurement_method: Optional[str] = None,
-        observation_period: Optional[str] = None,
-        unit: Optional[str] = None,
-        scaling_factor: Optional[str] = None,
-    ) -> Optional[float]:
+        date: str | None = None,
+        measurement_method: str | None = None,
+        observation_period: str | None = None,
+        unit: str | None = None,
+        scaling_factor: str | None = None,
+    ) -> float | None:
         r"""Retrieves the value of a statistical variable for a given place
         and date.
 
@@ -336,7 +336,7 @@ class DataCommonsToolkit(BaseToolkit):
             )
             return None
 
-    def get_stat_all(self, places: str, stat_vars: str) -> Optional[dict]:
+    def get_stat_all(self, places: str, stat_vars: str) -> dict | None:
         r"""Retrieves the value of a statistical variable for a given place
         and date.
 
@@ -368,7 +368,7 @@ class DataCommonsToolkit(BaseToolkit):
             )
             return None
 
-    def get_tools(self) -> List[FunctionTool]:
+    def get_tools(self) -> list[FunctionTool]:
         r"""Returns a list of FunctionTool objects representing the functions
         in the toolkit.
 
