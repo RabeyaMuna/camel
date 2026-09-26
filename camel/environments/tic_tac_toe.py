@@ -14,7 +14,7 @@
 import math
 import random
 import re
-from typing import Any, ClassVar, Dict, List, Literal, Optional, Tuple
+from typing import Any, ClassVar, Literal
 
 from camel.environments.models import Action, Observation
 from camel.environments.multi_step import MultiStepEnv
@@ -24,7 +24,7 @@ from camel.extractors import BaseExtractor, BaseExtractorStrategy
 class MoveExtractor(BaseExtractorStrategy):
     r"""A strategy for extracting Tic Tac Toe actions from text."""
 
-    async def extract(self, text: str) -> Optional[str]:
+    async def extract(self, text: str) -> str | None:
         r"""Extract a valid Tic Tac Toe move from text.
 
         Looks for a pattern '<Action> n' where n is a digit between 1 and 9.
@@ -64,7 +64,7 @@ class Opponent:
         """
         self.play_style = play_style
 
-    def select_move(self, board: List[str]) -> Optional[int]:
+    def select_move(self, board: list[str]) -> int | None:
         r"""Select a move based on the opponent's play style.
 
         Args:
@@ -82,7 +82,7 @@ class Opponent:
                 return None  # Consistent with optimal strategy
             return random.choice(moves)
 
-    def get_optimal_move(self, board: List[str]) -> Optional[int]:
+    def get_optimal_move(self, board: list[str]) -> int | None:
         r"""Get the optimal move using the minimax algorithm.
 
         Args:
@@ -97,12 +97,12 @@ class Opponent:
 
     def minimax(
         self,
-        board: List[str],
+        board: list[str],
         is_maximizing: bool,
         depth: int = 0,
         alpha: float = -math.inf,
         beta: float = math.inf,
-    ) -> Tuple[float, Optional[int]]:
+    ) -> tuple[float, int | None]:
         r"""Minimax algorithm with alpha-beta pruning for optimal move
         selection.
 
@@ -203,8 +203,8 @@ class TicTacToeEnv(MultiStepEnv):
 
     def __init__(
         self,
-        extractor: Optional[BaseExtractor] = None,
-        max_steps: Optional[int] = None,
+        extractor: BaseExtractor | None = None,
+        max_steps: int | None = None,
         play_style: Literal["optimal", "random"] = "optimal",
         **kwargs,
     ) -> None:
@@ -226,7 +226,7 @@ class TicTacToeEnv(MultiStepEnv):
         super().__init__(extractor, max_steps, **kwargs)
         self.opponent = Opponent(play_style=play_style)
 
-    def _get_initial_state(self) -> Dict[str, Any]:
+    def _get_initial_state(self) -> dict[str, Any]:
         r"""Get the initial state of the environment.
 
         Returns:
@@ -374,7 +374,7 @@ class TicTacToeEnv(MultiStepEnv):
 
         return Observation(question=obs, context={}, metadata={})
 
-    async def compute_reward(self) -> Tuple[float, Dict[str, float]]:
+    async def compute_reward(self) -> tuple[float, dict[str, float]]:
         r"""Compute the reward for the current state.
 
         Returns:
@@ -404,7 +404,7 @@ class TicTacToeEnv(MultiStepEnv):
 
     @staticmethod
     def evaluate_position_for_x(
-        board: List[str], is_x_turn: bool, depth: int = 0, max_depth: int = 10
+        board: list[str], is_x_turn: bool, depth: int = 0, max_depth: int = 10
     ) -> float:
         r"""Evaluate the current board position from X's perspective.
 
@@ -456,7 +456,7 @@ class TicTacToeEnv(MultiStepEnv):
         return self._state["game_over"]
 
     @staticmethod
-    def available_moves(board: List[str]) -> List[int]:
+    def available_moves(board: list[str]) -> list[int]:
         r"""Get all available moves on the board.
 
         Args:
@@ -469,7 +469,7 @@ class TicTacToeEnv(MultiStepEnv):
         return [i for i, cell in enumerate(board) if cell == " "]
 
     @staticmethod
-    def check_winner(board: List[str]) -> Optional[Literal["X", "O", "draw"]]:
+    def check_winner(board: list[str]) -> Literal["X", "O", "draw"] | None:
         r"""Check if there is a winner or a draw on the board.
 
         Args:
@@ -489,7 +489,7 @@ class TicTacToeEnv(MultiStepEnv):
             return "draw"
         return None
 
-    def render_board(self, board: List[str]) -> str:
+    def render_board(self, board: list[str]) -> str:
         r"""Render the board as a string for display.
 
         Args:

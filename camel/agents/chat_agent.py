@@ -21,18 +21,11 @@ import threading
 import time
 import uuid
 from collections import defaultdict
+from collections.abc import Callable
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    Union,
 )
 
 from openai import (
@@ -185,37 +178,33 @@ class ChatAgent(BaseAgent):
 
     def __init__(
         self,
-        system_message: Optional[Union[BaseMessage, str]] = None,
-        model: Optional[
-            Union[
-                BaseModelBackend,
-                ModelManager,
-                Tuple[str, str],
-                str,
-                ModelType,
-                Tuple[ModelPlatformType, ModelType],
-                List[BaseModelBackend],
-                List[str],
-                List[ModelType],
-                List[Tuple[str, str]],
-                List[Tuple[ModelPlatformType, ModelType]],
-            ]
-        ] = None,
-        memory: Optional[AgentMemory] = None,
-        message_window_size: Optional[int] = None,
-        token_limit: Optional[int] = None,
-        output_language: Optional[str] = None,
-        tools: Optional[List[Union[FunctionTool, Callable]]] = None,
-        external_tools: Optional[
-            List[Union[FunctionTool, Callable, Dict[str, Any]]]
-        ] = None,
-        response_terminators: Optional[List[ResponseTerminator]] = None,
+        system_message: BaseMessage | str | None = None,
+        model: BaseModelBackend
+        | ModelManager
+        | tuple[str, str]
+        | str
+        | ModelType
+        | tuple[ModelPlatformType, ModelType]
+        | list[BaseModelBackend]
+        | list[str]
+        | list[ModelType]
+        | list[tuple[str, str]]
+        | list[tuple[ModelPlatformType, ModelType]]
+        | None = None,
+        memory: AgentMemory | None = None,
+        message_window_size: int | None = None,
+        token_limit: int | None = None,
+        output_language: str | None = None,
+        tools: list[FunctionTool | Callable] | None = None,
+        external_tools: list[FunctionTool | Callable | dict[str, Any]]
+        | None = None,
+        response_terminators: list[ResponseTerminator] | None = None,
         scheduling_strategy: str = "round_robin",
-        max_iteration: Optional[int] = None,
-        agent_id: Optional[str] = None,
-        stop_event: Optional[threading.Event] = None,
+        max_iteration: int | None = None,
+        agent_id: str | None = None,
+        stop_event: threading.Event | None = None,
         mask_tool_output: bool = False,
-        pause_event: Optional[asyncio.Event] = None,
+        pause_event: asyncio.Event | None = None,
     ) -> None:
         if isinstance(model, ModelManager):
             self.model_backend = model
@@ -291,9 +280,9 @@ class ChatAgent(BaseAgent):
         self.max_iteration = max_iteration
         self.stop_event = stop_event
         self.mask_tool_output = mask_tool_output
-        self._secure_result_store: Dict[str, Any] = {}
-        self._pending_images: List[str] = []
-        self._image_retry_count: Dict[str, int] = {}
+        self._secure_result_store: dict[str, Any] = {}
+        self._pending_images: list[str] = []
+        self._image_retry_count: dict[str, int] = {}
         # Store images to attach to next user message
         self.pause_event = pause_event
 
@@ -308,21 +297,18 @@ class ChatAgent(BaseAgent):
 
     def _resolve_models(
         self,
-        model: Optional[
-            Union[
-                BaseModelBackend,
-                Tuple[str, str],
-                str,
-                ModelType,
-                Tuple[ModelPlatformType, ModelType],
-                List[BaseModelBackend],
-                List[str],
-                List[ModelType],
-                List[Tuple[str, str]],
-                List[Tuple[ModelPlatformType, ModelType]],
-            ]
-        ],
-    ) -> Union[BaseModelBackend, List[BaseModelBackend]]:
+        model: BaseModelBackend
+        | tuple[str, str]
+        | str
+        | ModelType
+        | tuple[ModelPlatformType, ModelType]
+        | list[BaseModelBackend]
+        | list[str]
+        | list[ModelType]
+        | list[tuple[str, str]]
+        | list[tuple[ModelPlatformType, ModelType]]
+        | None,
+    ) -> BaseModelBackend | list[BaseModelBackend]:
         r"""Resolves model specifications into model backend instances.
 
         This method handles various input formats for model specifications and
@@ -377,7 +363,7 @@ class ChatAgent(BaseAgent):
 
     def _resolve_model_list(
         self, model_list: list
-    ) -> Union[BaseModelBackend, List[BaseModelBackend]]:
+    ) -> BaseModelBackend | list[BaseModelBackend]:
         r"""Resolves a list of model specifications into model backend
         instances.
 
@@ -441,17 +427,17 @@ class ChatAgent(BaseAgent):
             )
 
     @property
-    def system_message(self) -> Optional[BaseMessage]:
+    def system_message(self) -> BaseMessage | None:
         r"""Returns the system message for the agent."""
         return self._system_message
 
     @property
-    def tool_dict(self) -> Dict[str, FunctionTool]:
+    def tool_dict(self) -> dict[str, FunctionTool]:
         r"""Returns a dictionary of internal tools."""
         return self._internal_tools
 
     @property
-    def output_language(self) -> Optional[str]:
+    def output_language(self) -> str | None:
         r"""Returns the output language for the agent."""
         return self._output_language
 
@@ -467,7 +453,7 @@ class ChatAgent(BaseAgent):
         )
         self.init_messages()
 
-    def _get_full_tool_schemas(self) -> List[Dict[str, Any]]:
+    def _get_full_tool_schemas(self) -> list[dict[str, Any]]:
         r"""Returns a list of tool schemas of all tools, including internal
         and external tools.
         """
@@ -476,22 +462,22 @@ class ChatAgent(BaseAgent):
             for func_tool in self._internal_tools.values()
         ]
 
-    def _get_external_tool_names(self) -> Set[str]:
+    def _get_external_tool_names(self) -> set[str]:
         r"""Returns a set of external tool names."""
         return set(self._external_tool_schemas.keys())
 
-    def add_tool(self, tool: Union[FunctionTool, Callable]) -> None:
+    def add_tool(self, tool: FunctionTool | Callable) -> None:
         r"""Add a tool to the agent."""
         new_tool = convert_to_function_tool(tool)
         self._internal_tools[new_tool.get_function_name()] = new_tool
 
-    def add_tools(self, tools: List[Union[FunctionTool, Callable]]) -> None:
+    def add_tools(self, tools: list[FunctionTool | Callable]) -> None:
         r"""Add a list of tools to the agent."""
         for tool in tools:
             self.add_tool(tool)
 
     def add_external_tool(
-        self, tool: Union[FunctionTool, Callable, Dict[str, Any]]
+        self, tool: FunctionTool | Callable | dict[str, Any]
     ) -> None:
         new_tool_schema = convert_to_schema(tool)
         self._external_tool_schemas[new_tool_schema["name"]] = new_tool_schema
@@ -510,7 +496,7 @@ class ChatAgent(BaseAgent):
             return True
         return False
 
-    def remove_tools(self, tool_names: List[str]) -> None:
+    def remove_tools(self, tool_names: list[str]) -> None:
         r"""Remove a list of tools from the agent by name."""
         for tool_name in tool_names:
             self.remove_tool(tool_name)
@@ -533,7 +519,7 @@ class ChatAgent(BaseAgent):
         self,
         message: BaseMessage,
         role: OpenAIBackendRole,
-        timestamp: Optional[float] = None,
+        timestamp: float | None = None,
     ) -> None:
         r"""Updates the agent memory with a new message.
 
@@ -599,7 +585,7 @@ class ChatAgent(BaseAgent):
             if current_tokens <= remaining_budget:
                 _write_single_record(message, role, base_ts)
                 return
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(
                 f"Token calculation failed before chunking, "
                 f"writing message as-is. Error: {e}"
@@ -613,7 +599,7 @@ class ChatAgent(BaseAgent):
             f"of {remaining_budget}. Slicing into smaller chunks."
         )
 
-        text_to_chunk: Optional[str] = None
+        text_to_chunk: str | None = None
         is_function_result = False
 
         if isinstance(message, FunctionCallingMessage) and isinstance(
@@ -630,7 +616,7 @@ class ChatAgent(BaseAgent):
         # Encode the entire text to get a list of all token IDs
         try:
             all_token_ids = token_counter.encode(text_to_chunk)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.error(f"Failed to encode text for chunking: {e}")
             _write_single_record(message, role, base_ts)  # Fallback
             return
@@ -760,7 +746,7 @@ class ChatAgent(BaseAgent):
             try:
                 record = MemoryRecord.from_dict(record_dict)
                 self.memory.write_records([record])
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.warning(
                     f"Error converting record to MemoryRecord: {e}. "
                     f"Record: {record_dict}"
@@ -792,7 +778,7 @@ class ChatAgent(BaseAgent):
 
     def _generate_system_message_for_output_language(
         self,
-    ) -> Optional[BaseMessage]:
+    ) -> BaseMessage | None:
         r"""Generate a new system message with the output language prompt.
 
         The output language determines the language in which the output text
@@ -848,7 +834,7 @@ class ChatAgent(BaseAgent):
         self.update_memory(message, OpenAIBackendRole.ASSISTANT)
 
     def _try_format_message(
-        self, message: BaseMessage, response_format: Type[BaseModel]
+        self, message: BaseMessage, response_format: type[BaseModel]
     ) -> bool:
         r"""Try to format the message if needed.
 
@@ -881,7 +867,7 @@ class ChatAgent(BaseAgent):
         return True
 
     def _convert_response_format_to_prompt(
-        self, response_format: Type[BaseModel]
+        self, response_format: type[BaseModel]
     ) -> str:
         r"""Convert a Pydantic response format to a prompt instruction.
 
@@ -897,7 +883,7 @@ class ChatAgent(BaseAgent):
 
             # Create a prompt based on the schema
             format_instruction = (
-                "\n\nPlease respond in the following JSON format:\n" "{\n"
+                "\n\nPlease respond in the following JSON format:\n{\n"
             )
 
             properties = schema.get("properties", {})
@@ -929,7 +915,7 @@ class ChatAgent(BaseAgent):
             format_instruction += "}"
             return format_instruction
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(
                 f"Failed to convert response_format to prompt: {e}. "
                 f"Using generic format instruction."
@@ -941,9 +927,9 @@ class ChatAgent(BaseAgent):
 
     def _handle_response_format_with_non_strict_tools(
         self,
-        input_message: Union[BaseMessage, str],
-        response_format: Optional[Type[BaseModel]] = None,
-    ) -> Tuple[Union[BaseMessage, str], Optional[Type[BaseModel]], bool]:
+        input_message: BaseMessage | str,
+        response_format: type[BaseModel] | None = None,
+    ) -> tuple[BaseMessage | str, type[BaseModel] | None, bool]:
         r"""Handle response format when tools are not strict mode compatible.
 
         Args:
@@ -972,7 +958,7 @@ class ChatAgent(BaseAgent):
         )
 
         # Modify the message to include format instruction
-        modified_message: Union[BaseMessage, str]
+        modified_message: BaseMessage | str
         if isinstance(input_message, str):
             modified_message = input_message + format_prompt
         else:
@@ -987,7 +973,7 @@ class ChatAgent(BaseAgent):
     def _apply_prompt_based_parsing(
         self,
         response: ModelResponse,
-        original_response_format: Type[BaseModel],
+        original_response_format: type[BaseModel],
     ) -> None:
         r"""Apply manual parsing when using prompt-based formatting.
 
@@ -1043,13 +1029,13 @@ class ChatAgent(BaseAgent):
                             f"{content[:100]}..."
                         )
 
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     logger.warning(f"Error during prompt-based parsing: {e}")
 
     def _format_response_if_needed(
         self,
         response: ModelResponse,
-        response_format: Optional[Type[BaseModel]] = None,
+        response_format: type[BaseModel] | None = None,
     ) -> None:
         r"""Format the response if needed.
 
@@ -1081,7 +1067,7 @@ class ChatAgent(BaseAgent):
     async def _aformat_response_if_needed(
         self,
         response: ModelResponse,
-        response_format: Optional[Type[BaseModel]] = None,
+        response_format: type[BaseModel] | None = None,
     ) -> None:
         r"""Format the response if needed."""
 
@@ -1104,8 +1090,8 @@ class ChatAgent(BaseAgent):
     @observe()
     def step(
         self,
-        input_message: Union[BaseMessage, str],
-        response_format: Optional[Type[BaseModel]] = None,
+        input_message: BaseMessage | str,
+        response_format: type[BaseModel] | None = None,
     ) -> ChatAgentResponse:
         r"""Executes a single step in the chat session, generating a response
         to the input message.
@@ -1159,8 +1145,8 @@ class ChatAgent(BaseAgent):
         # Add user input to memory
         self.update_memory(input_message, OpenAIBackendRole.USER)
 
-        tool_call_records: List[ToolCallingRecord] = []
-        external_tool_call_requests: Optional[List[ToolCallRequest]] = None
+        tool_call_records: list[ToolCallingRecord] = []
+        external_tool_call_requests: list[ToolCallRequest] | None = None
 
         accumulated_context_tokens = (
             0  # This tracks cumulative context tokens, not API usage tokens
@@ -1262,15 +1248,15 @@ class ChatAgent(BaseAgent):
         )
 
     @property
-    def chat_history(self) -> List[OpenAIMessage]:
+    def chat_history(self) -> list[OpenAIMessage]:
         openai_messages, _ = self.memory.get_context()
         return openai_messages
 
     @observe()
     async def astep(
         self,
-        input_message: Union[BaseMessage, str],
-        response_format: Optional[Type[BaseModel]] = None,
+        input_message: BaseMessage | str,
+        response_format: type[BaseModel] | None = None,
     ) -> ChatAgentResponse:
         r"""Performs a single step in the chat session by generating a response
         to the input message. This agent step can call async function calls.
@@ -1325,8 +1311,8 @@ class ChatAgent(BaseAgent):
 
         self.update_memory(input_message, OpenAIBackendRole.USER)
 
-        tool_call_records: List[ToolCallingRecord] = []
-        external_tool_call_requests: Optional[List[ToolCallRequest]] = None
+        tool_call_records: list[ToolCallingRecord] = []
+        external_tool_call_requests: list[ToolCallRequest] | None = None
         accumulated_context_tokens = (
             0  # This tracks cumulative context tokens, not API usage tokens
         )
@@ -1433,7 +1419,7 @@ class ChatAgent(BaseAgent):
                             )
                             image_list.append(pil_image_tool_result)
 
-                        except Exception as e:
+                        except Exception as e:  # noqa: BLE001
                             logger.warning(
                                 f"Failed to convert "
                                 f"base64 image to PIL for immediate use: {e}"
@@ -1486,7 +1472,7 @@ class ChatAgent(BaseAgent):
             step_token_usage["total_tokens"],
         )
 
-    def _create_token_usage_tracker(self) -> Dict[str, int]:
+    def _create_token_usage_tracker(self) -> dict[str, int]:
         r"""Creates a fresh token usage tracker for a step.
 
         Returns:
@@ -1495,7 +1481,7 @@ class ChatAgent(BaseAgent):
         return {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
 
     def _update_token_usage_tracker(
-        self, tracker: Dict[str, int], usage_dict: Dict[str, int]
+        self, tracker: dict[str, int], usage_dict: dict[str, int]
     ) -> None:
         r"""Updates a token usage tracker with values from a usage dictionary.
 
@@ -1510,9 +1496,9 @@ class ChatAgent(BaseAgent):
     def _convert_to_chatagent_response(
         self,
         response: ModelResponse,
-        tool_call_records: List[ToolCallingRecord],
+        tool_call_records: list[ToolCallingRecord],
         num_tokens: int,  # Context tokens from the last call in step
-        external_tool_call_requests: Optional[List[ToolCallRequest]],
+        external_tool_call_requests: list[ToolCallRequest] | None,
         step_api_prompt_tokens: int = 0,
         step_api_completion_tokens: int = 0,
         step_api_total_tokens: int = 0,
@@ -1541,7 +1527,7 @@ class ChatAgent(BaseAgent):
             info=info,
         )
 
-    def _process_pending_images(self) -> List:
+    def _process_pending_images(self) -> list:
         r"""Process pending images with retry logic and return PIL Image list.
 
         Returns:
@@ -1587,7 +1573,7 @@ class ChatAgent(BaseAgent):
                 image_list.append(pil_image_converted)
                 successfully_processed.append(img_data)
 
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 # Increment retry count for failed conversion
                 self._image_retry_count[img_data] = retry_count + 1
                 logger.warning(
@@ -1604,7 +1590,7 @@ class ChatAgent(BaseAgent):
 
         return image_list
 
-    def _record_final_output(self, output_messages: List[BaseMessage]) -> None:
+    def _record_final_output(self, output_messages: list[BaseMessage]) -> None:
         r"""Log final messages or warnings about multiple responses."""
         if len(output_messages) == 1:
             self.record_message(output_messages[0])
@@ -1630,7 +1616,7 @@ class ChatAgent(BaseAgent):
         ]
         return any(keyword in error_msg for keyword in vision_keywords)
 
-    def _has_images(self, messages: List[OpenAIMessage]) -> bool:
+    def _has_images(self, messages: list[OpenAIMessage]) -> bool:
         r"""Check if any message contains images."""
         for msg in messages:
             content = msg.get('content')
@@ -1644,8 +1630,8 @@ class ChatAgent(BaseAgent):
         return False
 
     def _strip_images_from_messages(
-        self, messages: List[OpenAIMessage]
-    ) -> List[OpenAIMessage]:
+        self, messages: list[OpenAIMessage]
+    ) -> list[OpenAIMessage]:
         r"""Remove images from messages, keeping only text content."""
         stripped_messages = []
         for msg in messages:
@@ -1671,10 +1657,10 @@ class ChatAgent(BaseAgent):
 
     def _get_model_response(
         self,
-        openai_messages: List[OpenAIMessage],
+        openai_messages: list[OpenAIMessage],
         num_tokens: int,
-        response_format: Optional[Type[BaseModel]] = None,
-        tool_schemas: Optional[List[Dict[str, Any]]] = None,
+        response_format: type[BaseModel] | None = None,
+        tool_schemas: list[dict[str, Any]] | None = None,
     ) -> ModelResponse:
         r"""Internal function for agent step model response."""
 
@@ -1700,7 +1686,7 @@ class ChatAgent(BaseAgent):
                         response_format,
                         tool_schemas or None,
                     )
-                except Exception:
+                except Exception:  # noqa: BLE001,S110
                     pass  # Fall through to original error handling
 
             if not response:
@@ -1739,10 +1725,10 @@ class ChatAgent(BaseAgent):
 
     async def _aget_model_response(
         self,
-        openai_messages: List[OpenAIMessage],
+        openai_messages: list[OpenAIMessage],
         num_tokens: int,
-        response_format: Optional[Type[BaseModel]] = None,
-        tool_schemas: Optional[List[Dict[str, Any]]] = None,
+        response_format: type[BaseModel] | None = None,
+        tool_schemas: list[dict[str, Any]] | None = None,
     ) -> ModelResponse:
         r"""Internal function for agent step model response."""
 
@@ -1768,7 +1754,7 @@ class ChatAgent(BaseAgent):
                         response_format,
                         tool_schemas or None,
                     )
-                except Exception:
+                except Exception:  # noqa: BLE001,S110
                     pass  # Fall through to original error handling
 
             if not response:
@@ -1891,7 +1877,7 @@ class ChatAgent(BaseAgent):
                                                 },
                                             }
                                         )
-                                    except Exception as e:
+                                    except Exception as e:  # noqa: BLE001
                                         # If saving fails, fall back to simple
                                         # message
                                         content_list.append(
@@ -1935,14 +1921,14 @@ class ChatAgent(BaseAgent):
 
     def _step_get_info(
         self,
-        output_messages: List[BaseMessage],
-        finish_reasons: List[str],
-        usage_dict: Dict[str, int],
+        output_messages: list[BaseMessage],
+        finish_reasons: list[str],
+        usage_dict: dict[str, int],
         response_id: str,
-        tool_calls: List[ToolCallingRecord],
+        tool_calls: list[ToolCallingRecord],
         num_tokens: int,
-        external_tool_call_requests: Optional[List[ToolCallRequest]] = None,
-    ) -> Dict[str, Any]:
+        external_tool_call_requests: list[ToolCallRequest] | None = None,
+    ) -> dict[str, Any]:
         r"""Process the output of a chat step and gather information about the
         step.
 
@@ -2013,7 +1999,7 @@ class ChatAgent(BaseAgent):
         Returns:
             _ModelResponse: parsed model response.
         """
-        output_messages: List[BaseMessage] = []
+        output_messages: list[BaseMessage] = []
         for choice in response.choices:
             # Skip messages with no meaningful content
             if (
@@ -2044,7 +2030,7 @@ class ChatAgent(BaseAgent):
         if response.usage is not None:
             usage = safe_model_dump(response.usage)
 
-        tool_call_requests: Optional[List[ToolCallRequest]] = None
+        tool_call_requests: list[ToolCallRequest] | None = None
         if tool_calls := response.choices[0].message.tool_calls:
             tool_call_requests = []
             for tool_call in tool_calls:
@@ -2082,7 +2068,7 @@ class ChatAgent(BaseAgent):
         """
         content_dict: defaultdict = defaultdict(lambda: "")
         finish_reasons_dict: defaultdict = defaultdict(lambda: "")
-        output_messages: List[BaseMessage] = []
+        output_messages: list[BaseMessage] = []
         response_id: str = ""
         # All choices in one response share one role
         for chunk in response:
@@ -2124,7 +2110,7 @@ class ChatAgent(BaseAgent):
         """
         content_dict: defaultdict = defaultdict(lambda: "")
         finish_reasons_dict: defaultdict = defaultdict(lambda: "")
-        output_messages: List[BaseMessage] = []
+        output_messages: list[BaseMessage] = []
         response_id: str = ""
         # All choices in one response share one role
         async for chunk in response:
@@ -2154,7 +2140,7 @@ class ChatAgent(BaseAgent):
         chunk: ChatCompletionChunk,
         content_dict: defaultdict,
         finish_reasons_dict: defaultdict,
-        output_messages: List[BaseMessage],
+        output_messages: list[BaseMessage],
     ) -> None:
         r"""Handle a chunk of the model response."""
         for choice in chunk.choices:
@@ -2178,7 +2164,7 @@ class ChatAgent(BaseAgent):
     def _step_terminate(
         self,
         num_tokens: int,
-        tool_calls: List[ToolCallingRecord],
+        tool_calls: list[ToolCallingRecord],
         termination_reason: str,
     ) -> ChatAgentResponse:
         r"""Create a response when the agent execution is terminated.
@@ -2245,12 +2231,12 @@ class ChatAgent(BaseAgent):
             else:
                 result = raw_result
                 mask_flag = False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Capture the error message to prevent framework crash
             error_msg = f"Error executing tool '{func_name}': {e!s}"
             result = f"Tool execution failed: {error_msg}"
             mask_flag = False
-            logging.warning(error_msg)
+            logger.warning(error_msg)
 
         # Check if result is a ToolResult with images
         images_to_attach = None
@@ -2306,11 +2292,11 @@ class ChatAgent(BaseAgent):
                 # Fallback: synchronous call
                 result = tool(**args)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Capture the error message to prevent framework crash
             error_msg = f"Error executing async tool '{func_name}': {e!s}"
             result = {"error": error_msg}
-            logging.warning(error_msg)
+            logger.warning(error_msg)
 
         # Check if result is a ToolResult with images
         images_to_attach = None
@@ -2335,7 +2321,7 @@ class ChatAgent(BaseAgent):
     def _record_tool_calling(
         self,
         func_name: str,
-        args: Dict[str, Any],
+        args: dict[str, Any],
         result: Any,
         tool_call_id: str,
         mask_output: bool = False,
@@ -2407,8 +2393,8 @@ class ChatAgent(BaseAgent):
         return tool_record
 
     def get_usage_dict(
-        self, output_messages: List[BaseMessage], prompt_tokens: int
-    ) -> Dict[str, int]:
+        self, output_messages: list[BaseMessage], prompt_tokens: int
+    ) -> dict[str, int]:
         r"""Get usage dictionary when using the stream mode.
 
         Args:
@@ -2506,7 +2492,7 @@ class ChatAgent(BaseAgent):
         self,
         name: str = "CAMEL-ChatAgent",
         description: str = "A helpful assistant using the CAMEL AI framework.",
-        dependencies: Optional[List[str]] = None,
+        dependencies: list[str] | None = None,
         host: str = "localhost",
         port: int = 8000,
     ):
@@ -2613,9 +2599,9 @@ class ChatAgent(BaseAgent):
         def get_available_tools():
             r"""Get a list of available internal tools."""
             tool_info = {}
-            for name, tool in agent_instance.tool_dict.items():
-                tool_info[name] = {
-                    "name": name,
+            for tool_name, tool in agent_instance.tool_dict.items():
+                tool_info[tool_name] = {
+                    "name": tool_name,
                     "description": tool.get_function_description() or "",
                     "parameters": [
                         {"name": param_name, "type": str(param_type)}

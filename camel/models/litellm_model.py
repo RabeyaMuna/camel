@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
 import uuid
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -69,19 +69,19 @@ class LiteLLMModel(BaseModelBackend):
     @dependencies_required('litellm')
     def __init__(
         self,
-        model_type: Union[ModelType, str],
-        model_config_dict: Optional[Dict[str, Any]] = None,
-        api_key: Optional[str] = None,
-        url: Optional[str] = None,
-        token_counter: Optional[BaseTokenCounter] = None,
-        timeout: Optional[float] = None,
+        model_type: ModelType | str,
+        model_config_dict: dict[str, Any] | None = None,
+        api_key: str | None = None,
+        url: str | None = None,
+        token_counter: BaseTokenCounter | None = None,
+        timeout: float | None = None,
         **kwargs: Any,
     ) -> None:
         from litellm import completion
 
         if model_config_dict is None:
             model_config_dict = LiteLLMConfig().as_dict()
-        timeout = timeout or float(os.environ.get("MODEL_TIMEOUT", 180))
+        timeout = timeout or float(os.environ.get("MODEL_TIMEOUT", "180"))
         super().__init__(
             model_type, model_config_dict, api_key, url, token_counter, timeout
         )
@@ -103,18 +103,18 @@ class LiteLLMModel(BaseModelBackend):
         converted_choices = []
         for choice in response.choices:
             # Build the assistant message dict
-            msg_dict: Dict[str, Any] = {
+            msg_dict: dict[str, Any] = {
                 "role": choice.message.role,
                 "content": choice.message.content,
             }
 
             # Preserve `tool_calls` if already present
             if getattr(choice.message, "tool_calls", None):
-                msg_dict["tool_calls"] = choice.message.tool_calls  # type: ignore
+                msg_dict["tool_calls"] = choice.message.tool_calls  # type: ignore[union-attr]
 
-            # Fallback – convert single `function_call` → `tool_calls`
+            # Fallback - convert single `function_call` → `tool_calls`
             elif getattr(choice.message, "function_call", None):
-                func_call = choice.message.function_call  # type: ignore
+                func_call = choice.message.function_call  # type: ignore[union-attr]
                 msg_dict["tool_calls"] = [
                     {
                         "id": f"call_{uuid.uuid4().hex[:24]}",
@@ -162,9 +162,9 @@ class LiteLLMModel(BaseModelBackend):
     @observe(as_type='generation')
     def _run(
         self,
-        messages: List[OpenAIMessage],
-        response_format: Optional[Type[BaseModel]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
+        messages: list[OpenAIMessage],
+        response_format: type[BaseModel] | None = None,
+        tools: list[dict[str, Any]] | None = None,
     ) -> ChatCompletion:
         r"""Runs inference of LiteLLM chat completion.
 
@@ -179,7 +179,7 @@ class LiteLLMModel(BaseModelBackend):
         request_config = self.model_config_dict.copy()
         if tools:
             request_config['tools'] = tools
-            
+
         update_current_observation(
             input={
                 "messages": messages,
