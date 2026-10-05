@@ -2242,7 +2242,7 @@ class ChatAgent(BaseAgent):
         from mcp.server.fastmcp import FastMCP
 
         # Combine dependencies
-        all_dependencies = ["camel-ai[all]"]
+        all_dependencies = []
         if dependencies:
             all_dependencies.extend(dependencies)
 
