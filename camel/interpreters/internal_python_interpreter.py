@@ -401,10 +401,17 @@ class InternalPythonInterpreter(BaseInterpreter):
 
         # Todo deal with args
         args = [self._execute_ast(arg) for arg in call.args]
-        kwargs = {
-            keyword.arg: self._execute_ast(keyword.value)
-            for keyword in call.keywords
-        }
+        kwargs: Dict[str, Any] = {}
+        for keyword in call.keywords:
+            value = self._execute_ast(keyword.value)
+            if keyword.arg is None:
+                if not isinstance(value, dict):
+                    raise InterpreterError(
+                        "** expansion requires a mapping with string keys"
+                    )
+                kwargs.update(value)
+            else:
+                kwargs[keyword.arg] = value
         return callable_func(*args, **kwargs)
 
     def _execute_subscript(self, subscript: ast.Subscript):

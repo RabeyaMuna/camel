@@ -15,7 +15,7 @@
 import logging
 import re
 import time
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, TypedDict
 
 from camel.storages.graph_storages.base import BaseGraphStorage
 from camel.storages.graph_storages.graph_element import (
@@ -36,6 +36,10 @@ if TYPE_CHECKING:
     )
 
 
+class StructuredSchema(TypedDict, total=False):
+    vertices: Dict[str, Any]
+    edges: Dict[str, Any]
+    relations: Dict[str, Any]
 MAX_RETRIES = 5
 RETRY_DELAY = 3
 
@@ -65,7 +69,7 @@ class NebulaGraph(BaseGraphStorage):
         self.timeout = timeout
         self.port = port
         self.schema: str = ""
-        self.structured_schema: Dict[str, Any] = {}
+        self.structured_schema: StructuredSchema = {}
         self.connection_pool = self._init_connection_pool()
         self.session = self._get_session()
 
@@ -374,7 +378,7 @@ class NebulaGraph(BaseGraphStorage):
         self.structured_schema = self.get_structured_schema
 
     @property
-    def get_structured_schema(self) -> Dict[str, Any]:
+    def get_structured_schema(self) -> StructuredSchema:
         r"""Generates a structured schema consisting of node and relationship
         properties, relationships, and metadata, including timestamps.
 
