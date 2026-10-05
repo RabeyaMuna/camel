@@ -227,7 +227,7 @@ class HybridRetriever(BaseRetriever):
         )
 
         retrieved_info = {
-            "Original Query": query,
+            "Original Query": [query],
             "Retrieved Context": (
                 all_retrieved_info
                 if return_detailed_info

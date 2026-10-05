@@ -447,7 +447,7 @@ class Workforce(BaseNode):
         new_kwargs.setdefault("pause_event", self._pause_event)
         return new_kwargs
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"Workforce {self.node_id} ({self.description}) - "
             f"State: {self._state.value}"
@@ -1307,7 +1307,7 @@ class Workforce(BaseNode):
         return self._task
 
     def _start_child_node_when_paused(
-        self, start_coroutine: Coroutine
+        self, start_coroutine: Coroutine[Any, Any, Any]
     ) -> None:
         r"""Helper to start a child node when workforce is paused.
 
@@ -1395,9 +1395,9 @@ class Workforce(BaseNode):
         description: str,
         assistant_role_name: str,
         user_role_name: str,
-        assistant_agent_kwargs: Optional[Dict] = None,
-        user_agent_kwargs: Optional[Dict] = None,
-        summarize_agent_kwargs: Optional[Dict] = None,
+        assistant_agent_kwargs: Optional[Dict[str, Any]] = None,
+        user_agent_kwargs: Optional[Dict[str, Any]] = None,
+        summarize_agent_kwargs: Optional[Dict[str, Any]] = None,
         chat_turn_limit: int = 3,
     ) -> Workforce:
         r"""Add a worker node to the workforce that uses `RolePlaying` system.
@@ -1573,7 +1573,7 @@ class Workforce(BaseNode):
             )
         return info
 
-    def _get_valid_worker_ids(self) -> set:
+    def _get_valid_worker_ids(self) -> Set[str]:
         r"""Get all valid worker IDs from child nodes.
 
         Returns:
@@ -1670,7 +1670,7 @@ class Workforce(BaseNode):
 
     async def _handle_task_assignment_fallbacks(
         self, tasks: List[Task]
-    ) -> List:
+    ) -> List[TaskAssignment]:
         r"""Create new workers for unassigned tasks as fallback.
 
         Args:

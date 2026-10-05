@@ -2965,6 +2965,8 @@ class ChatAgent(BaseAgent):
             function_name = tool_call_data['function']['name']
             try:
                 args = json.loads(tool_call_data['function']['arguments'])
+                if not isinstance(args, dict):
+                    raise ValueError("Tool arguments must be a JSON object")
             except json.JSONDecodeError:
                 args = tool_call_data['function']['arguments']
             result_queue: queue.Queue[Optional[ToolCallingRecord]] = (
@@ -3045,6 +3047,8 @@ class ChatAgent(BaseAgent):
         try:
             function_name = tool_call_data['function']['name']
             args = json.loads(tool_call_data['function']['arguments'])
+            if not isinstance(args, dict):
+                raise ValueError("Tool arguments must be a JSON object")
             tool_call_id = tool_call_data['id']
 
             if function_name in self._internal_tools:
@@ -3118,6 +3122,8 @@ class ChatAgent(BaseAgent):
         try:
             function_name = tool_call_data['function']['name']
             args = json.loads(tool_call_data['function']['arguments'])
+            if not isinstance(args, dict):
+                raise ValueError("Tool arguments must be a JSON object")
             tool_call_id = tool_call_data['id']
 
             if function_name in self._internal_tools:
@@ -3592,6 +3598,8 @@ class ChatAgent(BaseAgent):
                 function_name = tool_call_data['function']['name']
                 try:
                     args = json.loads(tool_call_data['function']['arguments'])
+                    if not isinstance(args, dict):
+                        raise ValueError("Tool arguments must be a JSON object")
                 except json.JSONDecodeError:
                     args = tool_call_data['function']['arguments']
 
