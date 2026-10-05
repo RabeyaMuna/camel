@@ -15,7 +15,7 @@
 # Enables postponed evaluation of annotations (for string-based type hints)
 from __future__ import annotations
 
-from typing import Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from PIL import Image
 
@@ -94,11 +94,11 @@ class VisionLanguageEmbedding(BaseEmbedding[Union[str, Image.Image]]):
         if not objs:
             raise ValueError("Input objs list is empty.")
 
-        image_processor_kwargs: Optional[dict] = kwargs.get(
+        image_processor_kwargs: Dict[str, Any] = kwargs.get(
             'image_processor_kwargs', {}
         )
-        tokenizer_kwargs: Optional[dict] = kwargs.get('tokenizer_kwargs', {})
-        model_kwargs: Optional[dict] = kwargs.get('model_kwargs', {})
+        tokenizer_kwargs: Dict[str, Any] = kwargs.get('tokenizer_kwargs', {})
+        model_kwargs: Dict[str, Any] = kwargs.get('model_kwargs', {})
 
         result_list = []
         for obj in objs:
@@ -106,12 +106,12 @@ class VisionLanguageEmbedding(BaseEmbedding[Union[str, Image.Image]]):
                 obj.__class__.__module__ == "PIL.Image"
                 and obj.__class__.__name__ == "Image"
             ):
-                image_input = self.processor(
+                image_input: Dict[str, Any] = dict(self.processor(
                     images=obj,
                     return_tensors="pt",
                     padding=True,
                     **image_processor_kwargs,
-                )
+                ))
                 image_feature = (
                     self.model.get_image_features(
                         **image_input, **model_kwargs
@@ -121,12 +121,12 @@ class VisionLanguageEmbedding(BaseEmbedding[Union[str, Image.Image]]):
                 )
                 result_list.append(image_feature)
             elif isinstance(obj, str):
-                text_input = self.processor(
+                text_input: Dict[str, Any] = dict(self.processor(
                     text=obj,
                     return_tensors="pt",
                     padding=True,
                     **tokenizer_kwargs,
-                )
+                ))
                 text_feature = (
                     self.model.get_text_features(**text_input, **model_kwargs)
                     .squeeze(dim=0)
