@@ -179,8 +179,6 @@ class ImageAnalysisToolkit(BaseToolkit):
             image = self._load_image(image_path)
             logger.info(f"Analyzing image: {image_path}")
 
-            from camel.agents.chat_agent import ChatAgent
-
             agent = ChatAgent(
                 system_message=system_message,
                 model=self.model,

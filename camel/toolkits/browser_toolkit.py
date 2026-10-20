@@ -40,7 +40,6 @@ from typing import (
 
 from PIL import Image, ImageDraw, ImageFont
 
-from camel.agents import ChatAgent
 from camel.logger import get_logger
 from camel.messages import BaseMessage
 from camel.models import BaseModelBackend, ModelFactory

@@ -15,12 +15,11 @@ from collections import deque
 from typing import Dict, List, Optional
 
 from camel.agents import (
-    ChatAgent,
     TaskCreationAgent,
     TaskPrioritizationAgent,
     TaskSpecifyAgent,
 )
-from camel.agents.chat_agent import ChatAgentResponse
+from camel.agents.chat_agent import ChatAgent, ChatAgentResponse
 from camel.generators import SystemMessageGenerator
 from camel.logger import get_logger
 from camel.messages import BaseMessage

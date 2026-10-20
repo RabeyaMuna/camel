@@ -18,9 +18,11 @@ import textwrap
 from typing import Any, Callable, Dict, List, Optional, Union
 
 from camel.agents._types import ToolCallRequest
-from camel.toolkits import FunctionTool
 from camel.types import Choice
 from camel.types.agents import ToolCallingRecord
+
+# Import FunctionTool locally where needed to avoid circular import
+# from camel.toolkits import FunctionTool
 
 logger = logging.getLogger(__name__)
 

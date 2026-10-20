@@ -58,8 +58,11 @@ from .excel_toolkit import ExcelToolkit
 from .video_analysis_toolkit import VideoAnalysisToolkit
 from .image_analysis_toolkit import ImageAnalysisToolkit
 from .mcp_toolkit import MCPToolkit
-from .browser_toolkit import BrowserToolkit
-from .async_browser_toolkit import AsyncBrowserToolkit
+
+# Circular import issue: BrowserToolkit and AsyncBrowserToolkit import from camel.agents
+# Import moved to the end of the file to break the cycle
+# from .browser_toolkit import BrowserToolkit
+# from .async_browser_toolkit import AsyncBrowserToolkit
 from .file_write_toolkit import FileWriteToolkit
 from .terminal_toolkit import TerminalToolkit
 from .pubmed_toolkit import PubMedToolkit
