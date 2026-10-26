@@ -15,7 +15,7 @@ import ast
 import difflib
 import importlib
 import typing
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional, cast
 
 from camel.interpreters.base import BaseInterpreter
 from camel.interpreters.interpreter_error import InterpreterError
@@ -208,8 +208,7 @@ class InternalPythonInterpreter(BaseInterpreter):
                 if not keep_state:
                     self.clear_state()
                 msg = (
-                    f"Evaluation of the code stopped at node {idx}. "
-                    f"See:\n{e}"
+                    f"Evaluation of the code stopped at node {idx}. See:\n{e}"
                 )
                 # More information can be provided by `ast.unparse()`,
                 # which is new in python 3.9.
@@ -331,8 +330,7 @@ class InternalPythonInterpreter(BaseInterpreter):
                 )
             if len(target.elts) != len(value):
                 raise InterpreterError(
-                    f"Expected {len(target.elts)} values but got"
-                    f" {len(value)}."
+                    f"Expected {len(target.elts)} values but got {len(value)}."
                 )
             for t, v in zip(target.elts, value):
                 self.state[self._execute_ast(t)] = v
@@ -351,8 +349,9 @@ class InternalPythonInterpreter(BaseInterpreter):
         kwargs = {
             keyword.arg: self._execute_ast(keyword.value)
             for keyword in call.keywords
+            if keyword.arg is not None
         }
-        return callable_func(*args, **kwargs)
+        return callable_func(*args, **cast(Dict[str, Any], kwargs))
 
     def _execute_subscript(self, subscript: ast.Subscript):
         index = self._execute_ast(subscript.slice)

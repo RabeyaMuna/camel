@@ -16,7 +16,7 @@ import base64
 import datetime
 from pathlib import Path
 
-import streamlit as st
+import streamlit as st  # type: ignore[import-not-found]
 from dotenv import load_dotenv
 
 from camel.agents import ChatAgent
@@ -58,8 +58,8 @@ load_dotenv()
 set_log_level("DEBUG")
 
 # ——— Persist defaults ———
-if "checkin" not in st.session_state:
-    st.session_state.checkin = datetime.date.today()
+if "check_in" not in st.session_state:
+    st.session_state.check_in = datetime.date.today()
 if "checkout" not in st.session_state:
     st.session_state.checkout = datetime.date.today() + datetime.timedelta(
         days=1
@@ -68,28 +68,28 @@ if "checkout" not in st.session_state:
 # ——— Sidebar inputs ———
 st.sidebar.header("Search parameters")
 city = st.sidebar.text_input("City", "")
-checkin = st.sidebar.date_input("Check-in", value=st.session_state.checkin)
+check_in = st.sidebar.date_input("Check-in", value=st.session_state.check_in)
 checkout = st.sidebar.date_input("Check-out", value=st.session_state.checkout)
 adults = st.sidebar.number_input("Adults", min_value=1, value=2)
 
 # ——— Main: show parameters & run search ———
 if st.sidebar.button("Search Listings"):
     # Save for next time
-    st.session_state.checkin = checkin
+    st.session_state.check_in = check_in
     st.session_state.checkout = checkout
 
     # Quick summary on the main page
     st.subheader("🔍 You are searching for")
     cols = st.columns(4)
     cols[0].metric("City", city)
-    cols[1].metric("Check-in", checkin.strftime("%Y-%m-%d"))
+    cols[1].metric("Check-in", check_in.strftime("%Y-%m-%d"))
     cols[2].metric("Check-out", checkout.strftime("%Y-%m-%d"))
     cols[3].metric("Adults", adults)
 
     # Build prompt
     prompt = f"""
         Find me the best Airbnb in {city} with a check-in date 
-        of {checkin:%Y-%m-%d} and a check-out date of 
+        of {check_in:%Y-%m-%d} and a check-out date of 
         {checkout:%Y-%m-%d} for {adults} adults. 
         Return the top 5 listings with their names, prices, and locations.
     """

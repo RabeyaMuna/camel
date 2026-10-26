@@ -428,10 +428,9 @@ class MCPAgent(ChatAgent):
 
         if loop and loop.is_running():
             # Running inside an existing loop (e.g., Jupyter/FastAPI)
-            # Use create_task and run with a future
-            coro = self.astep(input_message, *args, **kwargs)
-            future = asyncio.ensure_future(coro)
-            return asyncio.run_coroutine_threadsafe(future, loop).result()
+            return asyncio.run_coroutine_threadsafe(
+                self.astep(input_message, *args, **kwargs), loop
+            ).result()
         else:
             # Safe to run normally
             return asyncio.run(self.astep(input_message, *args, **kwargs))

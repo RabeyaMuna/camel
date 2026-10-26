@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, cast
 
 import pytest
 from mock import Mock
@@ -42,21 +42,24 @@ def test_model_manager(
     calls_count: int,
     times_each_model_called: int,
 ):
-    models = (
+    model_mocks = (
         [Mock(run=Mock()) for _ in range(models_number)]
         if models_number > 1
         else Mock()
     )
 
     if TYPE_CHECKING:
-        assert type(models) is List[BaseModelBackend]
+        assert type(model_mocks) is List[BaseModelBackend]
     messages: List = []
     for _ in range(calls_count):
         msg = "message"
         if TYPE_CHECKING:
             assert type(msg) is ChatCompletionSystemMessageParam
         messages.append(msg)
-    model_manager = ModelManager(models, scheduling_strategy=strategy)
+    model_manager = ModelManager(
+        cast("BaseModelBackend | List[BaseModelBackend]", model_mocks),
+        scheduling_strategy=strategy,
+    )
 
     assert isinstance(model_manager.models, list)
     assert len(model_manager.models) == models_number
@@ -72,7 +75,8 @@ def test_model_manager(
             assert model.run.call_count == times_each_model_called
     if strategy == "always_first":
         assert model_manager.scheduling_strategy.__name__ == "always_first"
-        assert models[0].run.call_count == times_each_model_called
+        assert isinstance(model_mocks, list)
+        assert model_mocks[0].run.call_count == times_each_model_called
 
     if strategy == "random_model":
         assert model_manager.scheduling_strategy.__name__ == "random_model"

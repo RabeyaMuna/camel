@@ -1283,9 +1283,12 @@ class ChatAgent(BaseAgent):
         if tool_calls := response.choices[0].message.tool_calls:
             tool_call_requests = []
             for tool_call in tool_calls:
-                tool_name = tool_call.function.name
+                function = getattr(tool_call, "function", None)
+                if function is None:
+                    continue
+                tool_name = function.name
                 tool_call_id = tool_call.id
-                args = json.loads(tool_call.function.arguments)
+                args = json.loads(function.arguments)
                 tool_call_request = ToolCallRequest(
                     tool_name=tool_name, args=args, tool_call_id=tool_call_id
                 )
