@@ -41,6 +41,11 @@ class FishAudioModel(BaseAudioModel):
 
         super().__init__(api_key, url)
         self._api_key = api_key or os.environ.get("FISHAUDIO_API_KEY")
+        if self._api_key is None:
+            raise ValueError(
+                "FishAudio API key is required. Provide `api_key` or set "
+                "the FISHAUDIO_API_KEY environment variable."
+            )
         self._url = url or os.environ.get(
             "FISHAUDIO_API_BASE_URL", "https://api.fish.audio"
         )
