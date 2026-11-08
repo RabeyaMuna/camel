@@ -58,7 +58,7 @@ class JinaRerankerToolkit(BaseToolkit):
         super().__init__(timeout=timeout)
 
         self.use_api = use_api
-        self.model_name = model_name
+        self.model_name = model_name or "jinaai/jina-reranker-m0"
 
         if self.use_api:
             self.model = None

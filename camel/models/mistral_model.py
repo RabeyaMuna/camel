@@ -12,7 +12,7 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union, cast
 
 from pydantic import BaseModel
 
@@ -121,6 +121,7 @@ class MistralModel(BaseModelBackend):
             max_retries,
             **kwargs,
         )
+        self._token_counter: Optional[BaseTokenCounter] = token_counter
         self._client = Mistral(
             timeout_ms=int(self._timeout * 1000)
             if self._timeout is not None
@@ -207,9 +208,19 @@ class MistralModel(BaseModelBackend):
                     else [tool_calls]
                 )
                 for tool_call in tool_calls_list:
+                    tool_call_dict = cast(Dict[str, Any], tool_call)
+                    function_data = (
+                        cast(
+                            Optional[Dict[str, Any]],
+                            tool_call_dict.get("function"),
+                        )
+                        or {}
+                    )
+                    function_name = function_data.get("name")
+                    function_arguments = function_data.get("arguments")
                     mistral_function_call = FunctionCall(
-                        name=tool_call["function"].get("name"),  # type: ignore[attr-defined]
-                        arguments=tool_call["function"].get("arguments"),  # type: ignore[attr-defined]
+                        name=function_name or "",
+                        arguments=function_arguments or {},
                     )
 
             tool_calls = None
