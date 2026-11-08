@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import json
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 import requests
 
@@ -80,7 +80,7 @@ class JinaRerankerToolkit(BaseToolkit):
             from transformers import AutoModel
 
             self.model = AutoModel.from_pretrained(
-                self.model_name,
+                cast(str, self.model_name),
                 torch_dtype="auto",
                 trust_remote_code=True,
             )

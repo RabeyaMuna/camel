@@ -14,7 +14,7 @@
 import math
 import random
 import re
-from typing import Any, ClassVar, Dict, List, Literal, Optional, Tuple
+from typing import Any, ClassVar, Dict, List, Literal, Optional, Tuple, cast
 
 from camel.environments.models import Action, Observation
 from camel.environments.multi_step import MultiStepEnv
@@ -483,10 +483,10 @@ class TicTacToeEnv(MultiStepEnv):
         # Check all win combinations.
         for a, b, c in TicTacToeEnv.WIN_COMBINATIONS:
             if board[a] != " " and board[a] == board[b] == board[c]:
-                return board[a]
+                return cast(Literal["X", "O"], board[a])
         # Check for draw.
         if all(cell != " " for cell in board):
-            return "draw"
+            return cast(Literal["draw"], "draw")
         return None
 
     def render_board(self, board: List[str]) -> str:
