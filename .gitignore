@@ -415,6 +415,7 @@ tags
 
 # Camel
 logs/
+camel/toolkits/hybrid_browser_toolkit/ts/
 
 # Download Configuration
 cookies.txt
