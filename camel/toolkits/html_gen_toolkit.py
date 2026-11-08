@@ -498,7 +498,8 @@ class HtmlGenToolkit(BaseToolkit):
             return f"Error generating one page html: {e!s}"
 
         # save to file
-        with open(os.path.join(self.workspace, filename), "w") as f:
+        workspace = self.workspace or os.getcwd()
+        with open(os.path.join(workspace, filename), "w") as f:
             f.write(response.msgs[0].content)
         result = (
             f"Content successfully written to file: {filename}"
@@ -528,7 +529,8 @@ class HtmlGenToolkit(BaseToolkit):
             return f"Error generating viewer html: {e!s}"
 
         # save to file
-        with open(os.path.join(self.workspace, filename), "w") as f:
+        workspace = self.workspace or os.getcwd()
+        with open(os.path.join(workspace, filename), "w") as f:
             f.write(response.msgs[0].content)
         result = (
             f"Content successfully written to file: {filename}"
