@@ -79,6 +79,10 @@ class JinaRerankerToolkit(BaseToolkit):
             import torch
             from transformers import AutoModel
 
+            if self.model_name is None:
+                raise ValueError(
+                    "`model_name` is required when use_api=False."
+                )
             self.model = AutoModel.from_pretrained(
                 self.model_name,
                 torch_dtype="auto",
