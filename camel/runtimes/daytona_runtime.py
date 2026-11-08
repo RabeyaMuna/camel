@@ -16,7 +16,7 @@ import inspect
 import json
 import os
 from functools import wraps
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 from pydantic import BaseModel
 
@@ -55,9 +55,11 @@ class DaytonaRuntime(BaseRuntime):
         self.api_key = api_key or os.environ.get('DAYTONA_API_KEY')
         self.api_url = api_url or os.environ.get('DAYTONA_API_URL')
         self.language = language
-        self.config = DaytonaConfig(api_key=self.api_key, api_url=self.api_url)
-        self.daytona = Daytona(self.config)
-        self.sandbox = None
+        self.config: Any = DaytonaConfig(
+            api_key=self.api_key, api_url=self.api_url
+        )
+        self.daytona: Any = Daytona(self.config)
+        self.sandbox: Optional[Any] = None
         self.entrypoint: Dict[str, str] = dict()
 
     def build(self) -> "DaytonaRuntime":
@@ -69,8 +71,10 @@ class DaytonaRuntime(BaseRuntime):
         from daytona_sdk import CreateSandboxParams
 
         try:
-            params = CreateSandboxParams(language=self.language)
-            self.sandbox = self.daytona.create(params)
+            create_params_cls = cast(Any, CreateSandboxParams)
+            params = create_params_cls(language=self.language)
+            create_result = self.daytona.create(params)
+            self.sandbox = cast(Optional[Any], create_result)
             if self.sandbox is None:
                 raise RuntimeError("Failed to create sandbox.")
             logger.info(f"Sandbox created with ID: {self.sandbox.id}")
