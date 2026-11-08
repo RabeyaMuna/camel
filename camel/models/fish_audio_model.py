@@ -44,7 +44,7 @@ class FishAudioModel(BaseAudioModel):
         self._url = url or os.environ.get(
             "FISHAUDIO_API_BASE_URL", "https://api.fish.audio"
         )
-        self.session = Session(apikey=self._api_key, base_url=self._url)
+        self.session = Session(apikey=self._api_key or "", base_url=self._url)
 
     def text_to_speech(
         self,

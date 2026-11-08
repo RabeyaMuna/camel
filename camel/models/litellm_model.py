@@ -110,11 +110,11 @@ class LiteLLMModel(BaseModelBackend):
 
             # Preserve `tool_calls` if already present
             if getattr(choice.message, "tool_calls", None):
-                msg_dict["tool_calls"] = choice.message.tool_calls  # type: ignore
+                msg_dict["tool_calls"] = choice.message.tool_calls  # type: ignore[attr-defined]
 
-            # Fallback – convert single `function_call` → `tool_calls`
+            # Fallback - convert single `function_call` -> `tool_calls`
             elif getattr(choice.message, "function_call", None):
-                func_call = choice.message.function_call  # type: ignore
+                func_call = choice.message.function_call  # type: ignore[attr-defined]
                 msg_dict["tool_calls"] = [
                     {
                         "id": f"call_{uuid.uuid4().hex[:24]}",
@@ -179,7 +179,7 @@ class LiteLLMModel(BaseModelBackend):
         request_config = self.model_config_dict.copy()
         if tools:
             request_config['tools'] = tools
-            
+
         update_current_observation(
             input={
                 "messages": messages,
