@@ -13,7 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
 import os
-from typing import Any, Optional
+from typing import Any, Optional, cast
 
 from camel.models.base_audio_model import BaseAudioModel
 
@@ -41,10 +41,20 @@ class FishAudioModel(BaseAudioModel):
 
         super().__init__(api_key, url)
         self._api_key = api_key or os.environ.get("FISHAUDIO_API_KEY")
-        self._url = url or os.environ.get(
-            "FISHAUDIO_API_BASE_URL", "https://api.fish.audio"
+        fish_audio_url = cast(
+            str,
+            url
+            or os.environ.get(
+                "FISHAUDIO_API_BASE_URL", "https://api.fish.audio"
+            ),
         )
-        self.session = Session(apikey=self._api_key, base_url=self._url)
+        self._url = fish_audio_url
+        if self._api_key is None:
+            raise ValueError(
+                "FishAudio API key must be provided or set in "
+                "FISHAUDIO_API_KEY."
+            )
+        self.session = Session(apikey=self._api_key, base_url=fish_audio_url)
 
     def text_to_speech(
         self,

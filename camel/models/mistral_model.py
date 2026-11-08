@@ -12,7 +12,16 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import os
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Type,
+    Union,
+    cast,
+)
 
 from pydantic import BaseModel
 
@@ -207,9 +216,10 @@ class MistralModel(BaseModelBackend):
                     else [tool_calls]
                 )
                 for tool_call in tool_calls_list:
+                    function_call = cast(Dict[str, Any], tool_call)["function"]
                     mistral_function_call = FunctionCall(
-                        name=tool_call["function"].get("name"),  # type: ignore[attr-defined]
-                        arguments=tool_call["function"].get("arguments"),  # type: ignore[attr-defined]
+                        name=function_call.get("name"),
+                        arguments=function_call.get("arguments"),
                     )
 
             tool_calls = None
