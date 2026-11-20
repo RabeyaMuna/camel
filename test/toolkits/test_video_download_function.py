@@ -35,7 +35,7 @@ def mock_downloader():
         patch('ffmpeg.input') as mock_ffmpeg_input,
         patch('ffmpeg.probe') as mock_ffmpeg_probe,
         patch('PIL.Image.open'),
-        patch('mcp.server.fastmcp.server.FastMCP') as mock_fastmcp,
+        patch('mcp.server.mcpserver.server.MCPServer') as mock_fastmcp,
         patch(
             'pydantic_settings.sources.DotEnvSettingsSource._read_env_files',
             return_value={},

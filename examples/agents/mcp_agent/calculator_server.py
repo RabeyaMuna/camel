@@ -12,10 +12,10 @@
 # limitations under the License.
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
 # Create an MCP server
-mcp = FastMCP("Demo")
+mcp = MCPServer("Demo")
 
 
 # Add an addition tool

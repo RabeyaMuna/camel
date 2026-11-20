@@ -13,7 +13,8 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import functools
 import inspect
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 
 class MCPServer:
@@ -55,8 +56,8 @@ class MCPServer:
 
     def __init__(
         self,
-        function_names: Optional[list[str]] = None,
-        server_name: Optional[str] = None,
+        function_names: list[str] | None = None,
+        server_name: str | None = None,
     ):
         self.function_names = function_names
         self.server_name = server_name
@@ -104,7 +105,7 @@ class MCPServer:
                 `BaseToolkit` subclass,
                 or if a specified method cannot be found or is not callable.
         """
-        from mcp.server.fastmcp import FastMCP
+        from mcp.server.mcpserver import MCPServer
 
         from camel.toolkits.base import BaseToolkit
 
@@ -113,7 +114,7 @@ class MCPServer:
         def new_init(instance, *args, **kwargs):
             original_init(instance, *args, **kwargs)
             self.server_name = self.server_name or cls.__name__
-            instance.mcp = FastMCP(self.server_name)
+            instance.mcp = MCPServer(self.server_name)
 
             if not self.function_names and not isinstance(
                 instance, BaseToolkit

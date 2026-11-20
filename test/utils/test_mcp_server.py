@@ -16,7 +16,7 @@ import sys
 from typing import TYPE_CHECKING, Literal
 
 import pytest
-from mcp.server import FastMCP
+from mcp.server.mcpserver import MCPServer as FastMCPServer
 
 from camel.toolkits.mcp_toolkit import MCPClient
 from camel.utils import MCPServer
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     function_names=["reverse_text", "async_word_count"],
 )
 class TextProcessorForMCP:
-    mcp: FastMCP
+    mcp: FastMCPServer
 
     def __init__(self):
         pass
@@ -99,7 +99,7 @@ async def test_async_word_count():
         args=[__file__, "--server"],
     )
     await server.connect()
-    session: "ClientSession" = server._session
+    session: ClientSession = server._session
 
     text = "hello world"
 
