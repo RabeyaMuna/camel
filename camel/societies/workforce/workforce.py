@@ -2370,7 +2370,7 @@ class Workforce(BaseNode):
         Returns:
             FastMCP: An MCP server instance that can be run.
         """
-        from mcp.server.fastmcp import FastMCP
+        from mcp.server.fastmcp import FastMCP  # type: ignore[import-not-found]
 
         # Combine dependencies
         all_dependencies = ["camel-ai[all]"]
