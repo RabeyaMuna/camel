@@ -518,29 +518,30 @@ class PPTXToolkit(BaseToolkit):
         from io import BytesIO
 
         import requests
+        from pptx.presentation import Presentation
 
         img_keywords = slide_json.get('img_keywords', '').strip()
         slide = presentation.slide_layouts[8]  # Picture with Caption
         slide = presentation.slides.add_slide(slide)
         placeholders = None
 
-        title_placeholder = slide.shapes.title  # type: ignore[attr-defined]
+        title_placeholder = slide.shapes.title
         title_placeholder.text = self._remove_slide_number_from_heading(
             slide_json['heading']
         )
 
         try:
-            pic_col = slide.shapes.placeholders[1]  # type: ignore[attr-defined]
+            pic_col = slide.shapes.placeholders[1]
         except KeyError:
             # Get placeholders from the slide without layout_number
-            placeholders = self._get_slide_placeholders(slide)  # type: ignore[arg-type]
+            placeholders = self._get_slide_placeholders(slide)
             pic_col = None
             for idx, name in placeholders:
                 if 'picture' in name:
-                    pic_col = slide.shapes.placeholders[idx]  # type: ignore[attr-defined]
+                    pic_col = slide.shapes.placeholders[idx]
 
         try:
-            text_col = slide.shapes.placeholders[2]  # type: ignore[attr-defined]
+            text_col = slide.shapes.placeholders[2]
         except KeyError:
             text_col = None
             if not placeholders:
@@ -670,6 +671,7 @@ class PPTXToolkit(BaseToolkit):
         import pptx
         from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE
         from pptx.util import Inches, Pt
+        from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 
         steps = slide_json['bullet_points']
         n_steps = len(steps)
@@ -697,8 +699,8 @@ class PPTXToolkit(BaseToolkit):
                 text_frame = shape.text_frame
                 text_frame.clear()
                 paragraph = text_frame.paragraphs[0]
-                paragraph.alignment = pptx.enum.text.PP_ALIGN.CENTER
-                text_frame.vertical_anchor = pptx.enum.text.MSO_ANCHOR.MIDDLE
+                paragraph.alignment = PP_ALIGN.CENTER
+                text_frame.vertical_anchor = MSO_ANCHOR.MIDDLE
                 self._format_text(
                     paragraph, step.removeprefix(STEP_BY_STEP_PROCESS_MARKER)
                 )

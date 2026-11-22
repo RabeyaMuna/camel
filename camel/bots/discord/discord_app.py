@@ -349,7 +349,7 @@ class DiscordApp:
         """
         logger.info(f'We have logged in as {self._client.user}')
 
-    async def on_message(self, message: 'Message') -> None:
+    async def on_message(self, message: 'discord.Message') -> None:
         r"""Event handler for processing incoming messages.
 
         This method is called whenever a new message is received by the bot. It

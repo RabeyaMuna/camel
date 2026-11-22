@@ -29,6 +29,7 @@ from typing import (
     Union,
 )
 
+import imageio.v3
 from PIL import Image
 from pydantic import BaseModel
 

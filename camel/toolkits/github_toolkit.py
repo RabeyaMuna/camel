@@ -19,6 +19,7 @@ from typing import Dict, List, Literal, Optional, Union
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
 from camel.utils import MCPServer, dependencies_required
+from github import Github
 
 logger = logging.getLogger(__name__)
 

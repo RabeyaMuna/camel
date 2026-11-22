@@ -17,7 +17,8 @@ from string import Template
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 if TYPE_CHECKING:
-    from github.MainClass import Github
+    from github import Github
+    from github.ContentFile import ContentFile
 from pydantic import BaseModel
 
 from camel.agents import ChatAgent
@@ -249,7 +250,6 @@ class RepoAgent(ChatAgent):
             RepositoryInfo: The object containing information
                 about the repository, including the contents.
         """
-        from github.ContentFile import ContentFile
 
         try:
             owner, repo_name = self.parse_url(repo_url)

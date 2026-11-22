@@ -520,7 +520,13 @@ class SearchToolkit(BaseToolkit):
                 - 'published_date' (str): Publication date for news topics
                   (if available).
         """
-        from tavily import TavilyClient  # type: ignore[import-untyped]
+        try:
+            from tavily import TavilyClient
+        except ImportError:
+            raise ImportError(
+                "The 'tavily' package is required to use this method. "
+                "Please install it with: pip install tavily-python"
+            )
 
         Tavily_API_KEY = os.getenv("TAVILY_API_KEY")
         if not Tavily_API_KEY:

@@ -76,6 +76,7 @@ if TYPE_CHECKING:
         FloatRect,
         Page,
         Playwright,
+        sync_playwright,
     )
 
     from camel.agents import ChatAgent

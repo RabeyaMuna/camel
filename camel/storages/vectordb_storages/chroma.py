@@ -713,7 +713,7 @@ class ChromaStorage(BaseVectorStorage):
             raise RuntimeError(f"Failed to delete ChromaDB collection: {e}")
 
     @property
-    def client(self) -> "ClientAPI":
+    def client(self) -> "chromadb.ClientAPI":
         r"""Provides access to the underlying ChromaDB client.
 
         Returns:
@@ -722,7 +722,7 @@ class ChromaStorage(BaseVectorStorage):
         return self._client
 
     @property
-    def collection(self) -> "Collection":
+    def collection(self) -> "chromadb.Collection":
         r"""Provides access to the underlying ChromaDB collection.
 
         Returns:

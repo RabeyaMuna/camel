@@ -32,9 +32,12 @@ from camel.types import (
 from camel.utils import dependencies_required
 
 if TYPE_CHECKING:
-    from mistral_common.protocol.instruct.request import (  # type:ignore[import-not-found]
-        ChatCompletionRequest,
-    )
+    try:
+        from mistral_common.protocol.instruct.request import (
+            ChatCompletionRequest,
+        )
+    except ImportError:
+        ChatCompletionRequest = Any  # type: ignore[assignment]
 
     from camel.messages import OpenAIMessage
 
@@ -286,9 +289,11 @@ class AnthropicTokenCounter(BaseTokenCounter):
         Args:
             model (str): The name of the Anthropic model being used.
         """
-        from anthropic import Anthropic
-
-        self.client = Anthropic()
+        try:
+            from anthropic import Anthropic
+            self.client = Anthropic()
+        except ImportError:
+            self.client = None  # type: ignore[assignment]
         self.model = model
 
     @dependencies_required('anthropic')

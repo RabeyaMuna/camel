@@ -24,7 +24,7 @@ from camel.utils import MCPServer
 if TYPE_CHECKING:
     from ssl import SSLContext
 
-    from slack_sdk import WebClient
+    from slack_sdk.web.client import WebClient
 
 from camel.logger import get_logger
 from camel.toolkits import FunctionTool
@@ -76,7 +76,7 @@ class SlackToolkit(BaseToolkit):
                 environment variables are not set.
         """
         try:
-            from slack_sdk import WebClient
+            from slack_sdk.web.client import WebClient
         except ImportError as e:
             raise ImportError(
                 "Cannot import slack_sdk. Please install the package with \

@@ -66,13 +66,16 @@ class MistralConfig(BaseConfig):
     @classmethod
     def fields_type_checking(cls, response_format):
         if response_format and not isinstance(response_format, dict):
-            from mistralai.models import ResponseFormat
+            try:
+                from mistralai.models import ResponseFormat
 
-            if not isinstance(response_format, ResponseFormat):
-                raise ValueError(
-                    f"The tool {response_format} should be an instance "
-                    "of `mistralai.models.ResponseFormat`."
-                )
+                if not isinstance(response_format, ResponseFormat):
+                    raise ValueError(
+                        f"The tool {response_format} should be an instance "
+                        "of `mistralai.models.ResponseFormat`."
+                    )
+            except ImportError:
+                raise ImportError("The mistralai.models module is required but not installed. Please install it with 'pip install mistralai'")
         return response_format
 
 

@@ -374,7 +374,7 @@ class TicTacToeEnv(MultiStepEnv):
 
         return Observation(question=obs, context={}, metadata={})
 
-    async def compute_reward(self) -> Tuple[float, Dict[str, float]]:
+    def compute_reward(self) -> Tuple[float, Dict[str, float]]:
         r"""Compute the reward for the current state.
 
         Returns:

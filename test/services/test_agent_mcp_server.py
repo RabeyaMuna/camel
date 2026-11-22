@@ -30,6 +30,13 @@ from services.agent_mcp.agent_mcp_server import (
     step,
 )
 
+# Add missing implementation or library stub for 'mcp.server.fastmcp'
+from typing import Any
+
+class FastMCP:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        pass
+
 
 @pytest.fixture
 def mock_agent():

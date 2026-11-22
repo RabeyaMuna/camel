@@ -35,7 +35,6 @@ from typing import (
 )
 
 import httpx
-import mcp.types as types
 from pydantic import BaseModel, model_validator
 
 try:
@@ -64,7 +63,16 @@ except ImportError:
         return httpx.AsyncClient(**kwargs)
 
 
-from mcp import ClientSession
+try:
+    from mcp import ClientSession
+    import mcp.types as types
+except ImportError:
+    # Stub implementations for type checking
+    class ClientSession:
+        pass
+
+    class types:
+        pass
 
 
 class TransportType(str, Enum):

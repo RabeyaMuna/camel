@@ -49,6 +49,7 @@ from pydantic import BaseModel
 from camel.types import TaskType
 
 from .constants import Constants
+from playwright.sync_api import sync_playwright
 
 F = TypeVar('F', bound=Callable[..., Any])
 

@@ -302,7 +302,7 @@ class MistralModel(BaseModelBackend):
             **request_config,
         )
 
-        openai_response = self._to_openai_response(response)  # type: ignore[arg-type]
+        openai_response = self._to_openai_response(response)
 
         update_current_observation(
             usage=openai_response.usage,
@@ -313,11 +313,11 @@ class MistralModel(BaseModelBackend):
             llm_event = LLMEvent(
                 thread_id=openai_response.id,
                 prompt=" ".join(
-                    [message.get("content") for message in messages]  # type: ignore[misc]
+                    [message.get("content", "") for message in messages]
                 ),
-                prompt_tokens=openai_response.usage.prompt_tokens,  # type: ignore[union-attr]
+                prompt_tokens=openai_response.usage.prompt_tokens,
                 completion=openai_response.choices[0].message.content,
-                completion_tokens=openai_response.usage.completion_tokens,  # type: ignore[union-attr]
+                completion_tokens=openai_response.usage.completion_tokens,
                 model=self.model_type,
             )
             record(llm_event)

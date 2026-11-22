@@ -375,6 +375,8 @@ def get_all_sub_trees(root_node):
 
 
 # Parse the program into AST trees
+from tree_sitter import Language, Parser
+
 def ast_parse(candidate):
     PY_LANGUAGE = Language(tspython.language())
     parser = Parser(PY_LANGUAGE)

@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, Dict, Optional
 
 from camel.logger import get_logger
 
+from playwright.async_api import async_playwright
 from .actions import ActionExecutor
 from .snapshot import PageSnapshot
 

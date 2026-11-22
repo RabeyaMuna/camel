@@ -86,6 +86,12 @@ from camel.utils import (
 )
 from camel.utils.commons import dependencies_required
 
+# Add missing import for mcp.server.fastmcp
+try:
+    from mcp.server.fastmcp import FastMCP
+except ImportError:
+    FastMCP = None  # type: ignore
+
 if TYPE_CHECKING:
     from camel.terminators import ResponseTerminator
 
@@ -2239,7 +2245,8 @@ class ChatAgent(BaseAgent):
         Returns:
             FastMCP: An MCP server instance that can be run.
         """
-        from mcp.server.fastmcp import FastMCP
+        if FastMCP is None:
+            raise ImportError("mcp.server.fastmcp is not available")
 
         # Combine dependencies
         all_dependencies = ["camel-ai[all]"]

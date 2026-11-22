@@ -16,6 +16,7 @@ import os
 import tempfile
 
 import pytest
+import pptx
 
 from camel.toolkits.pptx_toolkit import PPTXToolkit
 

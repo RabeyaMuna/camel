@@ -56,7 +56,7 @@ class RedisStorage(BaseKeyValueStorage):
         except ImportError as exc:
             logger.error(
                 "Please install `redis` first. You can install it by "
-                "running `pip install redis`."
+                "running `pip install redis[async]`."
             )
             raise exc
 

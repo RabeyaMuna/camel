@@ -17,6 +17,7 @@ import logging
 import os
 from typing import List, Optional
 
+import stripe
 from camel.toolkits import FunctionTool
 from camel.toolkits.base import BaseToolkit
 from camel.utils import MCPServer, api_keys_required
