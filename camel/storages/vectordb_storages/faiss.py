@@ -642,7 +642,7 @@ class FaissStorage(BaseVectorStorage):
             if vector is not None:
                 vector = vector.tolist()
             else:
-                vector = []  # type: ignore[assignment]
+                vector = []  # type: List[float]
 
             results.append(
                 VectorDBQueryResult.create(

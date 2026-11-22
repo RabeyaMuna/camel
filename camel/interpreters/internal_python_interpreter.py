@@ -288,6 +288,7 @@ class InternalPythonInterpreter(BaseInterpreter):
     # ast.Index is deprecated after python 3.9, which cannot pass type check,
     # but is still necessary for older versions.
     @typing.no_type_check
+    def _execute_ast(self, node: ast.AST) -> typing.Any:
     def _execute_ast(self, expression: ast.AST) -> Any:
         if isinstance(expression, ast.Assign):
             # Assignment -> evaluate the assignment which should

@@ -39,14 +39,14 @@ URL = "https://example.com"
 # ------------------------
 
 
-def test_init():
+def test_init() -> None:
     crawler = Crawl4AI()
     # Verify that the crawler attribute is set to AsyncWebCrawler
     assert crawler.crawl is not None
 
 
 @pytest.mark.asyncio
-async def test_crawl_success():
+async def test_crawl_success() -> None:
     dummy_result = DummyCrawlResult(
         markdown="Test markdown", cleaned_html="<html></html>", links={}
     )
@@ -66,7 +66,7 @@ async def test_crawl_success():
 
 
 @pytest.mark.asyncio
-async def test_crawl_failure_in_run():
+async def test_crawl_failure_in_run() -> None:
     with patch.object(
         Crawl4AI, "_run_crawler", new_callable=AsyncMock
     ) as mock_run_crawler:
@@ -81,7 +81,7 @@ async def test_crawl_failure_in_run():
 
 
 @pytest.mark.asyncio
-async def test_scrape_success():
+async def test_scrape_success() -> None:
     dummy_result = DummyCrawlResult(
         markdown="Scraped markdown",
         cleaned_html="<html>scraped</html>",
@@ -101,7 +101,7 @@ async def test_scrape_success():
 
 
 @pytest.mark.asyncio
-async def test_structured_scrape_success():
+async def test_structured_scrape_success() -> None:
     dummy_result = DummyCrawlResult(
         markdown="Scraped markdown",
         cleaned_html="<html>scraped</html>",
@@ -125,7 +125,7 @@ async def test_structured_scrape_success():
 
 
 @pytest.mark.asyncio
-async def test_structured_scrape_failure():
+async def test_structured_scrape_failure() -> None:
     # Simulate a failure in the structured scrape method.
     with patch.object(
         Crawl4AI, "_run_crawler", new_callable=AsyncMock
@@ -141,7 +141,7 @@ async def test_structured_scrape_failure():
 
 
 @pytest.mark.asyncio
-async def test_map_site_success():
+async def test_map_site_success() -> None:
     # Simulate the crawl method to return a list with a dummy page
     dummy_page = {
         "url": "https://example.com/page1",
@@ -161,7 +161,7 @@ async def test_map_site_success():
 
 
 @pytest.mark.asyncio
-async def test_map_site_failure():
+async def test_map_site_failure() -> None:
     # Simulate crawl raising an exception in map_site
     async def dummy_crawl_fail(url: str, **kwargs):
         raise Exception("Mapping error")

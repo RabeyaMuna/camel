@@ -2123,7 +2123,7 @@ class Workforce(BaseNode):
             return ChatAgent(
                 system_message=worker_sys_msg,
                 model=model,
-                tools=function_list,  # type: ignore[arg-type]
+                tools=list(function_list),
                 pause_event=self._pause_event,
             )
 
@@ -2136,7 +2136,7 @@ class Workforce(BaseNode):
             # Add timeout to prevent indefinite waiting
             return await asyncio.wait_for(
                 self._channel.get_returned_task_by_publisher(self.node_id),
-                timeout=TASK_TIMEOUT_SECONDS,
+                timeout=float(TASK_TIMEOUT_SECONDS),
             )
         except Exception as e:
             error_msg = (
@@ -2222,7 +2222,7 @@ class Workforce(BaseNode):
 
         # Determine detailed failure information
         # Use the actual error/result stored in task.result
-        failure_reason = task.result or "Unknown error"
+        failure_reason = str(task.result) if task.result else "Unknown error"
 
         # Add context about the worker and task
         worker_id = task.assigned_worker_id or "unknown"
@@ -2241,9 +2241,9 @@ class Workforce(BaseNode):
                 worker_id=worker_id,
                 error_message=detailed_error,
                 metadata={
-                    'failure_count': task.failure_count,
-                    'task_content': task.content,
-                    'result_length': len(task.result) if task.result else 0,
+                    'failure_count': int(task.failure_count),
+                    'task_content': str(task.content),
+                    'result_length': len(str(task.result)) if task.result else 0,
                 },
             )
 
@@ -2920,7 +2920,7 @@ class Workforce(BaseNode):
         dependencies: Optional[List[str]] = None,
         host: str = "localhost",
         port: int = 8001,
-    ):
+    ) -> Any:
         r"""Expose this Workforce as an MCP server.
 
         Args:
@@ -3188,7 +3188,8 @@ class Workforce(BaseNode):
                     content=system_message or f"You are a {role_name}.",
                 )
 
-                agent = ChatAgent(sys_msg, **(agent_kwargs or {}))
+                agent_kwargs_dict = dict(agent_kwargs) if agent_kwargs else {}
+                agent = ChatAgent(sys_msg, **agent_kwargs_dict)
                 workforce_instance.add_single_agent_worker(description, agent)
 
                 return {

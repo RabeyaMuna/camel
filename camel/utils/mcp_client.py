@@ -32,11 +32,15 @@ from typing import (
     Optional,
     Set,
     Union,
+    TYPE_CHECKING
 )
 
 import httpx
-import mcp.types as types
 from pydantic import BaseModel, model_validator
+
+if TYPE_CHECKING:
+    import mcp.types as types
+    from mcp import ClientSession
 
 try:
     from mcp.shared._httpx_utils import create_mcp_http_client
@@ -62,9 +66,6 @@ except ImportError:
             kwargs["auth"] = auth
 
         return httpx.AsyncClient(**kwargs)
-
-
-from mcp import ClientSession
 
 
 class TransportType(str, Enum):
@@ -334,7 +335,7 @@ class MCPClient:
             # Raise a simpler exception
             raise ConnectionError(error_msg) from e
 
-    async def _cleanup_connection(self):
+    async def _cleanup_connection(self) -> None:
         r"""Clean up connection resources."""
         try:
             if self._session:
@@ -428,7 +429,7 @@ class MCPClient:
             )
 
     @asynccontextmanager
-    async def _create_transport(self):
+    async def _create_transport(self) -> AsyncIterator[Tuple[Any, Any]]:
         """Create the appropriate transport based on detected type."""
         transport_type = self.config.transport_type
 
@@ -541,7 +542,7 @@ class MCPClient:
         r"""Check if the client is currently connected."""
         return self._session is not None
 
-    async def list_mcp_tools(self):
+    async def list_mcp_tools(self) -> Any:
         r"""Retrieves the list of available tools from the connected MCP
         server.
 
@@ -555,7 +556,7 @@ class MCPClient:
         except Exception as e:
             raise e
 
-    def list_mcp_tools_sync(self):
+    def list_mcp_tools_sync(self) -> Any:
         r"""Synchronously retrieves the list of available tools from the
         connected MCP server.
 
@@ -1032,7 +1033,7 @@ def create_mcp_client_from_config_file(
     """
     import json
 
-    config_path = Path(config_path)
+    config_path: Path = Path(config_path)
     with open(config_path, 'r') as f:
         config_data = json.load(f)
 

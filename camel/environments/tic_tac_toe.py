@@ -190,7 +190,7 @@ class TicTacToeEnv(MultiStepEnv):
     strategy.
     """
 
-    WIN_COMBINATIONS: ClassVar = [
+    WIN_COMBINATIONS: ClassVar[List[Tuple[int, int, int]]] = [
         (0, 1, 2),  # Top row
         (3, 4, 5),  # Middle row
         (6, 7, 8),  # Bottom row
@@ -400,7 +400,7 @@ class TicTacToeEnv(MultiStepEnv):
         else:
             board = self._state["board"]
             value = TicTacToeEnv.evaluate_position_for_x(board, is_x_turn=True)
-            return value, {"x_non_loss_value": value}
+            return float(value), {"x_non_loss_value": float(value)}
 
     @staticmethod
     def evaluate_position_for_x(

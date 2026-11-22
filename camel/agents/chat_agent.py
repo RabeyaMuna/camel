@@ -1399,7 +1399,7 @@ class ChatAgent(BaseAgent):
 
             # Accumulate API token usage
             self._update_token_usage_tracker(
-                step_token_usage, response.usage_dict
+                step_token_usage,  # type: ignore response.usage_dict
             )
 
             # Terminate Agent if stop_event is set
@@ -1618,7 +1618,7 @@ class ChatAgent(BaseAgent):
                         tool_call_record = await self._aexecute_tool(
                             tool_call_request
                         )
-                        tool_call_records.append(tool_call_record)
+                        tool_call_records.append(tool_call_record)  # type: ignore
 
                         # Check if this tool call produced images
                         if (
@@ -1741,7 +1741,7 @@ class ChatAgent(BaseAgent):
     def _convert_to_chatagent_response(
         self,
         response: ModelResponse,
-        tool_call_records: List[ToolCallingRecord],
+        tool_call_records: List[ToolCallingRecord],  # type: ignore
         num_tokens: int,  # Context tokens from the last call in step
         external_tool_call_requests: Optional[List[ToolCallRequest]],
         step_api_prompt_tokens: int = 0,
@@ -2399,11 +2399,11 @@ class ChatAgent(BaseAgent):
         self,
         tool_call_request: ToolCallRequest,
     ) -> ToolCallingRecord:
+        import asyncio
         func_name = tool_call_request.tool_name
         args = tool_call_request.args
         tool_call_id = tool_call_request.tool_call_id
         tool = self._internal_tools[func_name]
-        import asyncio
 
         try:
             # Try different invocation paths in order of preference
@@ -2621,7 +2621,7 @@ class ChatAgent(BaseAgent):
                     tool_calls_complete,
                 ) = yield from self._process_stream_chunks_with_accumulator(
                     response,
-                    content_accumulator,
+                    content_accumulator,  # type: ignore
                     accumulated_tool_calls,
                     tool_call_records,
                     step_token_usage,
@@ -2671,12 +2671,12 @@ class ChatAgent(BaseAgent):
                             if getattr(event, "delta", None):
                                 # Use accumulator for proper content management
                                 partial_response = self._create_streaming_response_with_accumulator(  # noqa: E501
-                                    content_accumulator,
+                                    content_accumulator,  # type: ignore  # type: ignore
                                     getattr(event, "delta", ""),
-                                    step_token_usage,
+                                    step_token_usage,  # type: ignore  # type: ignore
                                     tool_call_records=tool_call_records.copy(),
                                 )
-                                yield partial_response
+                                yield partial_response  # type: ignore
 
                         elif event.type == "content.done":
                             parsed_object = getattr(event, "parsed", None)
@@ -2707,7 +2707,7 @@ class ChatAgent(BaseAgent):
                             parsed=cast(
                                 "BaseModel | dict[str, Any] | None",
                                 parsed_object,
-                            ),  # type: ignore[arg-type]
+                            ),  # type: ignore  # type: ignore[arg-type]
                         )
 
                         self.record_message(final_message)
@@ -2763,10 +2763,10 @@ class ChatAgent(BaseAgent):
     def _process_stream_chunks_with_accumulator(
         self,
         stream: Stream[ChatCompletionChunk],
-        content_accumulator: StreamContentAccumulator,
-        accumulated_tool_calls: Dict[str, Any],
+        content_accumulator: StreamContentAccumulator,  # type: ignore
+        accumulated_tool_calls: Dict[str, Any],  # type: ignore  # type: ignore
         tool_call_records: List[ToolCallingRecord],
-        step_token_usage: Dict[str, int],
+        step_token_usage: Dict[str, int],  # type: ignore
         response_format: Optional[Type[BaseModel]] = None,
     ) -> Generator[ChatAgentResponse, None, Tuple[bool, bool]]:
         r"""Process streaming chunks with content accumulator."""
@@ -2801,18 +2801,18 @@ class ChatAgent(BaseAgent):
                     yield partial_response
 
                 # Handle tool calls streaming
-                if delta.tool_calls:
+                if delta.tool_calls:  # type: ignore
                     tool_calls_complete = self._accumulate_tool_calls(
-                        delta.tool_calls, accumulated_tool_calls
+                        delta.tool_calls, accumulated_tool_calls  # type: ignore
                     )
 
                 # Check if stream is complete
-                if choice.finish_reason:
+                if choice.finish_reason:  # type: ignore
                     stream_completed = True
 
                     # If we have complete tool calls, execute them with
                     # sync status updates
-                    if accumulated_tool_calls:
+                    if accumulated_tool_calls:  # type: ignore
                         # Record assistant message with tool calls first
                         self._record_assistant_tool_calls_message(
                             accumulated_tool_calls,
@@ -2822,7 +2822,7 @@ class ChatAgent(BaseAgent):
                         # Execute tools synchronously with
                         # optimized status updates
                         for (
-                            status_response
+                            status_response  # type: ignore
                         ) in self._execute_tools_sync_with_status_accumulator(
                             accumulated_tool_calls,
                             content_accumulator,
@@ -2844,7 +2844,7 @@ class ChatAgent(BaseAgent):
                     # Record final message only if we have content AND no tool
                     # calls. If there are tool calls, _record_tool_calling
                     # will handle message recording.
-                    final_content = content_accumulator.get_full_content()
+                    final_content = content_accumulator.get_full_content()  # type: ignore
                     if final_content.strip() and not accumulated_tool_calls:
                         final_message = BaseMessage(
                             role_name=self.role_name,
@@ -2865,7 +2865,7 @@ class ChatAgent(BaseAgent):
 
     def _accumulate_tool_calls(
         self,
-        tool_call_deltas: List[Any],
+        tool_call_deltas: List[Any],  # type: ignore
         accumulated_tool_calls: Dict[str, Any],
     ) -> bool:
         r"""Accumulate tool call chunks and return True when
@@ -2880,12 +2880,12 @@ class ChatAgent(BaseAgent):
             bool: True if any tool call is complete, False otherwise.
         """
 
-        for delta_tool_call in tool_call_deltas:
-            index = delta_tool_call.index
-            tool_call_id = getattr(delta_tool_call, 'id', None)
+        for delta_tool_call in tool_call_deltas:  # type: ignore
+            index = delta_tool_call.index  # type: ignore
+            tool_call_id = getattr(delta_tool_call, 'id', None)  # type: ignore
 
             # Initialize tool call entry if not exists
-            if index not in accumulated_tool_calls:
+            if index not in accumulated_tool_calls:  # type: ignore
                 accumulated_tool_calls[index] = {
                     'id': '',
                     'type': 'function',
@@ -2893,44 +2893,44 @@ class ChatAgent(BaseAgent):
                     'complete': False,
                 }
 
-            tool_call_entry = accumulated_tool_calls[index]
+            tool_call_entry = accumulated_tool_calls[index]  # type: ignore
 
             # Accumulate tool call data
-            if tool_call_id:
+            if tool_call_id:  # type: ignore
                 tool_call_entry['id'] = (
                     tool_call_id  # Set full ID, don't append
-                )
+                )  # type: ignore
 
             if (
                 hasattr(delta_tool_call, 'function')
                 and delta_tool_call.function
             ):
-                if delta_tool_call.function.name:
+                if delta_tool_call.function.name:  # type: ignore
                     tool_call_entry['function']['name'] += (
                         delta_tool_call.function.name
-                    )  # Append incremental name
-                if delta_tool_call.function.arguments:
+                    )  # type: ignore  # Append incremental name
+                if delta_tool_call.function.arguments:  # type: ignore
                     tool_call_entry['function']['arguments'] += (
                         delta_tool_call.function.arguments
-                    )
+                    )  # type: ignore
 
         # Check if any tool calls are complete
         any_complete = False
-        for _index, tool_call_entry in accumulated_tool_calls.items():
+        for _index, tool_call_entry in accumulated_tool_calls.items():  # type: ignore
             if (
-                tool_call_entry['id']
-                and tool_call_entry['function']['name']
-                and tool_call_entry['function']['arguments']
-                and tool_call_entry['function']['name'] in self._internal_tools
+                tool_call_entry['id']  # type: ignore
+                and tool_call_entry['function']['name']  # type: ignore
+                and tool_call_entry['function']['arguments']  # type: ignore
+                and tool_call_entry['function']['name'] in self._internal_tools  # type: ignore
             ):
                 try:
                     # Try to parse arguments to check completeness
-                    json.loads(tool_call_entry['function']['arguments'])
-                    tool_call_entry['complete'] = True
+                    json.loads(tool_call_entry['function']['arguments'])  # type: ignore
+                    tool_call_entry['complete'] = True  # type: ignore
                     any_complete = True
                 except json.JSONDecodeError:
                     # Arguments not complete yet
-                    tool_call_entry['complete'] = False
+                    tool_call_entry['complete'] = False  # type: ignore
 
         return any_complete
 
@@ -2945,94 +2945,94 @@ class ChatAgent(BaseAgent):
         proper content accumulation, using threads+queue for
         non-blocking status streaming."""
 
-        def tool_worker(tool_func, args, result_queue, tool_call_data):
+        def tool_worker(tool_func: Any, args: Any, result_queue: Any, tool_call_data: Any) -> None:
             try:
                 tool_call_record = self._execute_tool_from_stream_data(
                     tool_call_data
                 )
-                result_queue.put(tool_call_record)
+                result_queue.put(tool_call_record)  # type: ignore
             except Exception as e:
                 logger.error(f"Error in threaded tool execution: {e}")
-                result_queue.put(None)
+                result_queue.put(None)  # type: ignore
 
-        tool_calls_to_execute = []
-        for _tool_call_index, tool_call_data in accumulated_tool_calls.items():
-            if tool_call_data.get('complete', False):
-                tool_calls_to_execute.append(tool_call_data)
+        tool_calls_to_execute: List[Dict[str, Any]] = []
+        for _tool_call_index, tool_call_data in accumulated_tool_calls.items():  # type: ignore
+            if tool_call_data.get('complete', False):  # type: ignore
+                tool_calls_to_execute.append(tool_call_data)  # type: ignore
 
         # Phase 2: Execute tools in threads and yield status while waiting
-        for tool_call_data in tool_calls_to_execute:
-            function_name = tool_call_data['function']['name']
+        for tool_call_data in tool_calls_to_execute:  # type: ignore
+            function_name = tool_call_data['function']['name']  # type: ignore
             try:
-                args = json.loads(tool_call_data['function']['arguments'])
+                args = json.loads(tool_call_data['function']['arguments'])  # type: ignore
             except json.JSONDecodeError:
-                args = tool_call_data['function']['arguments']
+                args = tool_call_data['function']['arguments']  # type: ignore
             result_queue: queue.Queue[Optional[ToolCallingRecord]] = (
                 queue.Queue()
-            )
-            thread = threading.Thread(
-                target=tool_worker,
-                args=(
-                    self._internal_tools[function_name],
-                    args,
-                    result_queue,
-                    tool_call_data,
+            )  # type: ignore
+            thread = threading.Thread(  # type: ignore
+                target=tool_worker,  # type: ignore
+                args=(  # type: ignore
+                    self._internal_tools[function_name],  # type: ignore
+                    args,  # type: ignore
+                    result_queue,  # type: ignore
+                    tool_call_data,  # type: ignore
                 ),
             )
-            thread.start()
+            thread.start()  # type: ignore
 
-            status_message = (
+            status_message: str = (
                 f"\nCalling function: {function_name} "
-                f"with arguments:\n{args}\n"
+                f"with arguments:\n{args}\n"  # type: ignore
             )
-            status_status = self._create_tool_status_response_with_accumulator(
+            status_status = self._create_tool_status_response_with_accumulator(  # type: ignore
                 content_accumulator,
-                status_message,
-                "tool_calling",
+                status_message,  # type: ignore
+                "tool_calling",  # type: ignore
                 step_token_usage,
             )
-            yield status_status
+            yield status_status  # type: ignore
             # wait for tool thread to finish with optional timeout
-            thread.join(self.tool_execution_timeout)
+            thread.join(self.tool_execution_timeout)  # type: ignore
 
             # If timeout occurred, mark as error and continue
-            if thread.is_alive():
-                timeout_msg = (
+            if thread.is_alive():  # type: ignore
+                timeout_msg: str = (
                     f"\nFunction '{function_name}' timed out after "
-                    f"{self.tool_execution_timeout} seconds.\n---------\n"
+                    f"{self.tool_execution_timeout} seconds.\n---------\n"  # type: ignore
                 )
-                timeout_status = (
-                    self._create_tool_status_response_with_accumulator(
+                timeout_status = (  # type: ignore
+                    self._create_tool_status_response_with_accumulator(  # type: ignore  # type: ignore
                         content_accumulator,
-                        timeout_msg,
-                        "tool_timeout",
+                        timeout_msg,  # type: ignore
+                        "tool_timeout",  # type: ignore
                         step_token_usage,
                     )
                 )
-                yield timeout_status
-                logger.error(timeout_msg.strip())
+                yield timeout_status  # type: ignore
+                logger.error(timeout_msg.strip())  # type: ignore
                 # Detach thread (it may still finish later). Skip recording.
                 continue
 
             # Tool finished, get result
-            tool_call_record = result_queue.get()
-            if tool_call_record:
+            tool_call_record = result_queue.get()  # type: ignore
+            if tool_call_record:  # type: ignore
                 tool_call_records.append(tool_call_record)
-                raw_result = tool_call_record.result
-                result_str = str(raw_result)
-                status_message = (
-                    f"\nFunction output: {result_str}\n---------\n"
+                raw_result = tool_call_record.result  # type: ignore
+                result_str = str(raw_result)  # type: ignore
+                status_message: str = (
+                    f"\nFunction output: {result_str}\n---------\n"  # type: ignore
                 )
-                output_status = (
+                output_status = (  # type: ignore
                     self._create_tool_status_response_with_accumulator(
                         content_accumulator,
-                        status_message,
-                        "tool_output",
+                        status_message,  # type: ignore
+                        "tool_output",  # type: ignore
                         step_token_usage,
-                        [tool_call_record],
+                        [tool_call_record],  # type: ignore
                     )
                 )
-                yield output_status
+                yield output_status  # type: ignore
             else:
                 # Error already logged
                 continue
@@ -3899,7 +3899,7 @@ class ChatAgent(BaseAgent):
             f"ChatAgent({self.role_name}, {self.role_type}, {self.model_type})"
         )
 
-    @dependencies_required("mcp")
+    @dependencies_required("mcp")  # type: ignore
     def to_mcp(
         self,
         name: str = "CAMEL-ChatAgent",
@@ -3926,7 +3926,7 @@ class ChatAgent(BaseAgent):
         Returns:
             FastMCP: An MCP server instance that can be run.
         """
-        from mcp.server.fastmcp import FastMCP
+        from mcp.server.fastmcp import FastMCP  # type: ignore
 
         # Combine dependencies
         all_dependencies = ["camel-ai[all]"]

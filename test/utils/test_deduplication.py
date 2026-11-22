@@ -35,7 +35,7 @@ class MockEmbedding(BaseEmbedding[str]):
         return 3
 
 
-def test_deduplicate_internally_empty_list():
+def test_deduplicate_internally_empty_list() -> None:
     mock_embedding_instance = MockEmbedding()
     result = deduplicate_internally(
         texts=[],
@@ -49,7 +49,7 @@ def test_deduplicate_internally_empty_list():
     assert len(result.duplicate_to_target_map) == 0
 
 
-def test_deduplicate_internally_single_item():
+def test_deduplicate_internally_single_item() -> None:
     mock_embedding_instance = MockEmbedding()
     texts = ["Hello world!"]
     result = deduplicate_internally(
@@ -65,7 +65,7 @@ def test_deduplicate_internally_single_item():
     assert len(result.duplicate_to_target_map) == 0
 
 
-def test_deduplicate_internally_with_mock_embedding():
+def test_deduplicate_internally_with_mock_embedding() -> None:
     texts = ["Hello world!", "Hello world!", "HELLO WORLD!", "Something else"]
     mock_embedding_instance = MockEmbedding()
 
@@ -101,7 +101,7 @@ def test_deduplicate_internally_with_mock_embedding():
     assert result.unique_embeddings_dict[0] == [0.5, 0.5, 0.5]
 
 
-def test_deduplicate_internally_with_precomputed_embeddings():
+def test_deduplicate_internally_with_precomputed_embeddings() -> None:
     texts = ["Text A", "Text B", "Text B (similar)", "Text C"]
     # Embeddings:
     # - index 0 -> [1, 0, 0]
@@ -144,7 +144,7 @@ def test_deduplicate_internally_with_precomputed_embeddings():
         ), f"Missing embedding for unique id {uid}"
 
 
-def test_deduplicate_internally_chain_scenario():
+def test_deduplicate_internally_chain_scenario() -> None:
     r"""Test scenario:
       - A <-> B similarity > threshold
       - B <-> C similarity > threshold
@@ -209,7 +209,7 @@ def test_deduplicate_internally_chain_scenario():
     ], "Expected 'A' to have embedding [1.0, 0.0]."
 
 
-def test_deduplicate_internally_with_llm_supervision():
+def test_deduplicate_internally_with_llm_supervision() -> None:
     with pytest.raises(NotImplementedError):
         deduplicate_internally(
             texts=["A", "B", "C"],
@@ -219,7 +219,7 @@ def test_deduplicate_internally_with_llm_supervision():
         )
 
 
-def test_deduplicate_internally_with_inconsistent_embeddings():
+def test_deduplicate_internally_with_inconsistent_embeddings() -> None:
     with pytest.raises(ValueError):
         deduplicate_internally(
             texts=["A", "B", "C"],

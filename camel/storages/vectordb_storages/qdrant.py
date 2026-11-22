@@ -376,7 +376,7 @@ class QdrantStorage(BaseVectorStorage):
             op_info = self._client.delete(
                 collection_name=self.collection_name,
                 points_selector=PointIdsList(
-                    points=cast(List[Union[int, str]], ids)
+                    points=ids
                 ),
                 **kwargs,
             )
@@ -395,7 +395,7 @@ class QdrantStorage(BaseVectorStorage):
             op_info = self._client.delete(
                 collection_name=self.collection_name,
                 points_selector=Filter(
-                    must=cast(List[Condition], filter_conditions)
+                    must=filter_conditions
                 ),
                 **kwargs,
             )
@@ -447,7 +447,7 @@ class QdrantStorage(BaseVectorStorage):
                 FieldCondition(key=key, match=MatchValue(value=value))
                 for key, value in filter_conditions.items()
             ]
-            search_filter = Filter(must=cast(List[Condition], must_conditions))
+            search_filter = Filter(must=must_conditions)
 
         # Execute the search with optional filter
         search_result = self._client.query_points(

@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 if TYPE_CHECKING:
-    from pptx import presentation
+    from pptx import Presentation
     from pptx.slide import Slide
     from pptx.text.text import TextFrame
 

@@ -136,17 +136,18 @@ class MistralModel(BaseModelBackend):
         tool_calls = None
         if (
             response.choices
-            and response.choices[0].message
+            and response.choices[0] is not None
+            and response.choices[0].message is not None
             and response.choices[0].message.tool_calls is not None
         ):
             tool_calls = [
                 dict(
-                    id=tool_call.id,  # type: ignore[union-attr]
+                    id=tool_call.id if tool_call is not None else None,
                     function={
-                        "name": tool_call.function.name,  # type: ignore[union-attr]
-                        "arguments": tool_call.function.arguments,  # type: ignore[union-attr]
+                        "name": tool_call.function.name if tool_call is not None and tool_call.function is not None else None,
+                        "arguments": tool_call.function.arguments if tool_call is not None and tool_call.function is not None else None,
                     },
-                    type=tool_call.type,  # type: ignore[union-attr]
+                    type=tool_call.type if tool_call is not None else None,
                 )
                 for tool_call in response.choices[0].message.tool_calls
             ]
@@ -155,15 +156,13 @@ class MistralModel(BaseModelBackend):
             id=response.id,
             choices=[
                 dict(
-                    index=response.choices[0].index,  # type: ignore[index]
+                    index=response.choices[0].index if response.choices[0] is not None else None,
                     message={
-                        "role": response.choices[0].message.role,  # type: ignore[index,union-attr]
-                        "content": response.choices[0].message.content,  # type: ignore[index,union-attr]
+                        "role": response.choices[0].message.role if response.choices[0] is not None and response.choices[0].message is not None else None,
+                        "content": response.choices[0].message.content if response.choices[0] is not None and response.choices[0].message is not None else None,
                         "tool_calls": tool_calls,
                     },
-                    finish_reason=response.choices[0].finish_reason  # type: ignore[index]
-                    if response.choices[0].finish_reason  # type: ignore[index]
-                    else None,
+                    finish_reason=response.choices[0].finish_reason if response.choices[0] is not None and response.choices[0].finish_reason is not None else None,
                 )
             ],
             created=response.created,
@@ -207,10 +206,11 @@ class MistralModel(BaseModelBackend):
                     else [tool_calls]
                 )
                 for tool_call in tool_calls_list:
-                    mistral_function_call = FunctionCall(
-                        name=tool_call["function"].get("name"),  # type: ignore[attr-defined]
-                        arguments=tool_call["function"].get("arguments"),  # type: ignore[attr-defined]
-                    )
+                    if tool_call is not None and "function" in tool_call and tool_call["function"] is not None:
+                        mistral_function_call = FunctionCall(
+                            name=tool_call["function"].get("name"),
+                            arguments=tool_call["function"].get("arguments"),
+                        )
 
             tool_calls = None
             if mistral_function_call:

@@ -700,7 +700,7 @@ def test_chat_agent_multiple_return_message_error(n, step_call_count=3):
 
 
 @pytest.mark.model_backend
-def test_chat_agent_stream_output(step_call_count=3):
+def test_chat_agent_stream_output(step_call_count: int = 3) -> None:
     system_msg = BaseMessage(
         "Assistant",
         RoleType.ASSISTANT,
@@ -744,7 +744,7 @@ def test_chat_agent_stream_output(step_call_count=3):
 
 
 @pytest.mark.model_backend
-def test_set_output_language():
+def test_set_output_language() -> None:
     system_message = BaseMessage(
         role_name="assistant",
         role_type=RoleType.ASSISTANT,
@@ -772,7 +772,7 @@ def test_set_output_language():
 
 
 @pytest.mark.model_backend
-def test_set_multiple_output_language():
+def test_set_multiple_output_language() -> None:
     system_message = BaseMessage(
         role_name="assistant",
         role_type=RoleType.ASSISTANT,
@@ -816,7 +816,7 @@ def test_set_multiple_output_language():
 
 
 @pytest.mark.model_backend
-def test_tool_calling_sync(step_call_count=3):
+def test_tool_calling_sync(step_call_count: int = 3) -> None:
     system_message = BaseMessage(
         role_name="assistant",
         role_type=RoleType.ASSISTANT,
@@ -981,7 +981,7 @@ def test_tool_calling_sync(step_call_count=3):
 
 @pytest.mark.model_backend
 @pytest.mark.asyncio
-async def test_tool_calling_math_async(step_call_count=3):
+async def test_tool_calling_math_async(step_call_count: int = 3) -> None:
     system_message = BaseMessage(
         role_name="assistant",
         role_type=RoleType.ASSISTANT,
@@ -1191,7 +1191,7 @@ async def test_tool_calling_async(step_call_count=3):
         assert tool_calls[0].result == 1, f"Error in calling round {i+1}"
 
 
-def test_response_words_termination(step_call_count=3):
+def test_response_words_termination(step_call_count: int = 3) -> None:
     system_message = BaseMessage(
         role_name="assistant",
         role_type=RoleType.ASSISTANT,
@@ -1223,7 +1223,7 @@ def test_response_words_termination(step_call_count=3):
         ), f"Error in calling round {i+1}"
 
 
-def test_chat_agent_vision(step_call_count=3):
+def test_chat_agent_vision(step_call_count: int = 3) -> None:
     system_message = BaseMessage(
         role_name="assistant",
         role_type=RoleType.ASSISTANT,
@@ -1292,7 +1292,7 @@ def test_chat_agent_vision(step_call_count=3):
 
 
 @pytest.mark.model_backend
-def test_chat_agent_creation_methods():
+def test_chat_agent_creation_methods() -> None:
     r"""Test different ways to create a ChatAgent with various model
     specifications.
     """
