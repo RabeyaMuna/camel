@@ -17,10 +17,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
 from pydantic import BaseModel
 
 if TYPE_CHECKING:
-    from mistralai.models import (
-        ChatCompletionResponse,
-        Messages,
-    )
+    from mistralai.models import ChatCompletionResponse, Messages
 
 from openai import AsyncStream
 
@@ -189,7 +186,7 @@ class MistralModel(BaseModelBackend):
             UserMessage,
         )
 
-        new_messages = []
+        new_messages: List["Messages"] = []
         for msg in messages:
             tool_id = uuid.uuid4().hex[:9]
             tool_call_id = msg.get("tool_call_id") or uuid.uuid4().hex[:9]
@@ -207,10 +204,11 @@ class MistralModel(BaseModelBackend):
                     else [tool_calls]
                 )
                 for tool_call in tool_calls_list:
-                    mistral_function_call = FunctionCall(
-                        name=tool_call["function"].get("name"),  # type: ignore[attr-defined]
-                        arguments=tool_call["function"].get("arguments"),  # type: ignore[attr-defined]
-                    )
+                    if isinstance(tool_call, dict) and "function" in tool_call:
+                        mistral_function_call = FunctionCall(
+                            name=tool_call["function"].get("name"),
+                            arguments=tool_call["function"].get("arguments"),
+                        )
 
             tool_calls = None
             if mistral_function_call:
@@ -219,25 +217,25 @@ class MistralModel(BaseModelBackend):
                 ]
 
             if role == "user":
-                new_messages.append(UserMessage(content=content))  # type: ignore[arg-type]
+                new_messages.append(UserMessage(content=str(content)))
             elif role == "assistant":
                 new_messages.append(
-                    AssistantMessage(content=content, tool_calls=tool_calls)  # type: ignore[arg-type]
+                    AssistantMessage(content=str(content), tool_calls=tool_calls)
                 )
             elif role == "system":
-                new_messages.append(SystemMessage(content=content))  # type: ignore[arg-type]
+                new_messages.append(SystemMessage(content=str(content)))
             elif role in {"tool", "function"}:
                 new_messages.append(
                     ToolMessage(
-                        content=content,  # type: ignore[arg-type]
-                        tool_call_id=tool_call_id,  # type: ignore[arg-type]
-                        name=msg.get("name"),  # type: ignore[arg-type]
+                        content=str(content),
+                        tool_call_id=str(tool_call_id),
+                        name=str(msg.get("name")) if msg.get("name") else None,
                     )
                 )
             else:
                 raise ValueError(f"Unsupported message role: {role}")
 
-        return new_messages  # type: ignore[return-value]
+        return new_messages
 
     @property
     def token_counter(self) -> BaseTokenCounter:
@@ -377,7 +375,7 @@ class MistralModel(BaseModelBackend):
             **request_config,
         )
 
-        openai_response = self._to_openai_response(response)  # type: ignore[arg-type]
+        openai_response = self._to_openai_response(response)
 
         update_current_observation(
             usage=openai_response.usage,
@@ -388,11 +386,11 @@ class MistralModel(BaseModelBackend):
             llm_event = LLMEvent(
                 thread_id=openai_response.id,
                 prompt=" ".join(
-                    [message.get("content") for message in messages]  # type: ignore[misc]
+                    [str(message.get("content")) for message in messages if message.get("content") is not None]
                 ),
-                prompt_tokens=openai_response.usage.prompt_tokens,  # type: ignore[union-attr]
+                prompt_tokens=openai_response.usage.prompt_tokens if openai_response.usage else 0,
                 completion=openai_response.choices[0].message.content,
-                completion_tokens=openai_response.usage.completion_tokens,  # type: ignore[union-attr]
+                completion_tokens=openai_response.usage.completion_tokens if openai_response.usage else 0,
                 model=self.model_type,
             )
             record(llm_event)

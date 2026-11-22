@@ -35,7 +35,6 @@ from typing import (
 )
 
 import httpx
-import mcp.types as types
 from pydantic import BaseModel, model_validator
 
 try:
@@ -64,7 +63,12 @@ except ImportError:
         return httpx.AsyncClient(**kwargs)
 
 
-from mcp import ClientSession
+try:
+    import mcp.types as types
+    from mcp import ClientSession
+except ImportError:
+    types = None
+    ClientSession = None
 
 
 class TransportType(str, Enum):
@@ -340,16 +344,18 @@ class MCPClient:
             if self._session:
                 try:
                     await self._session.__aexit__(None, None, None)
-                except Exception:
-                    pass  # Ignore cleanup errors
+                except Exception as e:
+                    import logging
+                    logging.getLogger(__name__).warning(f"Error cleaning up session: {e}")
                 finally:
                     self._session = None
 
             if self._connection_context:
                 try:
                     await self._connection_context.__aexit__(None, None, None)
-                except Exception:
-                    pass  # Ignore cleanup errors
+                except Exception as e:
+                    import logging
+                    logging.getLogger(__name__).warning(f"Error cleaning up connection context: {e}")
                 finally:
                     self._connection_context = None
 
@@ -428,7 +434,7 @@ class MCPClient:
             )
 
     @asynccontextmanager
-    async def _create_transport(self):
+    async def _create_transport(self) -> AsyncIterator[Tuple[Any, Any]]:
         """Create the appropriate transport based on detected type."""
         transport_type = self.config.transport_type
 
@@ -541,7 +547,7 @@ class MCPClient:
         r"""Check if the client is currently connected."""
         return self._session is not None
 
-    async def list_mcp_tools(self):
+    async def list_mcp_tools(self) -> Union[str, Any]:
         r"""Retrieves the list of available tools from the connected MCP
         server.
 
@@ -555,7 +561,7 @@ class MCPClient:
         except Exception as e:
             raise e
 
-    def list_mcp_tools_sync(self):
+    def list_mcp_tools_sync(self) -> Union[str, Any]:
         r"""Synchronously retrieves the list of available tools from the
         connected MCP server.
 

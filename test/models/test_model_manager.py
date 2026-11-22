@@ -49,12 +49,12 @@ def test_model_manager(
     )
 
     if TYPE_CHECKING:
-        assert type(models) is List[BaseModelBackend]
+        assert isinstance(models, List[BaseModelBackend])
     messages: List = []
     for _ in range(calls_count):
         msg = "message"
         if TYPE_CHECKING:
-            assert type(msg) is ChatCompletionSystemMessageParam
+            assert isinstance(msg, ChatCompletionSystemMessageParam)
         messages.append(msg)
     model_manager = ModelManager(models, scheduling_strategy=strategy)
 

@@ -90,11 +90,13 @@ from camel.utils import (
 )
 from camel.utils.commons import dependencies_required
 from camel.utils.tool_result import ToolResult
+from typing import TYPE_CHECKING
+import logging
 
 if TYPE_CHECKING:
     from camel.terminators import ResponseTerminator
 
-logger = get_logger(__name__)
+logger: logging.Logger = logging.getLogger(__name__)
 
 # AgentOps decorator setting
 try:
@@ -122,7 +124,7 @@ else:
     from camel.utils import observe
 
 
-SIMPLE_FORMAT_PROMPT = TextPrompt(
+SIMPLE_FORMAT_PROMPT: TextPrompt = TextPrompt(
     textwrap.dedent(
         """\
         Please format the following content:
@@ -137,20 +139,20 @@ class StreamContentAccumulator:
     r"""Manages content accumulation across streaming responses to ensure
     all responses contain complete cumulative content."""
 
-    def __init__(self):
-        self.base_content = ""  # Content before tool calls
-        self.current_content = ""  # Current streaming content
-        self.tool_status_messages = []  # Accumulated tool status messages
+    def __init__(self) -> None:
+        self.base_content: str = ""  # Content before tool calls
+        self.current_content: str = ""  # Current streaming content
+        self.tool_status_messages: list[str] = []  # Accumulated tool status messages
 
-    def set_base_content(self, content: str):
+    def set_base_content(self, content: str) -> None:
         r"""Set the base content (usually empty or pre-tool content)."""
         self.base_content = content
 
-    def add_streaming_content(self, new_content: str):
+    def add_streaming_content(self, new_content: str) -> None:
         r"""Add new streaming content."""
         self.current_content += new_content
 
-    def add_tool_status(self, status_message: str):
+    def add_tool_status(self, status_message: str) -> None:
         r"""Add a tool status message."""
         self.tool_status_messages.append(status_message)
 
@@ -164,7 +166,7 @@ class StreamContentAccumulator:
         tool_messages = "".join([*self.tool_status_messages, status_message])
         return self.base_content + tool_messages + self.current_content
 
-    def reset_streaming_content(self):
+    def reset_streaming_content(self) -> None:
         r"""Reset only the streaming content, keep base and tool status."""
         self.current_content = ""
 
@@ -184,7 +186,7 @@ class StreamingChatAgentResponse:
         self._responses: List[ChatAgentResponse] = []
         self._consumed = False
 
-    def _ensure_latest_response(self):
+    def _ensure_latest_response(self) -> None:
         r"""Ensure we have the latest response by consuming the generator."""
         if not self._consumed:
             try:
@@ -220,14 +222,14 @@ class StreamingChatAgentResponse:
         return {}
 
     @property
-    def msg(self):
+    def msg(self) -> Optional[BaseMessage]:
         r"""Get the single message if there's exactly one message."""
         self._ensure_latest_response()
         if self._current_response:
             return self._current_response.msg
         return None
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[ChatAgentResponse]:
         r"""Make this object iterable."""
         if self._consumed:
             # If already consumed, iterate over stored responses
@@ -243,7 +245,7 @@ class StreamingChatAgentResponse:
             except StopIteration:
                 self._consumed = True
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
         r"""Forward any other attribute access to the latest response."""
         self._ensure_latest_response()
         if self._current_response and hasattr(self._current_response, name):
@@ -263,13 +265,13 @@ class AsyncStreamingChatAgentResponse:
 
     def __init__(
         self, async_generator: AsyncGenerator[ChatAgentResponse, None]
-    ):
+    ) -> None:
         self._async_generator = async_generator
         self._current_response: Optional[ChatAgentResponse] = None
         self._responses: List[ChatAgentResponse] = []
         self._consumed = False
 
-    async def _ensure_latest_response(self):
+    async def _ensure_latest_response(self) -> None:
         r"""Ensure the latest response by consuming the async generator."""
         if not self._consumed:
             try:
@@ -288,22 +290,22 @@ class AsyncStreamingChatAgentResponse:
         # Return a default response if nothing was consumed
         return ChatAgentResponse(msgs=[], terminated=False, info={})
 
-    def __await__(self):
+    def __await__(self) -> Generator[Any, None, ChatAgentResponse]:
         r"""Make this object awaitable - returns the final response."""
         return self._get_final_response().__await__()
 
-    def __aiter__(self):
+    def __aiter__(self) -> AsyncIterator[ChatAgentResponse]:
         r"""Make this object async iterable."""
         if self._consumed:
             # If already consumed, create async iterator from stored responses
-            async def _async_iter():
+            async def _async_iter() -> AsyncIterator[ChatAgentResponse]:
                 for response in self._responses:
                     yield response
 
             return _async_iter()
         else:
             # If not consumed, consume and yield
-            async def _consume_and_yield():
+            async def _consume_and_yield() -> AsyncIterator[ChatAgentResponse]:
                 try:
                     async for response in self._async_generator:
                         self._responses.append(response)
@@ -706,7 +708,7 @@ class ChatAgent(BaseAgent):
             return True
         return False
 
-    def remove_tools(self, tool_names: List[str]) -> None:
+    def remove_tools(self, tool_names: list[str]) -> None:
         r"""Remove a list of tools from the agent by name."""
         for tool_name in tool_names:
             self.remove_tool(tool_name)
@@ -1323,7 +1325,7 @@ class ChatAgent(BaseAgent):
                 streaming updates.
         """
 
-        stream = self.model_backend.model_config_dict.get("stream", False)
+        stream: bool = self.model_backend.model_config_dict.get("stream", False)
 
         if stream:
             # Return wrapped generator that has ChatAgentResponse interface
@@ -1339,7 +1341,7 @@ class ChatAgent(BaseAgent):
             pass  # Langfuse not available
 
         # Handle response format compatibility with non-strict tools
-        original_response_format = response_format
+        original_response_format: Optional[Type[BaseModel]] = response_format
         input_message, response_format, used_prompt_formatting = (
             self._handle_response_format_with_non_strict_tools(
                 input_message, response_format
@@ -1353,7 +1355,7 @@ class ChatAgent(BaseAgent):
             )
 
         # Attach any pending images from previous tool calls
-        image_list = self._process_pending_images()
+        image_list: List[str] = self._process_pending_images()
         if image_list:
             # Create new message with images attached
             input_message = BaseMessage.make_user_message(
@@ -1368,13 +1370,13 @@ class ChatAgent(BaseAgent):
         tool_call_records: List[ToolCallingRecord] = []
         external_tool_call_requests: Optional[List[ToolCallRequest]] = None
 
-        accumulated_context_tokens = (
+        accumulated_context_tokens: int = (
             0  # This tracks cumulative context tokens, not API usage tokens
         )
 
         # Initialize token usage tracker
-        step_token_usage = self._create_token_usage_tracker()
-        iteration_count = 0
+        step_token_usage: Dict[str, int] = self._create_token_usage_tracker()
+        iteration_count: int = 0
 
         while True:
             if self.pause_event is not None and not self.pause_event.is_set():
@@ -1382,7 +1384,7 @@ class ChatAgent(BaseAgent):
                     time.sleep(0.001)
 
             try:
-                openai_messages, num_tokens = self.memory.get_context()
+                openai_messages: List[BaseMessage], num_tokens: int = self.memory.get_context()
                 accumulated_context_tokens += num_tokens
             except RuntimeError as e:
                 return self._step_terminate(
@@ -1507,7 +1509,7 @@ class ChatAgent(BaseAgent):
         except ImportError:
             pass  # Langfuse not available
 
-        stream = self.model_backend.model_config_dict.get("stream", False)
+        stream: bool = self.model_backend.model_config_dict.get("stream", False)
         if stream:
             # Return wrapped async generator that is awaitable
             async_generator = self._astream(input_message, response_format)
@@ -1521,6 +1523,10 @@ class ChatAgent(BaseAgent):
         self,
         input_message: Union[BaseMessage, str],
         response_format: Optional[Type[BaseModel]] = None,
+        *,
+        pause_event: Optional[asyncio.Event] = None,
+        stop_event: Optional[asyncio.Event] = None,
+        max_iteration: Optional[int] = None,
     ) -> ChatAgentResponse:
         r"""Internal async method for non-streaming astep logic."""
 
@@ -1750,7 +1756,7 @@ class ChatAgent(BaseAgent):
     ) -> ChatAgentResponse:
         r"""Parse the final model response into the chat agent response."""
         # Create usage_dict for the current step's API calls
-        step_api_usage_dict = {
+        step_api_usage_dict: Dict[str, int] = {
             "prompt_tokens": step_api_prompt_tokens,
             "completion_tokens": step_api_completion_tokens,
             "total_tokens": step_api_total_tokens,
@@ -3767,8 +3773,7 @@ class ChatAgent(BaseAgent):
         """
         encoding = get_model_encoding(self.model_type.value_for_tiktoken)
         completion_tokens = sum(
-            len(encoding.encode(message.content))
-            for message in output_messages
+            len(encoding.encode(message.content)) for message in output_messages
         )
         return dict(
             completion_tokens=completion_tokens,
@@ -3777,7 +3782,7 @@ class ChatAgent(BaseAgent):
         )
 
     def add_model_scheduling_strategy(self, name: str, strategy_fn: Callable):
-        r"""Add a scheduling strategy method provided by user to ModelManger.
+        r"""Add a scheduling strategy method provided by user to ModelManager.
 
         Args:
             name (str): The name of the strategy.
@@ -3899,7 +3904,7 @@ class ChatAgent(BaseAgent):
             f"ChatAgent({self.role_name}, {self.role_type}, {self.model_type})"
         )
 
-    @dependencies_required("mcp")
+    @dependencies_required("mcp", optional=True)
     def to_mcp(
         self,
         name: str = "CAMEL-ChatAgent",
@@ -3926,7 +3931,10 @@ class ChatAgent(BaseAgent):
         Returns:
             FastMCP: An MCP server instance that can be run.
         """
-        from mcp.server.fastmcp import FastMCP
+        try:
+            from mcp.server.fastmcp import FastMCP
+        except ImportError:
+            raise ImportError("The 'mcp.server.fastmcp' module is not installed. Please install it using 'pip install mcp'")
 
         # Combine dependencies
         all_dependencies = ["camel-ai[all]"]

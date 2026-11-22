@@ -104,7 +104,7 @@ class MCPServer:
                 `BaseToolkit` subclass,
                 or if a specified method cannot be found or is not callable.
         """
-        from mcp.server.fastmcp import FastMCP
+        from camel.server.fastmcp import FastMCP
 
         from camel.toolkits.base import BaseToolkit
 
