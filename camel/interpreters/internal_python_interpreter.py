@@ -400,8 +400,8 @@ class InternalPythonInterpreter(BaseInterpreter):
         callable_func = self._execute_ast(call.func)
 
         # Todo deal with args
-        args = [self._execute_ast(arg) for arg in call.args]
-        kwargs = {
+        args: List[Any] = [self._execute_ast(arg) for arg in call.args]
+        kwargs: Dict[str, Any] = {
             keyword.arg: self._execute_ast(keyword.value)
             for keyword in call.keywords
         }

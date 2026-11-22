@@ -39,6 +39,7 @@ from camel.utils import (
     update_current_observation,
     update_langfuse_trace,
 )
+from mistralai import Mistral
 
 logger = get_logger(__name__)
 
@@ -103,8 +104,6 @@ class MistralModel(BaseModelBackend):
         max_retries: int = 3,
         **kwargs: Any,
     ) -> None:
-        from mistralai import Mistral
-
         if model_config_dict is None:
             model_config_dict = MistralConfig().as_dict()
 
@@ -141,12 +140,12 @@ class MistralModel(BaseModelBackend):
         ):
             tool_calls = [
                 dict(
-                    id=tool_call.id,  # type: ignore[union-attr]
+                    id=tool_call.id,
                     function={
-                        "name": tool_call.function.name,  # type: ignore[union-attr]
-                        "arguments": tool_call.function.arguments,  # type: ignore[union-attr]
+                        "name": tool_call.function.name,
+                        "arguments": tool_call.function.arguments,
                     },
-                    type=tool_call.type,  # type: ignore[union-attr]
+                    type=tool_call.type,
                 )
                 for tool_call in response.choices[0].message.tool_calls
             ]
@@ -155,14 +154,14 @@ class MistralModel(BaseModelBackend):
             id=response.id,
             choices=[
                 dict(
-                    index=response.choices[0].index,  # type: ignore[index]
+                    index=response.choices[0].index,
                     message={
-                        "role": response.choices[0].message.role,  # type: ignore[index,union-attr]
-                        "content": response.choices[0].message.content,  # type: ignore[index,union-attr]
+                        "role": response.choices[0].message.role,
+                        "content": response.choices[0].message.content,
                         "tool_calls": tool_calls,
                     },
-                    finish_reason=response.choices[0].finish_reason  # type: ignore[index]
-                    if response.choices[0].finish_reason  # type: ignore[index]
+                    finish_reason=response.choices[0].finish_reason
+                    if response.choices[0].finish_reason
                     else None,
                 )
             ],
@@ -208,8 +207,8 @@ class MistralModel(BaseModelBackend):
                 )
                 for tool_call in tool_calls_list:
                     mistral_function_call = FunctionCall(
-                        name=tool_call["function"].get("name"),  # type: ignore[attr-defined]
-                        arguments=tool_call["function"].get("arguments"),  # type: ignore[attr-defined]
+                        name=tool_call["function"].get("name"),
+                        arguments=tool_call["function"].get("arguments"),
                     )
 
             tool_calls = None
@@ -219,25 +218,25 @@ class MistralModel(BaseModelBackend):
                 ]
 
             if role == "user":
-                new_messages.append(UserMessage(content=content))  # type: ignore[arg-type]
+                new_messages.append(UserMessage(content=content))
             elif role == "assistant":
                 new_messages.append(
-                    AssistantMessage(content=content, tool_calls=tool_calls)  # type: ignore[arg-type]
+                    AssistantMessage(content=content, tool_calls=tool_calls)
                 )
             elif role == "system":
-                new_messages.append(SystemMessage(content=content))  # type: ignore[arg-type]
+                new_messages.append(SystemMessage(content=content))
             elif role in {"tool", "function"}:
                 new_messages.append(
                     ToolMessage(
-                        content=content,  # type: ignore[arg-type]
-                        tool_call_id=tool_call_id,  # type: ignore[arg-type]
-                        name=msg.get("name"),  # type: ignore[arg-type]
+                        content=content,
+                        tool_call_id=tool_call_id,
+                        name=msg.get("name"),
                     )
                 )
             else:
                 raise ValueError(f"Unsupported message role: {role}")
 
-        return new_messages  # type: ignore[return-value]
+        return new_messages
 
     @property
     def token_counter(self) -> BaseTokenCounter:
@@ -302,7 +301,7 @@ class MistralModel(BaseModelBackend):
             **request_config,
         )
 
-        openai_response = self._to_openai_response(response)  # type: ignore[arg-type]
+        openai_response = self._to_openai_response(response)
 
         update_current_observation(
             usage=openai_response.usage,
@@ -313,11 +312,11 @@ class MistralModel(BaseModelBackend):
             llm_event = LLMEvent(
                 thread_id=openai_response.id,
                 prompt=" ".join(
-                    [message.get("content") for message in messages]  # type: ignore[misc]
+                    [message.get("content") for message in messages]
                 ),
-                prompt_tokens=openai_response.usage.prompt_tokens,  # type: ignore[union-attr]
+                prompt_tokens=openai_response.usage.prompt_tokens,
                 completion=openai_response.choices[0].message.content,
-                completion_tokens=openai_response.usage.completion_tokens,  # type: ignore[union-attr]
+                completion_tokens=openai_response.usage.completion_tokens,
                 model=self.model_type,
             )
             record(llm_event)

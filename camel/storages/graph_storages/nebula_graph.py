@@ -27,10 +27,10 @@ logger = logging.getLogger(__name__)
 
 
 if TYPE_CHECKING:
-    from nebula3.data.ResultSet import (  # type: ignore[import-untyped]
+    from nebula3.data.ResultSet import (
         ResultSet,
     )
-    from nebula3.gclient.net import (  # type: ignore[import-untyped]
+    from nebula3.gclient.net import (
         ConnectionPool,
         Session,
     )
@@ -78,7 +78,7 @@ class NebulaGraph(BaseGraphStorage):
         Raises:
             Exception: If the connection pool initialization fails.
         """
-        from nebula3.Config import Config  # type: ignore[import-untyped]
+        from nebula3.Config import Config
         from nebula3.gclient.net import ConnectionPool
 
         config = Config()
@@ -135,7 +135,7 @@ class NebulaGraph(BaseGraphStorage):
         r"""Get the underlying graph storage client."""
         return self.session
 
-    def query(self, query: str) -> "ResultSet":  # type:ignore[override]
+    def query(self, query: str) -> "ResultSet":
         r"""Execute a query on the graph store.
 
         Args:
