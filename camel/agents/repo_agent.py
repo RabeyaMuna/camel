@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 if TYPE_CHECKING:
     from github.MainClass import Github
+    from github.ContentFile import ContentFile
 from pydantic import BaseModel
 
 from camel.agents import ChatAgent

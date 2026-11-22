@@ -22,6 +22,7 @@ if TYPE_CHECKING:
         Messages,
     )
 
+import openai
 from openai import AsyncStream
 
 from camel.configs import MISTRAL_API_PARAMS, MistralConfig

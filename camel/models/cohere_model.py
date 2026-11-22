@@ -19,6 +19,8 @@ import uuid
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
 
 from pydantic import BaseModel
+import cohere
+from langfuse.decorators import observe
 
 if TYPE_CHECKING:
     from cohere.types import ChatMessageV2, ChatResponse

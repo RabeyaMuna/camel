@@ -14,6 +14,7 @@
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict, List, Optional
 
+import playwright.async_api
 if TYPE_CHECKING:
     from playwright.async_api import Page
 

@@ -190,7 +190,7 @@ class TicTacToeEnv(MultiStepEnv):
     strategy.
     """
 
-    WIN_COMBINATIONS: ClassVar = [
+    WIN_COMBINATIONS: ClassVar[List[Tuple[int, int, int]]] = [
         (0, 1, 2),  # Top row
         (3, 4, 5),  # Middle row
         (6, 7, 8),  # Bottom row
@@ -374,7 +374,7 @@ class TicTacToeEnv(MultiStepEnv):
 
         return Observation(question=obs, context={}, metadata={})
 
-    async def compute_reward(self) -> Tuple[float, Dict[str, float]]:
+    def compute_reward(self) -> Tuple[float, Dict[str, float]]:
         r"""Compute the reward for the current state.
 
         Returns:

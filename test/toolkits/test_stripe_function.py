@@ -16,6 +16,7 @@ import os
 from unittest.mock import MagicMock, patch
 
 import pytest
+import stripe
 from stripe import (
     Balance,
     BalanceTransaction,

@@ -20,11 +20,10 @@ from typing import TYPE_CHECKING, List, Optional
 
 from camel.toolkits.base import BaseToolkit
 from camel.utils import MCPServer
+from slack_sdk import WebClient
 
 if TYPE_CHECKING:
     from ssl import SSLContext
-
-    from slack_sdk import WebClient
 
 from camel.logger import get_logger
 from camel.toolkits import FunctionTool

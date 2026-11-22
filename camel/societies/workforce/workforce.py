@@ -1043,6 +1043,7 @@ class Workforce(BaseNode):
         """
         # Create new event loop if none exists or if we need a fresh one
         try:
+            from mcp.server.fastmcp import FastMCP
             self._loop = asyncio.get_event_loop()
             if self._loop.is_closed():
                 self._loop = asyncio.new_event_loop()

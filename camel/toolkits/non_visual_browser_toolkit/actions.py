@@ -13,6 +13,7 @@
 # ========= Copyright 2023-2024 @ CAMEL-AI.org. All Rights Reserved. =========
 import asyncio
 from typing import TYPE_CHECKING, Any, Dict
+from playwright.async_api import Page
 
 if TYPE_CHECKING:
     from playwright.async_api import Page

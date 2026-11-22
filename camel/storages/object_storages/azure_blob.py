@@ -18,6 +18,8 @@ from warnings import warn
 
 from camel.loaders import File, create_file_from_raw_bytes
 from camel.storages.object_storages.base import BaseObjectStorage
+from azure.storage.blob import BlobServiceClient
+from azure.core.exceptions import ResourceExistsError
 
 
 class AzureBlobStorage(BaseObjectStorage):

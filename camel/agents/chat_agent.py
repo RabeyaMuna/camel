@@ -1052,14 +1052,19 @@ class ChatAgent(BaseAgent):
                 continue
 
             prompt = SIMPLE_FORMAT_PROMPT.format(content=message.content)
-            openai_message: OpenAIMessage = {"role": "user", "content": prompt}
+            openai_message: OpenAIMessage = {
+                "role": "user",
+                "content": prompt
+            }
             # Explicitly set the tools to empty list to avoid calling tools
             response = self._get_model_response(
                 [openai_message], 0, response_format, []
             )
             message.content = response.output_messages[0].content
             if not self._try_format_message(message, response_format):
-                logger.warning(f"Failed to parse response: {message.content}")
+                logger.warning(
+                    f"Failed to parse response: {message.content}"
+                )
                 logger.warning(
                     "To improve reliability, consider using models "
                     "that are better equipped to handle structured output"
@@ -1966,8 +1971,10 @@ class ChatAgent(BaseAgent):
             raw_result = tool(**args)
             if self.mask_tool_output:
                 self._secure_result_store[tool_call_id] = raw_result
-                result= "[The tool has been executed successfully, but the output" \
-                        " from the tool is masked. You can move forward]"
+                result = (
+                    "[The tool has been executed successfully, but the output "
+                    "from the tool is masked. You can move forward]"
+                )
                 mask_flag = True
             else:
                 result = raw_result
@@ -1979,7 +1986,9 @@ class ChatAgent(BaseAgent):
             mask_flag = False
             logging.warning(error_msg)
 
-        return self._record_tool_calling(func_name, args, result, tool_call_id, mask_output=mask_flag)
+        return self._record_tool_calling(
+            func_name, args, result, tool_call_id, mask_output=mask_flag
+        )
 
     async def _aexecute_tool(
         self,

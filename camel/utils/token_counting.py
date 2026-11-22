@@ -32,6 +32,7 @@ from camel.types import (
 from camel.utils import dependencies_required
 
 if TYPE_CHECKING:
+    from anthropic.types import MessageParam
     from mistral_common.protocol.instruct.request import (  # type:ignore[import-not-found]
         ChatCompletionRequest,
     )
